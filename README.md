@@ -2,14 +2,36 @@
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Development Server 
+# Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Production
+## MongoDB
+
+To use a mongodb server one possible solution is to use a docker container:
+
+Download the mongodb image:
+```bash
+docker pull bitnami/mongodb:latest
+```
+
+Run the mongodb server:
+```bash
+docker run -p 27017:27017 \
+    -e MONGODB_USERNAME="user" \
+    -e MONGODB_PASSWORD="password" \
+    -e ALLOW_EMPTY_PASSWORD=yes \
+    -e MONGODB_DATABASE=tecweb \
+        bitnami/mongodb:latest
+```
+
+Copy the `.env.example` into `.env`. The user and the password on the previous 
+command have to match with the ones on the `.env` file.
+
+# Production
 
 ```bash
 npm run build

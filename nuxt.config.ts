@@ -4,5 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/eslint'
-  ]
+  ],
+  runtimeConfig: {
+    DB_URL: process.env.MONGO_URL
+  }
 })
