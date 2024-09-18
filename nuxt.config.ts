@@ -7,5 +7,8 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     DB_URL: process.env.MONGO_URL
+  },
+  typescript: {
+    typeCheck: true
   }
 })

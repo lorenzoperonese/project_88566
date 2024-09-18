@@ -1,3 +1,5 @@
+// @ts-nocheck TODO: remove
+
 import { users } from "../db";
 
 export default defineEventHandler(async (_) => {

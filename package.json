@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "mongoose": "^8.6.3",
-    "mongoose-bcrypt": "^1.11.0"
+    "mongoose-bcrypt": "^1.11.0",
+    "vue-tsc": "^2.1.6"
   }
 }
