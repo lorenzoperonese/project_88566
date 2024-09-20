@@ -50,7 +50,10 @@ async function login() {
           />
         </div>
 
-        <button class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400" @click="login">
+        <button
+          class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400"
+          @click="login"
+        >
           Login
         </button>
         <div class="text-red-600">

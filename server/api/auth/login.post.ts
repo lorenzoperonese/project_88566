@@ -52,7 +52,10 @@ export default defineEventHandler(async (event) => {
     }
 
     // Generating new session for user
-    const token = await newAuthSession(userData._id as string, userData.username)
+    const token = await newAuthSession(
+      userData._id as string,
+      userData.username
+    )
     console.log(token)
 
     console.log(username, 'logged in')

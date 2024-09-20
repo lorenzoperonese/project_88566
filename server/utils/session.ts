@@ -8,7 +8,10 @@ export interface Session {
   expiration: Date
 }
 
-export async function newAuthSession(user_id: string, username: string): Promise<string> {
+export async function newAuthSession(
+  user_id: string,
+  username: string
+): Promise<string> {
   console.log('Creating new session for user: ', username)
 
   const uuid = crypto.randomUUID().toString()
