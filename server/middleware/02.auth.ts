@@ -3,7 +3,7 @@ import { getAuthSession } from "@/server/utils/session";
 export default defineEventHandler(async (event) => {
   console.log(event.node.req.url);
 
-  if (event.node.req.url?.startsWith("/api")) {
+  if (event.node.req.url && needAuth(event.node.req.url)) {
     const token = getCookie(event, "auth:token")
     console.log("TOKEN:", token);
 
@@ -23,3 +23,15 @@ export default defineEventHandler(async (event) => {
     }
   }
 })
+
+function needAuth(path: string): boolean {
+  if (!path.startsWith('/api')) {
+    return false
+  }
+
+  if (path.startsWith('/api/auth')) {
+    return false
+  }
+
+  return true
+}
