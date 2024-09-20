@@ -40,5 +40,12 @@ export default defineNuxtConfig({
   },
   // Need to disable SSR to avoid cookies elimination from auth :(
   // https://github.com/sidebase/nuxt-auth/issues/732
-  ssr: false
+  ssr: false,
+  css: ['~/assets/css/main.css'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 })

@@ -13,26 +13,24 @@ async function login() {
 </script>
 
 <template>
-  <div>
-    <div>
-      <h1>LOGIN</h1>
-      <form @click.prevent="">
-        <label for="username">Username: </label>
-        <input id="username" v-model="_username" type="text" required>
+  <div class="grid h-full">
+    <div class="place-self-center border rounded-xl p-5 shadow-xl">
+      <h1 class="font-bold text-center mb-5 text-xl">Selfie</h1>
+      <form @click.prevent="" class="flex flex-col gap-5">
+        <div>
+          <label for="username">Username: </label>
+          <input id="username" v-model="_username" type="text" required class="border rounded-lg p-2 outline-none">
+        </div>
 
-        <label for="password">Password: </label>
-        <input id="password" v-model="_password" type="password" required>
+        <div>
+          <label for="password">Password: </label>
+          <input id="password" v-model="_password" type="password" required class="border rounded-lg p-2 outline-none">
+        </div>
 
-        <button @click="login">
+        <button @click="login" class="border rounded-lg p-2 bg-blue-200 hover:bg-blue-400">
           Login
         </button>
       </form>
-    </div>
-    <div>
-      {{ _username }} {{ _password }}
-    </div>
-    <div>
-      {{ status }}
     </div>
   </div>
 </template>
