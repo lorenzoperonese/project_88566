@@ -24,11 +24,21 @@ export default defineNuxtConfig({
         dataType: {
           id: 'number',
           username: 'string',
+          expiration: 'date'
         }
       },
       pages: {
         login: '/login'
+      },
+      token: {
+        sameSite: 'strict',
+        secureCookieAttribute: false,
+        httpOnlyCookieAttribute: true,
+        maxAgeInSeconds: 3600
       }
     }
-  }
+  },
+  // Need to disable SSR to avoid cookies elimination from auth :(
+  // https://github.com/sidebase/nuxt-auth/issues/732
+  ssr: false
 })

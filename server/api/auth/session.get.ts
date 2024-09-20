@@ -1,12 +1,23 @@
-export default defineEventHandler((event) => {
-  const cookie = getCookie(event, "auth:token")
-  console.log("TOKEN:", cookie);
+import { getSession } from "@/server/utils/session";
 
-  if (cookie == "castorone") {
-    return { id: 1, username: "samu" }
-  } else {
-    throw createError({
-      status: 401,
-    })
+export default defineEventHandler(async (event) => {
+  const token = getCookie(event, "auth:token")
+  console.log("TOKEN:", token);
+
+  if (!token) {
+    setResponseStatus(event, 401);
+    return {
+      err: "Unauthenticated"
+    }
   }
+
+  const s = await getSession(token);
+  if (!s) {
+    setResponseStatus(event, 401);
+    return {
+      err: "Cookie for auth is not valid or expired"
+    }
+  }
+
+  return { s }
 })

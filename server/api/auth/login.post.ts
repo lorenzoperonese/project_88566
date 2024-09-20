@@ -1,4 +1,5 @@
 import { User } from "@/server/db"
+import { newSession } from "@/server/utils/session";
 
 interface IRequestBody {
   username: string;
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    console.debug("Searching user:", username);
+    console.log("Searching user:", username);
     const userData = await User.findOne({
       username: username.toLowerCase()
     });
@@ -42,19 +43,27 @@ export default defineEventHandler(async (event) => {
       return err_not_found;
     }
 
-    console.debug("User found");
+    console.log("User found");
     const is_password_valid = await userData.verifyPassword(password);
-    if (is_password_valid) {
-      console.log(username, "logged in");
-      return {
-        id: userData._id,
-        username: userData.username,
-        name: userData.name
-      };
-    } else {
+    if (!is_password_valid) {
       console.log("Password is not valid");
       setResponseStatus(event, 404);
       return err_not_found;
+
+    }
+
+    // Generating new session for user
+    const token = await newSession(userData._id as string, userData.username);
+    console.log(token)
+
+    console.log(username, "logged in");
+    return {
+      token: token,
+      user: {
+        id: userData._id,
+        username: userData.username,
+        name: userData.name
+      }
     };
   } catch (err) {
     console.error(err);
