@@ -1,14 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
-const { status, signIn } = useAuth();
+const router = useRouter()
+const { status, signIn } = useAuth()
 
-const _username = ref("");
-const _password = ref("");
+if (status.value == 'authenticated') {
+  router.push('/')
+}
+
+const _username = ref('')
+const _password = ref('')
+const _error = ref('')
 
 async function login() {
-  const credentials = { username: _username.value, password: _password.value };
-  await signIn(credentials, { callbackUrl: "/" });
+  const credentials = { username: _username.value, password: _password.value }
+  try {
+    await signIn(credentials, { callbackUrl: '/' })
+  } catch (err: Error) {
+    console.error(err)
+    _error.value = err.response._data.err
+  }
 }
 </script>
 
@@ -16,7 +27,7 @@ async function login() {
   <div class="grid h-full">
     <div class="place-self-center rounded-xl border p-5 shadow-xl">
       <h1 class="mb-5 text-center text-xl font-bold">Selfie</h1>
-      <form @click.prevent="" class="flex flex-col gap-5">
+      <form class="flex flex-col gap-5" @click.prevent="">
         <div>
           <label for="username">Username: </label>
           <input
@@ -24,7 +35,7 @@ async function login() {
             v-model="_username"
             type="text"
             required
-            class="rounded-lg border p-2 outline-none"
+            class="w-full rounded-lg border p-2 outline-none"
           />
         </div>
 
@@ -35,16 +46,16 @@ async function login() {
             v-model="_password"
             type="password"
             required
-            class="rounded-lg border p-2 outline-none"
+            class="w-full rounded-lg border p-2 outline-none"
           />
         </div>
 
-        <button
-          @click="login"
-          class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400"
-        >
+        <button class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400" @click="login">
           Login
         </button>
+        <div class="text-red-600">
+          {{ _error }}
+        </div>
       </form>
     </div>
   </div>
