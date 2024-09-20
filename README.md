@@ -28,8 +28,9 @@ docker run -p 27017:27017 \
         bitnami/mongodb:latest
 ```
 
-Copy the `.env.example` into `.env`. The user and the password on the previous 
-command have to match with the ones on the `.env` file.
+Copy the `.env.example` into `.env` and `.env.local`. The user and the 
+password on the previous command have to match with the ones on the 
+`.env.local` file. `.env` is used for building.
 
 # Production
 
