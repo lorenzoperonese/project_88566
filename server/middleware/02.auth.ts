@@ -21,6 +21,11 @@ export default defineEventHandler(async (event) => {
         err: 'Cookie for auth is not valid or expired'
       }
     }
+
+    event.context.auth = {
+      id: s.user_id,
+      username: s.username
+    }
   }
 })
 
