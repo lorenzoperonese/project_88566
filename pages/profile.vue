@@ -1,10 +1,7 @@
-<script lang="ts">
-</script>
+<script lang="ts"></script>
 
 <template>
   <div>
-    <h1>
-      PROFILE
-    </h1>
+    <h1>PROFILE</h1>
   </div>
 </template>

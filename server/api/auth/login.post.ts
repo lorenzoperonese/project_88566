@@ -1,4 +1,4 @@
-import { User } from "@/server/db"
+import { User } from "@/server/db";
 import { newAuthSession } from "@/server/utils/session";
 
 interface IRequestBody {
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 400);
     return {
       code: "USERNAME_REQUIRED",
-      err: "Body malformed: username is required."
+      err: "Body malformed: username is required.",
     };
   }
 
@@ -22,23 +22,23 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 400);
     return {
       code: "PASSWORD_REQUIRED",
-      err: "Body malformed: password is required."
+      err: "Body malformed: password is required.",
     };
   }
 
   try {
     console.log("Searching user:", username);
     const userData = await User.findOne({
-      username: username.toLowerCase()
+      username: username.toLowerCase(),
     });
 
     const err_not_found = {
       code: "USER_NOT_FOUND",
-      err: "User with given username and password does not exists"
+      err: "User with given username and password does not exists",
     };
 
     if (!userData) {
-      console.log("User not found")
+      console.log("User not found");
       setResponseStatus(event, 404);
       return err_not_found;
     }
@@ -49,12 +49,14 @@ export default defineEventHandler(async (event) => {
       console.log("Password is not valid");
       setResponseStatus(event, 404);
       return err_not_found;
-
     }
 
     // Generating new session for user
-    const token = await newAuthSession(userData._id as string, userData.username);
-    console.log(token)
+    const token = await newAuthSession(
+      userData._id as string,
+      userData.username,
+    );
+    console.log(token);
 
     console.log(username, "logged in");
     return {
@@ -62,12 +64,12 @@ export default defineEventHandler(async (event) => {
       user: {
         id: userData._id,
         username: userData.username,
-        name: userData.name
-      }
+        name: userData.name,
+      },
     };
   } catch (err) {
     console.error(err);
     setResponseStatus(event, 500);
-    return { err }
+    return { err };
   }
-})
+});

@@ -6,13 +6,13 @@ export default defineEventHandler(async (event) => {
       username: "samu",
       password: "samu",
       name: "Samuele",
-    })
+    });
 
-    await user.save()
+    await user.save();
     return { message: "User created successfuly" };
   } catch (err) {
     console.error(err);
-    setResponseStatus(event, 500)
-    return { err }
+    setResponseStatus(event, 500);
+    return { err };
   }
 });
