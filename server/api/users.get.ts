@@ -1,15 +1,15 @@
-import { User } from "../db";
+import { User } from '@/server/db'
 
 export default defineEventHandler(async (_) => {
   try {
-    const users_data = await User.find();
-    console.log(users_data);
+    const users_data = await User.find()
+    console.log(users_data)
     return users_data.map((u) => ({
       id: u._id,
       username: u.username,
-      name: u.name,
-    }));
+      name: u.name
+    }))
   } catch (err) {
-    console.error(err);
+    console.error(err)
   }
-});
+})
