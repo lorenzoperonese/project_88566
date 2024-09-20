@@ -1,10 +1,11 @@
-import { Schema, model, connect } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import bcrypt from "mongoose-bcrypt";
 
-export interface IUser {
+export interface IUser extends Document {
   username: string;
   password: string;
   name: string;
+  verifyPassword(password: string): Promise<boolean>; // Add this for type safety
 }
 
 const schema = new Schema<IUser>(

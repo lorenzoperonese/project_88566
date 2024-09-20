@@ -1,6 +1,6 @@
-import { User } from "../db";
+import { User } from "@/server/db";
 
-export default defineEventHandler(async (_) => {
+export default defineEventHandler(async (event) => {
   try {
     const user = new User({
       username: "samu",
@@ -12,6 +12,7 @@ export default defineEventHandler(async (_) => {
     return { message: "User created successfuly" };
   } catch (err) {
     console.error(err);
+    setResponseStatus(event, 500)
     return { err }
   }
 });
