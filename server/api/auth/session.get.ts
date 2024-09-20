@@ -1,4 +1,4 @@
-import { getSession } from "@/server/utils/session";
+import { getAuthSession } from "@/server/utils/session";
 
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, "auth:token")
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const s = await getSession(token);
+  const s = await getAuthSession(token);
   if (!s) {
     setResponseStatus(event, 401);
     return {

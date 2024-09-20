@@ -1,5 +1,5 @@
 import { User } from "@/server/db"
-import { newSession } from "@/server/utils/session";
+import { newAuthSession } from "@/server/utils/session";
 
 interface IRequestBody {
   username: string;
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Generating new session for user
-    const token = await newSession(userData._id as string, userData.username);
+    const token = await newAuthSession(userData._id as string, userData.username);
     console.log(token)
 
     console.log(username, "logged in");

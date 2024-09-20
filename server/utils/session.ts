@@ -8,7 +8,7 @@ export interface Session {
   expiration: Date
 };
 
-export async function newSession(user_id: string, username: string): Promise<string> {
+export async function newAuthSession(user_id: string, username: string): Promise<string> {
   console.log("Creating new session for user: ", username)
 
   const uuid = crypto.randomUUID().toString();
@@ -24,10 +24,10 @@ export async function newSession(user_id: string, username: string): Promise<str
   return uuid
 }
 
-export async function getSession(id: string): Promise<Session | null> {
+export async function getAuthSession(id: string): Promise<Session | null> {
   return await useStorage().getItem<Session>(`session:${id}`);
 }
 
-export function isSessionExpired(s: Session): boolean {
+export function isAuthSessionExpired(s: Session): boolean {
   return s.expiration.getTime() <= Date.now()
 }
