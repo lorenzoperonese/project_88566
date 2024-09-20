@@ -1,7 +1,13 @@
-import mongoose from "mongoose";
+import { Schema, model, connect } from "mongoose";
 import bcrypt from "mongoose-bcrypt";
 
-const schema = new mongoose.Schema(
+export interface IUser {
+  username: string;
+  password: string;
+  name: string;
+}
+
+const schema = new Schema<IUser>(
   {
     username: { type: String, unique: true, required: true },
     password: { type: String, bcrypt: true, required: true },
@@ -14,4 +20,4 @@ const schema = new mongoose.Schema(
 
 schema.plugin(bcrypt);
 
-export default mongoose.model("User", schema, "users");
+export default model<IUser>("User", schema, "users");

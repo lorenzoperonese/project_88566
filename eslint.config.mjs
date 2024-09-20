@@ -8,6 +8,11 @@ export default withNuxt(
       parserOptions: {
         warnOnUnsupportedTypeScriptVersion: false // Disables the warning
       }
-    }
+    },
+    //rules: {
+    //  // This line is to avoid errors when using @ts-nocheck. TODO Remove it in
+    //  // the end
+    //  "@typescript-eslint/ban-ts-comment": "off"
+    //}
   }
 )
