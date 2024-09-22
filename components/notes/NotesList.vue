@@ -2,15 +2,18 @@
 import Note from './Note.vue'
 
 const $props = defineProps({
-  notes: { required: true }
+  notes: { type: Array as PropType<Note[]>, required: true }
 })
 </script>
 
 <template>
   <div>
     Notes list
-    <div v-for="note in $props.notes" :key="(note as any).id">
-      <Note :note="note" />
+    <div v-if="$props.notes.length > 0">
+      <template v-for="note in $props.notes" :key="(note as any).id">
+        <Note :note="note" />
+      </template>
     </div>
+    <div v-else>No notes yet...</div>
   </div>
 </template>

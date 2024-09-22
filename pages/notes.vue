@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const _notes = ref([{}])
+const _notes = ref<Note[]>([])
 
 function add() {
   try {
@@ -17,8 +17,8 @@ function add() {
 
 onMounted(async () => {
   const res = await useFetch('/api/notes')
-  if (res.status.value == 'success') {
-    _notes.value = res.data.value as [any]
+  if (res.status.value == 'success' && res.data.value) {
+    _notes.value = res.data.value
   } else {
     console.error(res.error.value)
   }

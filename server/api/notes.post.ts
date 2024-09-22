@@ -1,8 +1,7 @@
 import { Note } from '@/server/db'
-import type { INote } from '@/server/db'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<INote>(event)
+  const body = await readBody<Note>(event)
 
   console.log()
 

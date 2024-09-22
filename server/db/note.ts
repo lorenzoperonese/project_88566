@@ -1,5 +1,5 @@
-import { Schema, Types, model } from 'mongoose'
-import type { Document } from 'mongoose'
+import { Schema, model } from 'mongoose'
+import type { Types, Document } from 'mongoose'
 
 export interface INote extends Document {
   title: string
