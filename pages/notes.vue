@@ -1,17 +1,25 @@
 <script setup lang="ts">
 const _notes = ref<Note[]>([])
 
-function add() {
+function add(n: Note) {
   try {
-    useFetch('/api/notes', {
+    $fetch('/api/notes', {
       method: 'POST',
-      body: {
-        title: 'Prova nota',
-        body: 'Questo sarebbe il body della nota'
-      }
+      body: JSON.stringify(n)
     })
   } catch (err) {
     console.error(err)
+  }
+
+  fetchNotes()
+}
+
+async function fetchNotes() {
+  const res = await $fetch('/api/notes')
+  if (res) {
+    _notes.value = res
+  } else {
+    console.error("Can't fetch notes")
   }
 }
 
@@ -26,11 +34,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    Hola
-    <button class="rounded border p-2 hover:bg-gray-300" @click="add()">
-      Add Note
-    </button>
+  <div class="p-5">
+    <NotesAdder @save="add" />
     <NotesList :notes="_notes" />
   </div>
 </template>
