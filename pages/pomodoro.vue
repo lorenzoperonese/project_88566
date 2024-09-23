@@ -1,7 +1,16 @@
 <script setup lang="ts">
+
   const mode = ref(true) // true per 'Studio + Pausa', false per 'Totale'
-  const tot = ref(40)
+  const started = ref(false)
+  const tot = ref(35)
+  const studio = ref(30)
+  const pausa = ref(5)
   const proposte = ref<Combinazione[]>([])
+  let timer : any
+
+  const seconds = ref(0)
+  const minutes = ref(studio.value % 60)
+  const hours = ref(Math.floor(studio.value / 60))
 
   interface Combinazione {
     difficolta: string;
@@ -46,7 +55,33 @@
   }
 
   const start = () => {
-    console.log('Start');
+    started.value = true;
+    hours.value = Math.floor(studio.value / 60);
+    minutes.value = studio.value % 60;
+    seconds.value = 0;
+    timer = setInterval(() => {
+      if (seconds.value > 0) {
+        seconds.value--;
+      } else if (minutes.value > 0) {
+        minutes.value--;
+        seconds.value = 59;
+      } else if (hours.value > 0) {
+        hours.value--;
+        minutes.value = 59;
+        seconds.value = 59;
+      } else {
+        started.value = false;
+        console.log("finito");
+      }
+    }, 1000);
+  }
+
+  const stop = () => {
+    clearInterval(timer);
+    started.value = false
+    hours.value = Math.floor(studio.value / 60);
+    minutes.value = studio.value % 60;
+    seconds.value = 0;
   }
 
 </script>
@@ -54,12 +89,13 @@
 <template>
   <div>
     <h1>Pomodoro</h1>
+    <span>{{hours}}:{{minutes < 10 ? '0' : ''}}{{minutes}}:{{seconds < 10 ? '0' : ''}}{{seconds}}</span>
     <form v-if="mode">
-      <input class="text-center py-4 text-xl " type="number" placeholder="35" />
-      <input class="text-center py-4 text-xl" type="number" placeholder="5" />
+      <input v-model="studio" class="border text-center py-4 text-xl " type="number" placeholder="30" />
+      <input v-model="pausa" class="border text-center py-4 text-xl" type="number" placeholder="5" />
     </form>
     <form v-else>
-      <input v-model="tot" class="text-center py-4 text-xl" type="number" placeholder="40" />
+      <input v-model="tot" class="border text-center py-4 text-xl" type="number" placeholder="35" />
     </form>
     <button v-if="mode" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 w-36 rounded" @click="toggleMode">
       Totale
@@ -71,7 +107,6 @@
       v-if="!mode" class="ml-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 w-36 rounded" @click="calcolaCombinazioni">
       Proponi
     </button>
-  </div>
   <ul v-if="proposte.length">
     <li v-for="combinazione in proposte" :key="`${combinazione.cicli}-${combinazione.studio}-${combinazione.pausa}`">
       <button class="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-20 rounded" @click="start">
@@ -79,7 +114,11 @@
       </button>
     </li>
   </ul>
-  <button v-if="mode" class="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 w-80 rounded" @click="start">
+  <button v-if="!started" class="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 w-80 rounded" @click="start">
     Start
   </button>
+  <button v-else class="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 w-80 rounded" @click="stop">
+    Stop
+  </button>
+  </div>
 </template>
