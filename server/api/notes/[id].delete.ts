@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
     }
 
     await Note.findOneAndDelete({
-      _id: id
+      _id: id,
+      user_id: event.context.auth.id
     })
 
     return { mgs: 'Deleted note' }
