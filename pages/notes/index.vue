@@ -33,6 +33,16 @@ async function deleteNote(id: string) {
   fetchNotes()
 }
 
+function duplicate(id: string) {
+  const n = _notes.value.find((x) => x.id == id)
+
+  if (n) {
+    add(n)
+  } else {
+    console.error("Can't find not for duplication")
+  }
+}
+
 onMounted(async () => {
   const res = await useFetch('/api/notes')
   if (res.status.value == 'success' && res.data.value) {
@@ -46,6 +56,6 @@ onMounted(async () => {
 <template>
   <div class="p-5">
     <NotesAdder @save="add" />
-    <NotesList :notes="_notes" @delete="deleteNote" />
+    <NotesList :notes="_notes" @delete="deleteNote" @duplicate="duplicate" />
   </div>
 </template>

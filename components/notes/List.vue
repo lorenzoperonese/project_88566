@@ -4,7 +4,7 @@ const $props = defineProps({
 })
 
 const $emits = defineEmits<{
-  (e: 'delete', id: string): void
+  (e: 'delete' | 'duplicate', id: string): void
 }>()
 </script>
 
@@ -12,7 +12,11 @@ const $emits = defineEmits<{
   <div>
     <div v-if="$props.notes.length > 0">
       <template v-for="note in $props.notes" :key="note.id">
-        <NotesNote :note="note" @delete="$emits('delete', note.id)" />
+        <NotesNote
+          :note="note"
+          @delete="$emits('delete', note.id)"
+          @duplicate="$emits('duplicate', note.id)"
+        />
       </template>
     </div>
     <div v-else>No notes yet...</div>

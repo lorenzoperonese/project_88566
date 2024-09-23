@@ -4,7 +4,7 @@ const $props = defineProps({
 })
 
 const $emits = defineEmits<{
-  (e: 'delete'): void
+  (e: 'delete' | 'duplicate'): void
 }>()
 </script>
 
@@ -26,6 +26,12 @@ const $emits = defineEmits<{
       >
         Modify
       </NuxtLink>
+      <button
+        class="rounded-lg border bg-green-200 p-2 hover:bg-green-400"
+        @click="$emits('duplicate')"
+      >
+        Duplicate
+      </button>
       <button
         class="rounded-lg border bg-red-200 p-2 hover:bg-red-400"
         @click="$emits('delete')"
