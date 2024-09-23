@@ -8,9 +8,9 @@ const $props = defineProps({
   <div>
     <div v-if="$props.notes.length > 0">
       <template v-for="note in $props.notes" :key="note.id">
-        <RouterLink :to="`/notes/${note.id}`">
+        <NuxtLink :to="`/notes/${note.id}`">
           <NotesNote :note="note" />
-        </RouterLink>
+        </NuxtLink>
       </template>
     </div>
     <div v-else>No notes yet...</div>

@@ -4,15 +4,15 @@
   <div>
     <h1 class="p-5 text-xl font-bold">Home page</h1>
     <div class="flex gap-2 p-5">
-      <RouterLink
+      <NuxtLink
         to="/profile"
         class="button rounded-lg border p-2 hover:bg-gray-200"
         >Profile
-      </RouterLink>
-      <RouterLink
+      </NuxtLink>
+      <NuxtLink
         class="button rounded-lg border p-2 hover:bg-gray-200"
         to="/notes"
-        >Notes</RouterLink
+        >Notes</NuxtLink
       >
     </div>
   </div>
