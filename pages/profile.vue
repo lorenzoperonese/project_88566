@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { signOut } = useAuth()
+const { signOut, data } = useAuth()
 
 function logout() {
   try {
@@ -11,8 +11,11 @@ function logout() {
 </script>
 
 <template>
-  <div>
-    <h1>PROFILE</h1>
-    <button @click="logout()">LOG OUT</button>
+  <div class="p-2">
+    <h1 class="font-bold text-2xl">PROFILE</h1>
+    <div v-if="data">
+      Logged in as {{ (data as any).s.username }}
+    </div>
+    <button class="p-2 rounded border hover:bg-red-300" @click="logout()">LOG OUT</button>
   </div>
 </template>
