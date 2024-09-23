@@ -2,7 +2,6 @@
 const _route = useRoute()
 const _id = _route.params.id
 const _note = await $fetch(`/api/notes/${_id}`)
-
 </script>
 
 <template>

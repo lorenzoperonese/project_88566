@@ -16,7 +16,7 @@ export default withNuxt(
       // the end
       //"@typescript-eslint/ban-ts-comment": "off"
 
-      "vue/html-self-closing": "off"
+      'vue/html-self-closing': 'off'
     }
   }
 )

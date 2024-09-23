@@ -1,4 +1,3 @@
-
 export { Note }
 
 declare global {
