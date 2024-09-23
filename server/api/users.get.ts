@@ -3,7 +3,6 @@ import { User } from '@/server/db'
 export default defineEventHandler(async (_): Promise<User[]> => {
   try {
     const users_data = await User.find()
-    console.log(users_data)
     return users_data.map((u) => ({
       id: u._id,
       username: u.username,

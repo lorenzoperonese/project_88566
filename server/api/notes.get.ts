@@ -6,7 +6,7 @@ export default defineEventHandler(async (event): Promise<Note[]> => {
     const notes = await Note.find({
       user_id: event.context.auth.id
     })
-    console.log(notes)
+
     return notes.map((n) => ({
       id: (n._id as Types.ObjectId).toString() as string,
       title: n.title,

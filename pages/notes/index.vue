@@ -23,6 +23,16 @@ async function fetchNotes() {
   }
 }
 
+async function deleteNote(id: string) {
+  try {
+    await $fetch(`/api/notes/${id}`, { method: 'delete' })
+  } catch (err) {
+    console.log(err)
+  }
+
+  fetchNotes()
+}
+
 onMounted(async () => {
   const res = await useFetch('/api/notes')
   if (res.status.value == 'success' && res.data.value) {
@@ -36,6 +46,6 @@ onMounted(async () => {
 <template>
   <div class="p-5">
     <NotesAdder @save="add" />
-    <NotesList :notes="_notes" />
+    <NotesList :notes="_notes" @delete="deleteNote" />
   </div>
 </template>

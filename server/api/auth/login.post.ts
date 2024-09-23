@@ -27,7 +27,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    console.log('Searching user:', username)
     const userData = await User.findOne({
       username: username.toLowerCase()
     })
@@ -43,7 +42,6 @@ export default defineEventHandler(async (event) => {
       return err_not_found
     }
 
-    console.log('User found')
     const is_password_valid = await userData.verifyPassword(password)
     if (!is_password_valid) {
       console.log('Password is not valid')
@@ -56,7 +54,6 @@ export default defineEventHandler(async (event) => {
       userData._id as string,
       userData.username
     )
-    console.log(token)
 
     console.log(username, 'logged in')
     return {

@@ -3,8 +3,6 @@ import { Note } from '@/server/db'
 export default defineEventHandler(async (event) => {
   const body = await readBody<Note>(event)
 
-  console.log()
-
   if (!body.title) {
     setResponseStatus(event, 400)
     return {
