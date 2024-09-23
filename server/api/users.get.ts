@@ -1,6 +1,6 @@
 import { User } from '@/server/db'
 
-export default defineEventHandler(async (_) => {
+export default defineEventHandler(async (_): Promise<User[]> => {
   try {
     const users_data = await User.find()
     console.log(users_data)
@@ -8,8 +8,9 @@ export default defineEventHandler(async (_) => {
       id: u._id,
       username: u.username,
       name: u.name
-    }))
+    })) as User[]
   } catch (err) {
     console.error(err)
+    return []
   }
 })

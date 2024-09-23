@@ -7,4 +7,10 @@ declare global {
     title: string
     body: string
   }
+
+  interface User {
+    id: string
+    username: string
+    name: string
+  }
 }
