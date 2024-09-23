@@ -10,7 +10,8 @@ export default defineEventHandler(async (event): Promise<Note | null> => {
     }
 
     const n = await Note.findOne({
-      _id: id
+      _id: id,
+      user_id: event.context.auth.id
     })
 
     if (!n) {
