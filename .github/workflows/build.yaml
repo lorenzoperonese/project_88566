@@ -18,7 +18,7 @@ jobs:
         run: npm i npm-run-all --save-dev
 
       - name: Install just
-        run: apt install just
+        run: sudo apt install just
 
       - name: Build application
         run: just
