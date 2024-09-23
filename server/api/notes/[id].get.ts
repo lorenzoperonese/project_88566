@@ -1,7 +1,7 @@
 import type { Types } from 'mongoose'
-import Note from '~/components/notes/Note.vue'
+import { Note } from '@/server/db'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<Note | null> => {
   const id = getRouterParam(event, 'id')
 
   try {
@@ -17,12 +17,13 @@ export default defineEventHandler(async (event) => {
       throw Error('Note not found. ID: ' + id)
     }
 
-    return new Note({
+    return {
       id: (n._id as Types.ObjectId).toString() as string,
       title: n.title,
       body: n.body
-    })
+    } as Note
   } catch (err) {
     console.error(err)
+    return null
   }
 })

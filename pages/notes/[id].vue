@@ -1,16 +1,8 @@
 <script setup lang="ts">
 const _route = useRoute()
 const _id = _route.params.id
-const _note = ref<Note | null>(null)
+const _note = await $fetch(`/api/notes/${_id}`)
 
-onMounted(async () => {
-  const res = await useFetch(`/api/notes/${_id}`)
-  if (res.status.value == 'success' && res.data.value) {
-    _note.value = res.data.value
-  } else {
-    console.error(res.error.value)
-  }
-})
 </script>
 
 <template>
