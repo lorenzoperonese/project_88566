@@ -12,4 +12,9 @@ declare global {
     username: string
     name: string
   }
+
+  interface NoteCategory {
+    id: string
+    name: string
+  }
 }
