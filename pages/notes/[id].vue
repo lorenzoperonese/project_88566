@@ -7,12 +7,12 @@ const _note = await $fetch(`/api/notes/${_id}`)
 <template>
   <div class="p-2">
     <div v-if="_note">
-      <h1 class="text-2xl font-bold">
+      <h1 class="text-4xl font-extrabold">
         {{ _note.title }}
       </h1>
-      <p>
-        {{ _note.body }}
-      </p>
+      <div class="prose">
+        <MDC :value="_note.body" />
+      </div>
     </div>
     <div v-else>Something went wrong :(</div>
   </div>

@@ -13,8 +13,10 @@ const $emits = defineEmits<{
     <div class="w-full">
       <NuxtLink :to="`/notes/${$props.note.id}`">
         <!-- div>ID: {{ $props.note.id }}</div -->
-        <div class="text-lg font-bold">{{ $props.note.title }}</div>
-        <div>{{ $props.note.body }}</div>
+        <div class="text-2xl font-extrabold">{{ $props.note.title }}</div>
+        <div class="prose prose-sm">
+          <MDC :value="$props.note.body" />
+        </div>
       </NuxtLink>
     </div>
     <div class="flex flex-col gap-2">
