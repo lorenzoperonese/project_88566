@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         signIn: { path: '/login', method: 'post' },
         signOut: { path: '/logout', method: 'post' },
         signUp: false,
-        getSession: { path: '/session', method: 'get' },
+        getSession: { path: '/session', method: 'get' }
       },
       session: {
         dataType: {
@@ -45,7 +45,7 @@ export default defineNuxtConfig({
   postcss: {
     plugins: {
       tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
+      autoprefixer: {}
+    }
+  }
 })

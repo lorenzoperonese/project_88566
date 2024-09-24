@@ -7,4 +7,3 @@
   "trailingComma": "none",
   "plugins": ["prettier-plugin-tailwindcss"]
 }
-

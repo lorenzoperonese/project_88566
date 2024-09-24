@@ -1,11 +1,8 @@
 import { getAuthSession } from '@/server/utils/session'
 
 export default defineEventHandler(async (event) => {
-  console.log(event.node.req.url)
-
   if (event.node.req.url && needAuth(event.node.req.url)) {
     const token = getCookie(event, 'auth:token')
-    console.log('TOKEN:', token)
 
     if (!token) {
       setResponseStatus(event, 401)

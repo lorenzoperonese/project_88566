@@ -1,0 +1,24 @@
+name: Build
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+
+      - name: Install run-all
+        run: npm i npm-run-all --save-dev
+
+      - name: Install just
+        run: sudo apt install just
+
+      - name: Build application
+        run: just
