@@ -1,18 +1,16 @@
-import { Note } from '@/server/db'
+import { NoteCategory } from '@/server/db'
 import type { Types } from 'mongoose'
 
-export default defineEventHandler(async (event): Promise<Note[]> => {
+export default defineEventHandler(async (event): Promise<NoteCategory[]> => {
   try {
-    const notes = await Note.find({
+    const notes = await NoteCategory.find({
       user_id: event.context.auth.id
     })
 
     return notes.map((n) => ({
       id: (n._id as Types.ObjectId).toString() as string,
-      title: n.title,
-      body: n.body,
-      category_id: n.category_id
-    })) as Note[]
+      name: n.name
+    })) as NoteCategory[]
   } catch (err) {
     console.error(err)
     return []
