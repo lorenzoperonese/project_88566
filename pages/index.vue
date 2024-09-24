@@ -14,6 +14,11 @@
         to="/notes"
         >Notes</NuxtLink
       >
+      <RouterLink
+        class="button rounded-lg border p-2 hover:bg-gray-200"
+        to="/pomodoro"
+        >Pomodoro</RouterLink
+      >
     </div>
   </div>
 </template>
