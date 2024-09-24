@@ -10,7 +10,8 @@ export default defineEventHandler(async (event): Promise<Note[]> => {
     return notes.map((n) => ({
       id: (n._id as Types.ObjectId).toString() as string,
       title: n.title,
-      body: n.body
+      body: n.body,
+      category_id: n.category_id
     })) as Note[]
   } catch (err) {
     console.error(err)

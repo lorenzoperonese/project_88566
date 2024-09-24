@@ -19,6 +19,8 @@ const _filteredNotes = computed<Note[]>(() => {
   }
 })
 
+provide('notesCategories', _notesCategories)
+
 function addNote(n: Note) {
   try {
     $fetch('/api/notes', {
@@ -164,6 +166,12 @@ onMounted(async () => {
                 type="text"
                 class="border-b outline-none"
                 placeholder="New category"
+                @keyup.enter="
+                  addCategory({
+                    id: '0',
+                    name: _newCategory
+                  })
+                "
               />
               <button
                 class="text-xl text-gray-400 hover:text-black"
@@ -181,7 +189,7 @@ onMounted(async () => {
         </div>
       </Transition>
       <div class="w-full p-5">
-        <NotesAdder @save="addNote" />
+        <NotesAdder :categories="_notesCategories" @save="addNote" />
         <NotesList
           :notes="_search ? _filteredNotes : _notes"
           class="h-svh overflow-y-auto"

@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   if (!body.body) {
     setResponseStatus(event, 400)
     return {
-      code: 'Body_REQUIRED',
+      code: 'BODY_REQUIRED',
       err: 'Body malformed: body is required.'
     }
   }
@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
     const note = new Note({
       title: body.title,
       body: body.body,
+      category_id: body.category_id,
       user_id: event.context.auth.id
     })
 

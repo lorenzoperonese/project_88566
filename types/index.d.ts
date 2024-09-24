@@ -5,6 +5,7 @@ declare global {
     id: string
     title: string
     body: string
+    category_id?: string
   }
 
   interface User {

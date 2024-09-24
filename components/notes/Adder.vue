@@ -3,6 +3,20 @@ const $emits = defineEmits<{
   (e: 'save', note: Note): void
 }>()
 
+const $props = defineProps({
+  categories: { type: Array as PropType<NoteCategory[]>, required: true }
+})
+
+const _selected = ref('')
+
+const _categoryName = computed(() => {
+  if (_selected.value == '') {
+    return 'Not categorized'
+  } else {
+    return $props.categories.find((e) => e.id == _selected.value)?.name
+  }
+})
+
 const _adding = ref(false)
 const _noteTitle = ref('')
 const _noteBody = ref('')
@@ -26,7 +40,8 @@ function save() {
   const n: Note = {
     id: '0',
     title: _noteTitle.value,
-    body: _noteBody.value
+    body: _noteBody.value,
+    category_id: _selected.value == '' ? undefined : _selected.value
   }
 
   $emits('save', n)
@@ -62,10 +77,49 @@ function save() {
         v-if="_adding"
         class="flex justify-between rounded-b-lg bg-white p-1"
       >
-        <button class="rounded-lg p-2 hover:bg-gray-100" @click="del()">
+        <button
+          class="rounded-lg bg-red-200 p-2 hover:bg-red-400"
+          @click="del()"
+        >
           Delete
         </button>
-        <button class="rounded-lg p-2 hover:bg-gray-100" @click="save()">
+        <div
+          class="group w-72 bg-white hover:rounded-t-lg hover:border-x hover:border-t"
+        >
+          <div
+            class="flex h-full w-full items-center p-1 align-middle group-hover:border-b"
+          >
+            <span
+              class="block"
+              :class="{ 'text-gray-600': _selected.length == 0 }"
+            >
+              {{ _categoryName }}
+            </span>
+          </div>
+          <ul
+            class="bg-whiteborder-x collapse absolute w-72 rounded-b-lg border-b bg-white group-hover:visible"
+          >
+            <li
+              class="p-2 text-gray-600 hover:bg-gray-100"
+              @click="_selected = ''"
+            >
+              Not categorized
+            </li>
+            <li
+              v-for="c in $props.categories"
+              :key="c.id"
+              class="p-2 hover:bg-gray-100"
+              :class="{ 'bg-gray-100': _selected == c.id }"
+              @click="_selected = c.id"
+            >
+              {{ c.name }}
+            </li>
+          </ul>
+        </div>
+        <button
+          class="rounded-lg bg-blue-200 p-2 hover:bg-blue-400"
+          @click="save()"
+        >
           Save
         </button>
       </div>

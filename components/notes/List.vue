@@ -19,6 +19,8 @@ const $emits = defineEmits<{
         />
       </template>
     </div>
-    <div v-else>No notes yet...</div>
+    <div v-else class="grid h-40">
+      <div class="place-self-center">No notes yet...</div>
+    </div>
   </div>
 </template>

@@ -3,6 +3,20 @@ const $props = defineProps({
   note: { type: Object as PropType<Note>, required: true }
 })
 
+const categories = inject('notesCategories') as Ref<NoteCategory[]>
+
+const _categoryName = computed(() => {
+  if (categories) {
+    if ($props.note.category_id) {
+      return categories.value.find((e) => e.id == $props.note.category_id)?.name
+    } else {
+      return 'Not categorized'
+    }
+  }
+
+  return 'Error'
+})
+
 const $emits = defineEmits<{
   (e: 'delete' | 'duplicate'): void
 }>()
@@ -13,7 +27,12 @@ const $emits = defineEmits<{
     <div class="w-full">
       <NuxtLink :to="`/notes/${$props.note.id}`">
         <!-- div>ID: {{ $props.note.id }}</div -->
-        <div class="text-2xl font-extrabold">{{ $props.note.title }}</div>
+        <div class="flex justify-between">
+          <div class="text-2xl font-extrabold">{{ $props.note.title }}</div>
+          <div class="h-full text-gray-600">
+            {{ _categoryName }}
+          </div>
+        </div>
         <div class="prose prose-sm">
           <MDC :value="$props.note.body" />
         </div>
