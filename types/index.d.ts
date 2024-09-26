@@ -1,4 +1,5 @@
 export { Note }
+export { Timer }
 
 declare global {
   interface Note {
@@ -17,5 +18,11 @@ declare global {
   interface NoteCategory {
     id: string
     name: string
+  }
+
+  interface Timer {
+    study: number
+    break: number
+    cycles: number
   }
 }

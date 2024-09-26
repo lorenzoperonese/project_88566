@@ -1,31 +1,45 @@
 <script setup lang="ts">
-const _study = ref(30)
-const _break = ref(5)
-const _cycles = ref(5)
+const $props = defineProps({
+  timer: { type: Object as PropType<Timer>, required: true }
+})
+const _study = ref($props.timer.study)
+const _break = ref($props.timer.break)
+const _cycles = ref($props.timer.cycles)
 const _counting = ref(false)
 const _paused = ref(false)
 const _cycleCounter = ref(1)
+const _errorMessage = ref('')
+
+const _propose = ref(false)
 
 const _seconds = ref(0)
 const _minutes = ref(0)
 const _hours = ref(0)
-let _timer: any
+let _timer: NodeJS.Timeout | null = null
 
-let isStuding = true
+const isStudying = ref(true)
+
+const emit = defineEmits(['start', 'stop'])
+
+const timeDisplay = computed(() => {
+  const pad = (num: number) => num.toString().padStart(2, '0')
+  return `${pad(_hours.value)}:${pad(_minutes.value)}:${pad(_seconds.value)}`
+})
 
 function calculateTime() {
-  if (isStuding) {
-    //_hours.value = Math.floor(_study.value / 60);
-    //_minutes.value = _study.value % 60;
-  } else {
-    // During break
-    //_hours.value = Math.floor(_break.value / 60);
-    //_minutes.value = _break.value % 60;
-  }
-  _seconds.value = 5
+  const totalMinutes = isStudying.value ? _study.value : _break.value
+  _hours.value = Math.floor(totalMinutes / 60)
+  _minutes.value = totalMinutes % 60
+  _seconds.value = 0
 }
 
 function start() {
+  if (_study.value < 1 || _break.value < 1 || _cycles.value < 1) {
+    _errorMessage.value = 'Tutti i campi devono essere interi maggiori di 0'
+    return
+  }
+  _errorMessage.value = ''
+  emit('start')
   _counting.value = true
 
   if (!_paused.value) calculateTime()
@@ -42,143 +56,138 @@ function start() {
       _minutes.value = 59
       _seconds.value = 59
     } else {
-      if (!isStuding) {
+      if (!isStudying.value) {
         if (_cycles.value > _cycleCounter.value) {
-          calculateTime()
           _cycleCounter.value++
+          isStudying.value = true
+          calculateTime()
+        } else {
+          stop()
         }
       } else {
-        if (_cycles.value === _cycleCounter.value) {
-          stop()
-        } else {
-          calculateTime()
-        }
+        emit('stop')
+        isStudying.value = false
+        calculateTime()
       }
-      isStuding = !isStuding
     }
   }, 1000)
 }
 function stop() {
-  _study.value = 30
-  _break.value = 5
-  _cycles.value = 5
+  emit('stop')
+  _study.value = $props.timer.study
+  _break.value = $props.timer.break
+  _cycles.value = $props.timer.cycles
   _cycleCounter.value = 1
   _counting.value = false
   _paused.value = false
-  isStuding = true
-  clearInterval(_timer)
+  isStudying.value = true
+  if (_timer) clearInterval(_timer)
 }
 function pause() {
   _paused.value = true
-  clearInterval(_timer)
+  if (_timer) clearInterval(_timer)
 }
 function restart() {
   _paused.value = false
-  clearInterval(_timer)
+  if (_timer) clearInterval(_timer)
   calculateTime()
   start()
 }
 function skip() {
   _paused.value = false
-  clearInterval(_timer)
-  if (isStuding && _cycles.value === _cycleCounter.value) stop()
+  if (_timer) clearInterval(_timer)
+  if (isStudying.value && _cycles.value === _cycleCounter.value) stop()
   else {
-    if (!isStuding) _cycleCounter.value++
-    isStuding = !isStuding
+    if (!isStudying.value) _cycleCounter.value++
+    isStudying.value = !isStudying.value
     start()
   }
 }
 </script>
 
 <template>
-  <div class="grid h-full">
-    <div class="place-self-center">
-      <form v-if="!_counting" @click.prevent="">
-        <div class="flex">
-          <div class="flex flex-col">
-            <label class="w-full text-center font-bold">Studio</label>
-            <input
-              v-model="_study"
-              type="number"
-              class="border py-4 text-center text-xl outline-none"
-              min="0"
-            />
-          </div>
-          <div class="flex flex-col">
-            <label class="w-full text-center font-bold">Pausa</label>
-            <input
-              v-model="_break"
-              type="number"
-              class="border py-4 text-center text-xl outline-none"
-              min="0"
-            />
-          </div>
-          <div class="flex flex-col">
-            <label class="w-full text-center font-bold">Cicli</label>
-            <input
-              v-model="_cycles"
-              type="number"
-              class="border py-4 text-center text-xl outline-none"
-              min="0"
-            />
-          </div>
+  <div class="grid h-full place-items-center">
+    <div v-if="!_counting" class="text-center">
+      <h2 class="mb-4 text-2xl font-bold">Imposta il tuo Pomodoro</h2>
+      <div class="mb-4 flex space-x-4">
+        <div class="flex flex-col">
+          <label class="mb-1 font-bold">Studio (min)</label>
+          <input
+            v-model.number="_study"
+            :min="1"
+            required
+            type="number"
+            class="border py-4 text-center text-xl outline-none"
+          />
         </div>
-        <div class="flex justify-center">
-          <button
-            class="mt-2 w-80 rounded bg-green-500 py-2 font-bold text-white hover:bg-green-700"
-            @click="start()"
-          >
-            Start
-          </button>
+        <div class="flex flex-col">
+          <label class="mb-1 font-bold">Pausa (min)</label>
+          <input
+            v-model.number="_break"
+            :min="1"
+            required
+            type="number"
+            class="border py-4 text-center text-xl outline-none"
+          />
         </div>
-      </form>
+        <div class="flex flex-col">
+          <label class="mb-1 font-bold">Cicli</label>
+          <input
+            v-model.number="_cycles"
+            :min="1"
+            required
+            type="number"
+            class="border py-4 text-center text-xl outline-none"
+          />
+        </div>
+      </div>
+      <button
+        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+        @click="start"
+      >
+        Inizia
+      </button>
+      <p class="mt-2 text-red-500">{{ _errorMessage }}</p>
+    </div>
 
-      <div v-else>
-        <div>
-          <div class="text-center text-xl">
-            {{ _hours }}:{{ _minutes < 10 ? '0' : '' }}{{ _minutes }}:{{
-              _seconds < 10 ? '0' : ''
-            }}{{ _seconds }}
-          </div>
-          <div>
-            Cycles: {{ _cycleCounter }}: {{ isStuding ? 'Studio' : 'Pausa' }}
-          </div>
-          <button
-            class="mt-2 w-80 rounded bg-red-500 py-2 font-bold text-white hover:bg-red-700"
-            @click="stop()"
-          >
-            Stop
-          </button>
-
-          <button
-            v-if="!_paused"
-            class="mt-2 w-80 rounded bg-yellow-500 py-2 font-bold text-white hover:bg-yellow-700"
-            @click="pause()"
-          >
-            Pause
-          </button>
-          <button
-            v-else
-            class="mt-2 w-80 rounded bg-blue-500 py-2 font-bold text-white hover:bg-blue-700"
-            @click="start()"
-          >
-            Resume
-          </button>
-        </div>
-        <div>
-          <button
-            class="mt-2 w-80 rounded bg-green-500 py-2 font-bold text-white hover:bg-green-700"
-            @click="restart()"
-          >
-            Restart cycle
-          </button>
-          <button
-            class="mt-2 w-80 rounded bg-violet-500 py-2 font-bold text-white hover:bg-violet-700"
-            @click="skip()"
-          >
-            End cycle
-          </button>
-        </div>
+    <div v-else class="text-center">
+      <h2 class="mb-4 text-4xl font-bold">{{ timeDisplay }}</h2>
+      <p class="mb-4 text-xl">
+        Ciclo {{ _cycleCounter }} - {{ isStudying ? 'Studio' : 'Pausa' }}
+      </p>
+      <div class="space-y-2">
+        <button
+          v-if="!_paused"
+          class="w-full rounded bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+          @click="pause"
+        >
+          Pausa
+        </button>
+        <button
+          v-else
+          class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          @click="start"
+        >
+          Riprendi
+        </button>
+        <button
+          class="w-full rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
+          @click="skip"
+        >
+          Salta
+        </button>
+        <button
+          class="w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          @click="stop"
+        >
+          Ferma
+        </button>
+        <button
+          class="w-full rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          @click="restart"
+        >
+          Ricomincia
+        </button>
       </div>
     </div>
   </div>
