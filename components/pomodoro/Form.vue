@@ -155,35 +155,35 @@ function skip() {
       <p class="mb-4 text-xl">
         Ciclo {{ _cycleCounter }} - {{ isStudying ? 'Studio' : 'Pausa' }}
       </p>
-      <div class="space-y-2">
+      <div class="flex flex-col gap-2">
         <button
           v-if="!_paused"
-          class="w-full rounded bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+          class="w-full rounded bg-yellow-500 px-40 py-2 text-white hover:bg-yellow-600"
           @click="pause"
         >
           Pausa
         </button>
         <button
           v-else
-          class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          class="w-full rounded bg-blue-500 px-40 py-2 text-white hover:bg-blue-600"
           @click="start"
         >
           Riprendi
         </button>
         <button
-          class="w-full rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
+          class="w-full rounded bg-purple-500 px-40 py-2 text-white hover:bg-purple-600"
           @click="skip"
         >
           Salta
         </button>
         <button
-          class="w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          class="w-full rounded bg-red-500 px-40 py-2 text-white hover:bg-red-600"
           @click="stop"
         >
           Ferma
         </button>
         <button
-          class="w-full rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          class="w-full rounded bg-green-500 px-40 py-2 text-white hover:bg-green-600"
           @click="restart"
         >
           Ricomincia
