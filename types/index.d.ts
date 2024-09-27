@@ -1,7 +1,4 @@
-export { Note }
-export { Timer }
-
-declare global {
+export declare global {
   interface Note {
     id: string
     title: string
