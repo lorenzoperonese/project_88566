@@ -113,31 +113,31 @@ function skip() {
         <div class="flex flex-col">
           <label class="mb-1 font-bold">Studio (min)</label>
           <input
-            v-model.number="_study"
-            :min="1"
+            v-model="_study"
+            min="1"
             required
             type="number"
-            class="border py-4 text-center text-xl outline-none"
+            class="border py-4 text-center text-xl outline-none invalid:border-red-500 invalid:text-red-600"
           />
         </div>
         <div class="flex flex-col">
           <label class="mb-1 font-bold">Pausa (min)</label>
           <input
-            v-model.number="_break"
-            :min="1"
+            v-model="_break"
+            min="1"
             required
             type="number"
-            class="border py-4 text-center text-xl outline-none"
+            class="border py-4 text-center text-xl outline-none invalid:border-red-500 invalid:text-red-600"
           />
         </div>
         <div class="flex flex-col">
           <label class="mb-1 font-bold">Cicli</label>
           <input
-            v-model.number="_cycles"
-            :min="1"
+            v-model="_cycles"
+            min="1"
             required
             type="number"
-            class="border py-4 text-center text-xl outline-none"
+            class="border py-4 text-center text-xl outline-none invalid:border-red-500 invalid:text-red-600"
           />
         </div>
       </div>
