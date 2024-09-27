@@ -1,7 +1,7 @@
 import { Event } from '@/server/db'
 import type { Types } from 'mongoose'
 
-export default defineEventHandler(async (event): Promise<Event[]> => {
+export default defineEventHandler(async (event): Promise<EventType[]> => {
   try {
     const events = await Event.find({
       user_id: event.context.auth.id
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event): Promise<Event[]> => {
       note: n.note,
       category: n.category,
       repetition: n.repetition as Repetition
-    })) as Event[]
+    })) as EventType[]
   } catch (err) {
     console.error(err)
     return []

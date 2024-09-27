@@ -4,21 +4,26 @@
   <div>
     <h1 class="p-5 text-xl font-bold">Home page</h1>
     <div class="flex gap-2 p-5">
-      <NuxtLink
-        to="/profile"
+      <RouterLink
         class="button rounded-lg border p-2 hover:bg-gray-200"
-        >Profile
-      </NuxtLink>
+        to="/calendar"
+        >Calendario</RouterLink
+      >
       <NuxtLink
         class="button rounded-lg border p-2 hover:bg-gray-200"
         to="/notes"
         >Notes</NuxtLink
       >
-      <RouterLink
+      <NuxtLink
         class="button rounded-lg border p-2 hover:bg-gray-200"
         to="/pomodoro"
-        >Pomodoro</RouterLink
+        >Pomodoro</NuxtLink
       >
+      <NuxtLink
+        to="/profile"
+        class="button rounded-lg border p-2 hover:bg-gray-200"
+        >Profile
+      </NuxtLink>
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 import { Event } from '@/server/db'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<Event>(event)
+  const body = await readBody<EventType>(event)
 
   if (!body) {
     setResponseStatus(event, 400)
@@ -36,7 +36,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    console.log('here')
     const e = new Event({
       title: body.title,
       start: body.start,

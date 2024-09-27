@@ -25,9 +25,9 @@ export declare global {
 
   enum EventPeriod {
     Day = 1,
-    Week,
-    Month,
-    Year
+    Week = 2,
+    Month = 3,
+    Year = 4
   }
 
   interface Repetition {
@@ -37,7 +37,7 @@ export declare global {
     end?: Date | number
   }
 
-  interface Event {
+  interface EventType {
     id: string
     title: string
     start: Date
