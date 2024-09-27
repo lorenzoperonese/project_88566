@@ -9,7 +9,27 @@ const $props = defineProps({
 })
 
 const day = new Date($props.day).getDate()
-const weekNumber = Math.floor((day - new Date($props.day).getDay() + 1) / 7) + 1
+
+const weekNumber = (d: string) => {
+  const date = new Date(d)
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+  const firstMonday = new Date(firstDayOfMonth)
+  while (firstMonday.getDay() !== 1)
+    firstMonday.setDate(firstMonday.getDate() + 1)
+  if (date < firstMonday) return 1
+  const daysDifference = Math.floor(
+    (date.valueOf() - firstMonday.valueOf()) / (24 * 60 * 60 * 1000)
+  )
+  const value = Math.floor(daysDifference / 7) + 2
+  return value === 1
+    ? value.toString() + 'st'
+    : value === 2
+      ? value.toString() + 'nd'
+      : value === 3
+        ? value.toString() + 'rd'
+        : value.toString() + 'th'
+}
+
 const weekDay = [
   'Monday',
   'Tuesday',
@@ -19,7 +39,6 @@ const weekDay = [
   'Saturaday',
   'Sunday'
 ][(new Date($props.day).getDay() + 6) % 7] // TODO CAMBIARE
-console.log(weekDay)
 
 const _repetition = ref(1)
 const _eventPeriod = ref<EventPeriod>(1)
@@ -29,16 +48,38 @@ const _ends = ref('Never')
 const _endDate = ref($props.day)
 const _endAfter = ref(1)
 
+const _errorMessage = ref('')
+
+function reset() {
+  _repetition.value = 1
+  _eventPeriod.value = 1
+  _weekDays.value = []
+  _monthRepetition.value = 0
+  _ends.value = 'Never'
+  _endDate.value = $props.day
+  _endAfter.value = 1
+  _errorMessage.value = ''
+}
+
 function save() {
   const r = {
     every: _repetition.value,
     period: _eventPeriod.value
   } as Repetition
 
+  if (r.every < 1 || r.every == undefined) {
+    _errorMessage.value = 'Value must be greater than 0'
+    return
+  }
   if (_eventPeriod.value == 2) {
-    r.repeteOn = _eventPeriod.value
+    r.repeatOn = _weekDays.value
+    if (r.repeatOn.length == 0) {
+      _errorMessage.value = 'Select at least one day'
+      return
+    } else _errorMessage.value = ''
   } else if (_eventPeriod.value == 3) {
-    r.repeteOn = _monthRepetition.value
+    _errorMessage.value = ''
+    r.repeatOn = _monthRepetition.value
   }
 
   /*if (_ends.value == 'Never') {
@@ -48,11 +89,11 @@ function save() {
   } else if (_ends.value == 'After') {
     r.end = _endAfter.value
   }
-
   $emits('save', r)
 }
 
 function cancel() {
+  reset()
   $emits('close')
 }
 </script>
@@ -77,16 +118,19 @@ function cancel() {
             v-model="_repetition"
             type="number"
             min="1"
-            class="w-10 rounded border p-2 hover:bg-gray-200"
+            required
+            class="w-10 rounded border p-2 outline-none invalid:border-red-500 invalid:text-red-600 hover:bg-gray-200"
           />
           <select
             v-model="_eventPeriod"
             class="rounded border bg-white px-2 hover:bg-gray-200"
           >
-            <option value="1">Day</option>
-            <option value="2">Week</option>
-            <option value="3">Month</option>
-            <option value="4">Year</option>
+            <option value="1">{{ _repetition == 1 ? 'Day' : 'Days' }}</option>
+            <option value="2">{{ _repetition == 1 ? 'Week' : 'Weeks' }}</option>
+            <option value="3">
+              {{ _repetition == 1 ? 'Month' : 'Months' }}
+            </option>
+            <option value="4">{{ _repetition == 1 ? 'Year' : 'Years' }}</option>
           </select>
         </div>
 
@@ -102,9 +146,9 @@ function cancel() {
 
         <div v-show="_eventPeriod == 3" class="mt-2">
           <select v-model="_monthRepetition" class="rounded p-2">
-            <option value="0">Every {{ day }}th of month</option>
-            <option value="1">
-              Every {{ weekNumber }}th {{ weekDay }} of the month
+            <option value="1">Monthly on day {{ day }}</option>
+            <option value="2">
+              Monthly on the {{ weekNumber($props.day) }} {{ weekDay }}
             </option>
           </select>
         </div>
@@ -144,6 +188,7 @@ function cancel() {
             />
           </div>
         </div>
+        <p class="mt-2 text-center text-red-500">{{ _errorMessage }}</p>
       </main>
 
       <footer>

@@ -33,7 +33,7 @@ export declare global {
   interface Repetition {
     every: number
     period: EventPeriod
-    repeteOn?: number[] | number
+    repeatOn?: number[] | number
     end?: Date | number
   }
 

@@ -1,37 +1,75 @@
 <script setup lang="ts">
 const today = new Date()
+const end = new Date(today.getTime() + 60 * 60 * 1000)
+const days = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+]
 
-function formatDate(today: Date) {
-  let month = (today.getMonth() + 1).toString()
-  if (month.length == 1) {
-    month = '0' + month
-  }
+function formatDate(date: Date) {
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${date.getFullYear()}-${month}-${day}`
+}
 
-  let day = today.getDate().toString()
-  if (day.length == 1) {
-    day = '0' + day
-  }
-
-  return `${today.getFullYear()}-${month}-${day}`
+function formatTime(date: Date) {
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  return `${hours}:${minutes}`
 }
 
 const _title = ref('')
 const _startDate = ref<string>(formatDate(today))
-const _startTime = ref('')
-const _endDate = ref<string>(formatDate(today))
-const _endTime = ref('')
+const _startTime = ref<string>(formatTime(today))
+const _endDate = ref<string>(formatDate(end))
+const _endTime = ref<string>(formatTime(end))
 const _location = ref('')
 const _note = ref('')
-const _category = ref('')
+const _category = ref('Not categorized')
+const _repetition = ref<Repetition | undefined>(undefined)
 
 const _showRepetition = ref(false)
 
+const _errorMessage = ref('')
+const _summaryMessage = ref('')
+
 function addRepetition(r: Repetition) {
+  _errorMessage.value = ''
   _showRepetition.value = false
-  console.log(r)
+  _repetition.value = r
+  _summaryMessage.value =
+    r.every == 1
+      ? r.period == 1
+        ? 'Daily'
+        : r.period == 2
+          ? 'Weekly'
+          : r.period == 3
+            ? 'Monthly'
+            : 'Yearly'
+      : `Every ${r.every} ${r.period == 1 ? 'days' : r.period == 2 ? 'weeks' : r.period == 3 ? 'months' : 'years'}`
+  if (r.period == 2 && r.repeatOn && Array.isArray(r.repeatOn)) {
+    // 2nd and 3rd condition are for typescript
+    _summaryMessage.value +=
+      ', on ' + r.repeatOn.map((e: number) => days[e]).join(', ')
+  } else if (r.period == 3) {
+    _summaryMessage.value +=
+      r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
+  }
+  _summaryMessage.value +=
+    r.end === undefined
+      ? ', forever'
+      : typeof r.end === 'number'
+        ? `, for ${r.end} times`
+        : `, until ${r.end.toISOString().split('T')[0]}`
 }
 
 function add() {
+  _errorMessage.value = ''
   const startDate = new Date(_startDate.value + ' ' + _startTime.value)
   const endDate = new Date(_endDate.value + ' ' + _endTime.value)
 
@@ -50,13 +88,21 @@ function add() {
     end: endDate,
     location: ifEmtpyNull(_location.value),
     note: ifEmtpyNull(_note.value),
-    category: ifEmtpyNull(_category.value)
+    category: ifEmtpyNull(_category.value),
+    repetition: _repetition.value
+  }
+
+  if (e.title.length == 0 || e.start > e.end) {
+    _errorMessage.value = 'Invalid input'
+    return
   }
 
   $fetch('/api/events', {
     method: 'POST',
     body: JSON.stringify(e)
   })
+  const router = useRouter()
+  router.push('/calendar')
 }
 </script>
 <template>
@@ -103,6 +149,7 @@ function add() {
         >
           Repetition
         </button>
+        <p>{{ _summaryMessage }}</p>
         <CalendarRepetition
           v-show="_showRepetition"
           :day="_startDate"
@@ -118,5 +165,6 @@ function add() {
         Add event
       </button>
     </form>
+    <p class="text-red-500">{{ _errorMessage }}</p>
   </div>
 </template>

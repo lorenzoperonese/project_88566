@@ -11,7 +11,7 @@ export interface IEvent extends Document {
   repetition?: {
     every: number
     period: number
-    repeteOn?: number[] | number
+    repeatOn?: number[] | number
     end?: Date | number
   }
   user_id: Types.ObjectId
