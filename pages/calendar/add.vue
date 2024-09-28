@@ -42,16 +42,32 @@ function addRepetition(r: Repetition) {
   _errorMessage.value = ''
   _showRepetition.value = false
   _repetition.value = r
-  _summaryMessage.value =
-    r.every == 1
-      ? r.period == 1
-        ? 'Daily'
-        : r.period == 2
-          ? 'Weekly'
-          : r.period == 3
-            ? 'Monthly'
-            : 'Yearly'
-      : `Every ${r.every} ${r.period == 1 ? 'days' : r.period == 2 ? 'weeks' : r.period == 3 ? 'months' : 'years'}`
+  //_summaryMessage.value =
+  if (r.every != 1) {
+    let tmp
+    switch (r.period) {
+      case 1:
+        tmp = 'days'
+      case 2:
+        tmp = 'weeks'
+      case 3:
+        tmp = 'months'
+      default:
+        tmp = 'years'
+    }
+    _summaryMessage.value = `Every ${r.every} ${tmp}`
+  } else {
+    switch (r.period) {
+      case 1:
+        _summaryMessage.value = 'Daily'
+      case 2:
+        _summaryMessage.value = 'Weekly'
+      case 3:
+        _summaryMessage.value = 'Monthly'
+      default:
+        _summaryMessage.value = 'Yearly'
+    }
+  }
   if (r.period == 2 && r.repeatOn && Array.isArray(r.repeatOn)) {
     // 2nd and 3rd condition are for typescript
     _summaryMessage.value +=
@@ -60,12 +76,14 @@ function addRepetition(r: Repetition) {
     _summaryMessage.value +=
       r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
   }
-  _summaryMessage.value +=
-    r.end === undefined
-      ? ', forever'
-      : typeof r.end === 'number'
-        ? `, for ${r.end} times`
-        : `, until ${r.end.toISOString().split('T')[0]}`
+  //_summaryMessage.value;
+  if (r.end === undefined) {
+    _summaryMessage.value += ', forever'
+  } else if (typeof r.end === 'number') {
+    _summaryMessage.value += `, for ${r.end} times`
+  } else {
+    _summaryMessage.value += `, until ${r.end.toISOString().split('T')[0]}`
+  }
 }
 
 function add() {
