@@ -48,10 +48,13 @@ function addRepetition(r: Repetition) {
     switch (r.period) {
       case 1:
         tmp = 'days'
+        break
       case 2:
         tmp = 'weeks'
+        break
       case 3:
         tmp = 'months'
+        break
       default:
         tmp = 'years'
     }
@@ -60,10 +63,13 @@ function addRepetition(r: Repetition) {
     switch (r.period) {
       case 1:
         _summaryMessage.value = 'Daily'
+        break
       case 2:
         _summaryMessage.value = 'Weekly'
+        break
       case 3:
         _summaryMessage.value = 'Monthly'
+        break
       default:
         _summaryMessage.value = 'Yearly'
     }
@@ -119,8 +125,7 @@ function add() {
     method: 'POST',
     body: JSON.stringify(e)
   })
-  const router = useRouter()
-  router.push('/calendar')
+  navigateTo('/calendar')
 }
 </script>
 <template>

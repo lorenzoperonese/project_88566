@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const router = useRouter()
 const { status, signIn } = useAuth()
 
 if (status.value == 'authenticated') {
-  router.push('/')
+  navigateTo('/')
 }
 
 const _username = ref('')

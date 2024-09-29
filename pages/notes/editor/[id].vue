@@ -39,8 +39,7 @@ async function save() {
           category_id: _selected.value == '' ? undefined : _selected.value
         }
       })
-      const router = useRouter()
-      router.push(`/notes/${_id}`)
+      navigateTo(`/notes/${_id}`)
     } catch (err) {
       console.log(err)
     }
