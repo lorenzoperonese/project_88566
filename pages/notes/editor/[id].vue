@@ -4,6 +4,7 @@ const _id = _route.params.id
 const { data } = await useFetch(`/api/notes/${_id}`)
 
 const _selected = ref(data.value?.category_id)
+const _errorMessage = ref('')
 
 const __textarea_height = computed(() => {
   if (data.value) {
@@ -29,7 +30,8 @@ const _categoryName = computed(() => {
 })
 
 async function save() {
-  if (data.value) {
+  if (data.value && data.value.title && data.value.body) {
+    _errorMessage.value = ''
     try {
       await $fetch(`/api/notes/${_id}`, {
         method: 'put',
@@ -43,6 +45,8 @@ async function save() {
     } catch (err) {
       console.log(err)
     }
+  } else {
+    _errorMessage.value = 'Title and body are required'
   }
 }
 </script>
@@ -97,6 +101,7 @@ async function save() {
           >
           </textarea>
         </div>
+        <div class="text-center text-red-700">{{ _errorMessage }}</div>
       </div>
 
       <div class="flex items-center">

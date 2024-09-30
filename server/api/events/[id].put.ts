@@ -1,15 +1,15 @@
-import { Note } from '@/server/db'
+import { Event } from '@/server/db'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-  console.log('Updating note ID:', id)
+  console.log('Updating event ID:', id)
 
   try {
     if (!id) {
       throw new Error('ID is not defined')
     }
 
-    const body = await readBody<Note>(event)
+    const body = await readBody<EventType>(event)
     console.log(body)
 
     if (!body) {
@@ -28,27 +28,39 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    if (!body.body) {
+    if (!body.start) {
       setResponseStatus(event, 400)
       return {
-        code: 'BODY_REQUIRED',
-        err: 'Body malformed: body is required.'
+        code: 'START_REQUIRED',
+        err: 'Body malformed: start date is required.'
       }
     }
 
-    await Note.findOneAndUpdate(
+    if (!body.end) {
+      setResponseStatus(event, 400)
+      return {
+        code: 'END_REQUIRED',
+        err: 'Body malformed: end date is required.'
+      }
+    }
+
+    await Event.findOneAndUpdate(
       {
         _id: id,
         user_id: event.context.auth.id
       },
       {
         title: body.title,
-        body: body.body,
-        category_id: body.category_id
+        start: body.start,
+        end: body.end,
+        location: body.location,
+        note: body.note,
+        category: body.category,
+        repetition: body.repetition
       }
     )
 
-    return { mgs: 'Updated note' }
+    return { mgs: 'Updated event' }
   } catch (err) {
     console.error(err)
     return { err: err }
