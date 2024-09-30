@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CalendarEventAdder, CalendarTaskAdder } from '#components'
-const addTask = ref(true)
+const addTask = ref(false)
 
 const eventOrTask = computed(() => {
   if (addTask.value) {
@@ -13,22 +13,24 @@ const eventOrTask = computed(() => {
 
 <template>
   <div>
-    <div>
+    <div class="flex w-full justify-between">
       <button
-        class="rounded border p-2 disabled:text-gray-400"
+        class="w-full rounded border p-2 hover:bg-blue-200 disabled:bg-blue-400"
         :disabled="!addTask"
         @click="addTask = false"
       >
         Event
       </button>
       <button
-        class="rounded border p-2 disabled:text-gray-400"
+        class="w-full rounded border p-2 hover:bg-blue-200 disabled:bg-blue-400"
         :disabled="addTask"
         @click="addTask = true"
       >
         Task
       </button>
     </div>
-    <component :is="eventOrTask" class="h-full"> </component>
+    <div class="flex justify-center">
+      <component :is="eventOrTask" class="h-full"> </component>
+    </div>
   </div>
 </template>

@@ -80,12 +80,22 @@ function add() {
         <input v-model="_category" class="rounded border p-2" type="string" />
       </div>
 
-      <button
-        class="rounded border bg-blue-300 p-2 hover:bg-blue-500"
-        @click="add()"
-      >
-        Add task
-      </button>
+      <div class="flex">
+        <NuxtLink class="w-full" to="/calendar">
+          <div
+            class="w-full rounded border bg-red-300 p-2 text-center hover:bg-red-500"
+          >
+            Cancel
+          </div>
+        </NuxtLink>
+
+        <button
+          class="w-full rounded border bg-blue-300 p-2 hover:bg-blue-500"
+          @click="add()"
+        >
+          Add task
+        </button>
+      </div>
     </form>
     <p class="text-red-500">{{ _errorMessage }}</p>
   </div>

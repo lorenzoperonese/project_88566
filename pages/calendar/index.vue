@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { data: _events } = await useFetch<EventType[]>('/api/events')
+const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
 const _currentDate = ref(new Date())
 const _currentMonth = computed(() => _currentDate.value.getMonth())
@@ -59,15 +60,23 @@ function getEventsForDay(day: number | null): EventType[] {
   })
 }
 
+function getTasksForDay(day: number | null): Task[] {
+  if (!day || !_tasks.value) return []
+  return _tasks.value.filter((e) => {
+    const taskDate = new Date(e.end)
+    return (
+      taskDate.getDate() === day &&
+      taskDate.getMonth() === _currentMonth.value &&
+      taskDate.getFullYear() === _currentYear.value
+    )
+  })
+}
+
 function formatTime(date: Date): string {
   return new Date(date).toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit'
   })
-}
-
-function navigateToEvent(eventId: string) {
-  navigateTo(`/calendar/${eventId}`)
 }
 </script>
 
@@ -108,25 +117,43 @@ function navigateToEvent(eventId: string) {
         class="h-32 overflow-y-auto bg-white p-2"
       >
         <div v-if="day" class="font-semibold">{{ day }}</div>
-        <div
+        <NuxtLink
           v-for="event in getEventsForDay(day)"
           :key="event.id"
-          class="mt-1 cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
-          @click="navigateToEvent(event.id)"
+          :to="`/calendar/e/${event.id}`"
         >
-          <div class="font-semibold">{{ event.title }}</div>
-          <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
-          <div v-if="event.location">📍 {{ event.location }}</div>
-          <div v-if="event.category">🏷️ {{ event.category }}</div>
-        </div>
+          <div
+            class="mt-1 w-full cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+          >
+            <div class="font-semibold">{{ event.title }}</div>
+            <div>
+              {{ formatTime(event.start) }} - {{ formatTime(event.end) }}
+            </div>
+            <div v-if="event.location">📍 {{ event.location }}</div>
+            <div v-if="event.category">🏷️ {{ event.category }}</div>
+          </div>
+        </NuxtLink>
+
+        <NuxtLink
+          v-for="task in getTasksForDay(day)"
+          :key="task.id"
+          :to="`/calendar/t/${task.id}`"
+        >
+          <div
+            class="mt-1 cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+          >
+            <div class="font-semibold">{{ task.title }}</div>
+            <div>{{ formatTime(task.end) }}</div>
+          </div>
+        </NuxtLink>
       </div>
     </div>
 
     <NuxtLink
       to="/calendar/add"
-      class="fixed bottom-4 right-4 rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600"
+      class="fixed bottom-4 right-4 rounded-lg bg-blue-500 p-4 text-white hover:bg-blue-600"
     >
-      Add Event
+      +
     </NuxtLink>
   </div>
 </template>
