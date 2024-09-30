@@ -47,4 +47,13 @@ export declare global {
     category?: string
     repetition?: Repetition
   }
+
+  interface Task {
+    id: string
+    title: string
+    end: Date
+    note?: string
+    completed: boolean
+    category?: string
+  }
 }
