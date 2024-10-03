@@ -2,7 +2,9 @@
 const { data: _events } = await useFetch<EventType[]>('/api/events')
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
-const _currentDate = ref(new Date())
+const today = await getToday()
+
+const _currentDate = ref(today)
 const _currentMonth = computed(() => _currentDate.value.getMonth())
 const _currentYear = computed(() => _currentDate.value.getFullYear())
 
@@ -78,6 +80,21 @@ function formatTime(date: Date): string {
     minute: '2-digit'
   })
 }
+
+function isToday(day: number | null): boolean {
+  if (!day) {
+    return false
+  }
+  return (
+    _currentDate.value.getDate() == day &&
+    _currentDate.value.getMonth() == _currentMonth.value
+  )
+}
+
+async function updateToday() {
+  const today = await getToday()
+  _currentDate.value = today
+}
 </script>
 
 <template>
@@ -85,6 +102,7 @@ function formatTime(date: Date): string {
     <h1 class="bg-blue-500 p-4 text-center text-3xl font-bold text-white">
       CALENDAR
     </h1>
+    <h1 class="bg-blue-500 p-4 text-center text-3xl font-bold text-white"></h1>
     <div class="relative flex items-center bg-blue-100 p-4">
       <button
         class="absolute left-4 rounded bg-blue-500 px-4 py-2 text-white"
@@ -114,9 +132,12 @@ function formatTime(date: Date): string {
       <div
         v-for="(day, index) in _days"
         :key="index"
-        class="h-32 overflow-y-auto bg-white p-2"
+        class="h-32 overflow-y-auto p-2"
+        :class="{ 'bg-white': !isToday(day), 'bg-gray-200': isToday(day) }"
       >
-        <div v-if="day" class="font-semibold">{{ day }}</div>
+        <div v-if="day" class="font-semibold">
+          {{ day }}
+        </div>
         <NuxtLink
           v-for="event in getEventsForDay(day)"
           :key="event.id"
@@ -155,5 +176,7 @@ function formatTime(date: Date): string {
     >
       +
     </NuxtLink>
+
+    <TmButton class="fixed bottom-4 left-4" @update="updateToday()" />
   </div>
 </template>

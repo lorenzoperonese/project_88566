@@ -1,0 +1,91 @@
+<script setup lang="ts">
+const $emits = defineEmits<{
+  (e: 'close' | 'update'): void
+}>()
+
+const { data: _today } = await useFetch('/api/tm')
+
+// TODO: Move to another file
+function formatDate(date: Date) {
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${date.getFullYear()}-${month}-${day}`
+}
+
+// TODO: Move to another file
+function formatTime(date: Date) {
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
+const _date = ref(
+  formatDate(_today.value ? new Date(_today.value) : new Date())
+)
+const _time = ref(
+  formatTime(_today.value ? new Date(_today.value) : new Date())
+)
+
+function close() {
+  $emits('close')
+}
+
+async function save() {
+  const d = new Date(_date.value + ' ' + _time.value).getTime()
+
+  await $fetch('/api/tm', {
+    method: 'POST',
+    body: JSON.stringify(d)
+  })
+
+  $emits('update')
+}
+</script>
+
+<template>
+  <div
+    class="fixed left-0 top-0 grid h-full w-full bg-gray-300 bg-opacity-50"
+    @click="close()"
+  >
+    <div
+      class="place-self-center rounded-lg border bg-white p-5 drop-shadow-lg"
+      @click.stop=""
+    >
+      <h1 class="mb-5 w-full text-center text-lg font-bold">Time Machine</h1>
+      <form class="flex flex-col gap-2" @submit.prevent="">
+        <div>
+          <label> Date </label>
+          <input
+            v-model="_date"
+            type="date"
+            class="rounded border p-2 outline-none"
+          />
+        </div>
+
+        <div>
+          <label> Time </label>
+          <input
+            v-model="_time"
+            type="time"
+            class="rounded border p-2 outline-none"
+          />
+        </div>
+
+        <div class="flex justify-evenly">
+          <button
+            class="rounded-lg border bg-red-300 p-2 hover:bg-red-500"
+            @click="close()"
+          >
+            Cancel
+          </button>
+          <button
+            class="rounded-lg border bg-blue-300 p-2 hover:bg-blue-500"
+            @click="save()"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
