@@ -25,21 +25,6 @@ const _days = computed(() => {
   return result
 })
 
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-]
-
 function previousMonth() {
   _currentDate.value = new Date(_currentYear.value, _currentMonth.value - 1, 1)
 }
@@ -71,13 +56,6 @@ function getTasksForDay(day: number | null): Task[] {
     )
   })
 }
-
-function formatTime(date: Date): string {
-  return new Date(date).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
 </script>
 
 <template>
@@ -93,7 +71,7 @@ function formatTime(date: Date): string {
         Previous
       </button>
       <h2 class="w-full text-center text-2xl font-semibold">
-        {{ monthNames[_currentMonth] }} {{ _currentYear }}
+        {{ months[_currentMonth] }} {{ _currentYear }}
       </h2>
       <button
         class="absolute right-4 rounded bg-blue-500 px-4 py-2 text-white"
@@ -104,11 +82,7 @@ function formatTime(date: Date): string {
     </div>
 
     <div class="grid flex-grow grid-cols-7 gap-1 bg-gray-100 p-2">
-      <div
-        v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']"
-        :key="day"
-        class="p-2 text-center font-bold"
-      >
+      <div v-for="day in days" :key="day" class="p-2 text-center font-bold">
         {{ day }}
       </div>
       <div

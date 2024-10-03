@@ -3,7 +3,7 @@ import type { Document, Types } from 'mongoose'
 
 export interface ITask extends Document {
   title: string
-  end: Date
+  end: number
   note?: string
   category?: string
   completed: boolean
@@ -13,7 +13,7 @@ export interface ITask extends Document {
 const schema = new Schema<ITask>(
   {
     title: { type: String, required: true },
-    end: { type: Date, required: true },
+    end: { type: Number, required: true },
     note: { type: String },
     category: { type: String },
     completed: { type: Boolean, required: true },

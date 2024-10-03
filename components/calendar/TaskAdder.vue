@@ -1,17 +1,5 @@
 <script setup lang="ts">
-const end = new Date()
-
-function formatDate(date: Date) {
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const day = date.getDate().toString().padStart(2, '0')
-  return `${date.getFullYear()}-${month}-${day}`
-}
-
-function formatTime(date: Date) {
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  return `${hours}:${minutes}`
-}
+const end = new Date().getTime()
 
 const _title = ref('')
 const _endDate = ref<string>(formatDate(end))
@@ -23,7 +11,7 @@ const _errorMessage = ref('')
 
 function add() {
   _errorMessage.value = ''
-  const endDate = new Date(_endDate.value + ' ' + _endTime.value)
+  const endDate = new Date(_endDate.value + ' ' + _endTime.value).getTime()
 
   const ifEmtpyNull = (a: string) => {
     if (a.length == 0) {

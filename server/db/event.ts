@@ -3,8 +3,8 @@ import type { Document, Types } from 'mongoose'
 
 export interface IEvent extends Document {
   title: string
-  start: Date
-  end: Date
+  start: number
+  end: number
   location?: string
   note?: string
   category?: string
@@ -12,7 +12,7 @@ export interface IEvent extends Document {
     every: number
     period: number
     repeatOn?: number[] | number
-    end?: Date | number
+    end?: number
   }
   user_id: Types.ObjectId
 }
@@ -20,8 +20,8 @@ export interface IEvent extends Document {
 const schema = new Schema<IEvent>(
   {
     title: { type: String, required: true },
-    start: { type: Date, required: true },
-    end: { type: Date, required: true },
+    start: { type: Number, required: true },
+    end: { type: Number, required: true },
     location: { type: String },
     note: { type: String },
     category: { type: String },

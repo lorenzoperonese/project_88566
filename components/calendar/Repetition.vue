@@ -30,20 +30,12 @@ const weekNumber = (d: string) => {
         : value.toString() + 'th'
 }
 
-const weekDay = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturaday',
-  'Sunday'
-][(new Date($props.day).getDay() + 6) % 7] // TODO CAMBIARE
+const weekDay = days[(new Date($props.day).getDay() + 6) % 7] // TODO CAMBIARE
 
 const _repetition = ref(1)
 const _eventPeriod = ref<EventPeriod>(1)
 const _weekDays = ref<number[]>([])
-const _monthRepetition = ref(0)
+const _monthRepetition = ref(1)
 const _ends = ref('Never')
 const _endDate = ref($props.day)
 const _endAfter = ref(1)
@@ -85,7 +77,7 @@ function save() {
   /*if (_ends.value == 'Never') {
   } else */
   if (_ends.value == 'Day') {
-    r.end = new Date(_endDate.value)
+    r.end = new Date(_endDate.value).getTime()
   } else if (_ends.value == 'After') {
     r.end = _endAfter.value
   }

@@ -34,14 +34,14 @@ export declare global {
     every: number
     period: EventPeriod
     repeatOn?: number[] | number
-    end?: Date | number
+    end?: number
   }
 
   interface EventType {
     id: string
     title: string
-    start: Date
-    end: Date
+    start: number
+    end: number
     location?: string
     note?: string
     category?: string
@@ -51,7 +51,7 @@ export declare global {
   interface Task {
     id: string
     title: string
-    end: Date
+    end: number
     note?: string
     completed: boolean
     category?: string

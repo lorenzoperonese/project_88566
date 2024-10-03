@@ -1,27 +1,6 @@
 <script setup lang="ts">
-const today = new Date()
-const end = new Date(today.getTime() + 60 * 60 * 1000)
-const days = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday'
-]
-
-function formatDate(date: Date) {
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const day = date.getDate().toString().padStart(2, '0')
-  return `${date.getFullYear()}-${month}-${day}`
-}
-
-function formatTime(date: Date) {
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  return `${hours}:${minutes}`
-}
+const today = Date.now()
+const end = new Date(today + 60 * 60 * 1000).getTime()
 
 const _title = ref('')
 const _startDate = ref<string>(formatDate(today))
@@ -85,17 +64,19 @@ function addRepetition(r: Repetition) {
   //_summaryMessage.value;
   if (r.end === undefined) {
     _summaryMessage.value += ', forever'
-  } else if (typeof r.end === 'number') {
+  } else if (r.end < new Date().getTime()) {
     _summaryMessage.value += `, for ${r.end} times`
   } else {
-    _summaryMessage.value += `, until ${r.end.toISOString().split('T')[0]}`
+    _summaryMessage.value += `, until ${formatDate(new Date(r.end).getTime())}`
   }
 }
 
 function add() {
   _errorMessage.value = ''
-  const startDate = new Date(_startDate.value + ' ' + _startTime.value)
-  const endDate = new Date(_endDate.value + ' ' + _endTime.value)
+  const startDate = new Date(
+    _startDate.value + ' ' + _startTime.value
+  ).getTime()
+  const endDate = new Date(_endDate.value + ' ' + _endTime.value).getTime()
 
   const ifEmtpyNull = (a: string) => {
     if (a.length == 0) {
