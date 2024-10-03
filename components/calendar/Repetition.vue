@@ -4,9 +4,10 @@ const $emits = defineEmits<{
   (e: 'save', r: Repetition): void
 }>()
 
-const $props = defineProps({
-  day: { type: String, required: true }
-})
+const $props = defineProps<{
+  day: string
+  repetition: Repetition | undefined
+}>()
 
 const day = new Date($props.day).getDate()
 
@@ -40,8 +41,40 @@ const _ends = ref('Never')
 const _endDate = ref($props.day)
 const _endAfter = ref(1)
 
+if ($props.repetition !== undefined) {
+  console.log($props.repetition)
+  _repetition.value = $props.repetition.every
+  _eventPeriod.value = $props.repetition.period
+  if (
+    _eventPeriod.value == 2 &&
+    $props.repetition.repeatOn !== undefined &&
+    Array.isArray($props.repetition.repeatOn)
+  )
+    _weekDays.value = $props.repetition.repeatOn
+  else if (
+    _eventPeriod.value == 3 &&
+    $props.repetition.repeatOn !== undefined &&
+    !Array.isArray($props.repetition.repeatOn)
+  )
+    _monthRepetition.value = $props.repetition.repeatOn
+  _ends.value = $props.repetition.end
+    ? $props.repetition.end < Date.now() / 2
+      ? 'After'
+      : 'On'
+    : 'Never'
+  _endDate.value =
+    _ends.value == 'On' && $props.repetition.end !== undefined
+      ? formatDate($props.repetition.end)
+      : $props.day
+  _endAfter.value =
+    _ends.value == 'After' && $props.repetition.end !== undefined
+      ? $props.repetition.end
+      : 1
+}
+
 const _errorMessage = ref('')
 
+/*
 function reset() {
   _repetition.value = 1
   _eventPeriod.value = 1
@@ -52,6 +85,7 @@ function reset() {
   _endAfter.value = 1
   _errorMessage.value = ''
 }
+*/
 
 function save() {
   const r = {
@@ -74,18 +108,23 @@ function save() {
     r.repeatOn = _monthRepetition.value
   }
 
-  /*if (_ends.value == 'Never') {
-  } else */
-  if (_ends.value == 'Day') {
+  if (_ends.value == 'Never') {
+    r.end = undefined
+  } else if (_ends.value == 'Day') {
     r.end = new Date(_endDate.value).getTime()
+    if (r.end < new Date().getTime()) {
+      _errorMessage.value = 'End date must be in the future'
+      return
+    }
   } else if (_ends.value == 'After') {
-    r.end = _endAfter.value
+    if (_endAfter.value > 100000000000) r.end = undefined
+    else r.end = _endAfter.value
   }
   $emits('save', r)
 }
 
 function cancel() {
-  reset()
+  // reset()
   $emits('close')
 }
 </script>

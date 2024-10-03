@@ -3,11 +3,7 @@ import { CalendarEventAdder, CalendarTaskAdder } from '#components'
 const addTask = ref(false)
 
 const eventOrTask = computed(() => {
-  if (addTask.value) {
-    return CalendarTaskAdder
-  } else {
-    return CalendarEventAdder
-  }
+  return addTask.value ? CalendarTaskAdder : CalendarEventAdder
 })
 </script>
 

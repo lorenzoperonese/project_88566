@@ -2,6 +2,14 @@
 const today = Date.now()
 const end = new Date(today + 60 * 60 * 1000).getTime()
 
+const $props = defineProps<{
+  event?: EventType
+}>()
+
+const _showRepetition = ref(false)
+const _errorMessage = ref('')
+const _summaryMessage = ref('')
+
 const _title = ref('')
 const _startDate = ref<string>(formatDate(today))
 const _startTime = ref<string>(formatTime(today))
@@ -12,19 +20,30 @@ const _note = ref('')
 const _category = ref('Not categorized')
 const _repetition = ref<Repetition | undefined>(undefined)
 
-const _showRepetition = ref(false)
-
-const _errorMessage = ref('')
-const _summaryMessage = ref('')
+if ($props.event) {
+  _title.value = $props.event.title
+  _startDate.value = formatDate($props.event.start)
+  _startTime.value = formatTime($props.event.start)
+  _endDate.value = formatDate($props.event.end)
+  _endTime.value = formatTime($props.event.end)
+  _location.value = $props.event.location || ''
+  _note.value = $props.event.note || ''
+  _category.value = $props.event.category || 'Not categorized'
+  if ($props.event.repetition) {
+    _repetition.value = $props.event.repetition
+    addRepetition(_repetition.value)
+  }
+}
 
 function addRepetition(r: Repetition) {
   _errorMessage.value = ''
   _showRepetition.value = false
   _repetition.value = r
+  console.log(r)
   //_summaryMessage.value =
   if (r.every != 1) {
     let tmp
-    switch (r.period) {
+    switch (parseInt(r.period.toString())) {
       case 1:
         tmp = 'days'
         break
@@ -39,7 +58,7 @@ function addRepetition(r: Repetition) {
     }
     _summaryMessage.value = `Every ${r.every} ${tmp}`
   } else {
-    switch (r.period) {
+    switch (parseInt(r.period.toString())) {
       case 1:
         _summaryMessage.value = 'Daily'
         break
@@ -54,7 +73,6 @@ function addRepetition(r: Repetition) {
     }
   }
   if (r.period == 2 && r.repeatOn && Array.isArray(r.repeatOn)) {
-    // 2nd and 3rd condition are for typescript
     _summaryMessage.value +=
       ', on ' + r.repeatOn.map((e: number) => days[e]).join(', ')
   } else if (r.period == 3) {
@@ -64,14 +82,15 @@ function addRepetition(r: Repetition) {
   //_summaryMessage.value;
   if (r.end === undefined) {
     _summaryMessage.value += ', forever'
-  } else if (r.end < new Date().getTime()) {
-    _summaryMessage.value += `, for ${r.end} times`
+  } else if (r.end < new Date().getTime() / 2) {
+    _summaryMessage.value += `, for ${r.end} time`
+    _summaryMessage.value += r.end == 1 ? '' : 's'
   } else {
     _summaryMessage.value += `, until ${formatDate(new Date(r.end).getTime())}`
   }
 }
 
-function add() {
+function saveEvent() {
   _errorMessage.value = ''
   const startDate = new Date(
     _startDate.value + ' ' + _startTime.value
@@ -82,7 +101,6 @@ function add() {
     if (a.length == 0) {
       return undefined
     }
-
     return a
   }
 
@@ -101,17 +119,34 @@ function add() {
     _errorMessage.value = 'Invalid input'
     return
   }
+  if ($props.event) {
+    e.id = $props.event.id
+    $fetch(`/api/events/${$props.event.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(e)
+    })
+  } else {
+    $fetch('/api/events', {
+      method: 'POST',
+      body: JSON.stringify(e)
+    })
+  }
+  navigateTo('/calendar')
+}
 
-  $fetch('/api/events', {
-    method: 'POST',
-    body: JSON.stringify(e)
+function deleteEvent() {
+  $fetch(`/api/events/${$props.event?.id}`, {
+    method: 'DELETE'
   })
   navigateTo('/calendar')
 }
 </script>
+
 <template>
-  <div>
-    <h1 class="text-xl font-bold">Add event</h1>
+  <div class="w-1/5">
+    <h1 class="text-xl font-bold">
+      {{ $props.event ? 'Modify event' : 'Add event' }}
+    </h1>
 
     <form class="flex flex-col gap-2" @submit.prevent="">
       <div>
@@ -157,6 +192,7 @@ function add() {
         <CalendarRepetition
           v-show="_showRepetition"
           :day="_startDate"
+          :repetition="_repetition"
           @close="_showRepetition = false"
           @save="addRepetition"
         />
@@ -172,10 +208,18 @@ function add() {
         </NuxtLink>
 
         <button
-          class="w-full rounded border bg-blue-300 p-2 hover:bg-blue-500"
-          @click="add()"
+          v-if="$props.event"
+          class="w-full rounded border bg-orange-300 p-2 hover:bg-orange-500"
+          @click="deleteEvent()"
         >
-          Add event
+          Delete event
+        </button>
+
+        <button
+          class="w-full rounded border bg-blue-300 p-2 hover:bg-blue-500"
+          @click="saveEvent()"
+        >
+          {{ $props.event ? 'Save' : 'Add event' }}
         </button>
       </div>
     </form>

@@ -3,7 +3,7 @@ export default defineEventHandler(async (_): Promise<number> => {
 
   console.log('delta:', delta)
 
-  if (!delta) {
+  if (delta == null) {
     console.error('tm:delta is NULL')
     delta = 0
   }

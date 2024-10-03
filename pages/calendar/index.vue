@@ -137,8 +137,11 @@ async function updateToday() {
           <div
             class="mt-1 cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
           >
-            <div class="font-semibold">{{ task.title }}</div>
+            <div :class="['font-semibold', { 'line-through': task.completed }]">
+              {{ task.title }}
+            </div>
             <div>{{ formatTime(task.end) }}</div>
+            <div v-if="task.category">🏷️ {{ task.category }}</div>
           </div>
         </NuxtLink>
       </div>
