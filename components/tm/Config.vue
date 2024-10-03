@@ -30,6 +30,13 @@ function close() {
   $emits('close')
 }
 
+async function reset() {
+  await $fetch('/api/tm', {
+    method: 'DELETE'
+  })
+  $emits('update')
+}
+
 async function save() {
   const d = new Date(_date.value + ' ' + _time.value).getTime()
 
@@ -58,7 +65,7 @@ async function save() {
           <input
             v-model="_date"
             type="date"
-            class="rounded border p-2 outline-none"
+            class="w-full rounded border p-2 outline-none"
           />
         </div>
 
@@ -67,23 +74,32 @@ async function save() {
           <input
             v-model="_time"
             type="time"
-            class="rounded border p-2 outline-none"
+            class="w-full rounded border p-2 outline-none"
           />
         </div>
 
-        <div class="flex justify-evenly">
+        <div class="mt-2">
           <button
-            class="rounded-lg border bg-red-300 p-2 hover:bg-red-500"
-            @click="close()"
+            class="mb-2 w-full rounded-lg border bg-green-300 p-2 hover:bg-green-500"
+            @click="reset()"
           >
-            Cancel
+            Reset
           </button>
-          <button
-            class="rounded-lg border bg-blue-300 p-2 hover:bg-blue-500"
-            @click="save()"
-          >
-            Save
-          </button>
+
+          <div class="flex justify-evenly">
+            <button
+              class="w-20 rounded-lg border bg-red-300 p-2 hover:bg-red-500"
+              @click="close()"
+            >
+              Cancel
+            </button>
+            <button
+              class="w-20 rounded-lg border bg-blue-300 p-2 hover:bg-blue-500"
+              @click="save()"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </form>
     </div>
