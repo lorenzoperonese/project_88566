@@ -28,19 +28,23 @@ const _days = computed(() => {
 })
 
 function previousMonth() {
-  _currentMonth.value = new Date(
-    _currentYear.value,
-    _currentMonth.value - 1,
-    1
-  ).getMonth()
+  const month = _currentMonth.value
+  if (month == 0) {
+    _currentYear.value = _currentYear.value - 1
+    _currentMonth.value = 11
+  } else {
+    _currentMonth.value = month - 1
+  }
 }
 
 function nextMonth() {
-  _currentMonth.value = new Date(
-    _currentYear.value,
-    _currentMonth.value + 1,
-    1
-  ).getMonth()
+  const month = _currentMonth.value
+  if (month == 11) {
+    _currentYear.value = _currentYear.value + 1
+    _currentMonth.value = 0
+  } else {
+    _currentMonth.value = month + 1
+  }
 }
 
 function getEventsForDay(day: number | null): EventType[] {
