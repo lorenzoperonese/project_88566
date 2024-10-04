@@ -73,6 +73,10 @@ async function updateToday() {
   const today = await getToday()
   _currentDate.value = today
 }
+
+function isEventInThePast(e: EventType): boolean {
+  return e.end < _currentDate.value.getTime()
+}
 </script>
 
 <template>
@@ -119,6 +123,7 @@ async function updateToday() {
         >
           <div
             class="mt-1 w-full cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+            :class="{ 'opacity-60': isEventInThePast(event) }"
           >
             <div class="font-semibold">{{ event.title }}</div>
             <div>
