@@ -5,8 +5,8 @@ const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 const today = await getToday()
 
 const _currentDate = ref(today)
-const _currentMonth = computed(() => _currentDate.value.getMonth())
-const _currentYear = computed(() => _currentDate.value.getFullYear())
+const _currentMonth = ref(_currentDate.value.getMonth())
+const _currentYear = ref(_currentDate.value.getFullYear())
 
 const _daysInMonth = computed(() => {
   return new Date(_currentYear.value, _currentMonth.value + 1, 0).getDate()
@@ -28,11 +28,19 @@ const _days = computed(() => {
 })
 
 function previousMonth() {
-  _currentDate.value = new Date(_currentYear.value, _currentMonth.value - 1, 1)
+  _currentMonth.value = new Date(
+    _currentYear.value,
+    _currentMonth.value - 1,
+    1
+  ).getMonth()
 }
 
 function nextMonth() {
-  _currentDate.value = new Date(_currentYear.value, _currentMonth.value + 1, 1)
+  _currentMonth.value = new Date(
+    _currentYear.value,
+    _currentMonth.value + 1,
+    1
+  ).getMonth()
 }
 
 function getEventsForDay(day: number | null): EventType[] {
@@ -60,7 +68,7 @@ function getTasksForDay(day: number | null): Task[] {
 }
 
 function isToday(day: number | null): boolean {
-  if (!day) {
+  if (day === null) {
     return false
   }
   return (
