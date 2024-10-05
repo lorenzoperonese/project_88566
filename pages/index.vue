@@ -25,5 +25,6 @@
         >Profile
       </NuxtLink>
     </div>
+    <NotifyPermission />
   </div>
 </template>

@@ -4,7 +4,8 @@ async function fetchEvents() {
 }
 
 async function main() {
-  console.log('Hello from MODIFIED worker :)')
+  console.log('Hello from worker :)')
+
   const events = await fetchEvents()
   console.log(events)
 }
