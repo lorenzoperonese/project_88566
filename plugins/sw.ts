@@ -28,7 +28,7 @@ export default defineNuxtPlugin(async (/* nuxtApp */ _) => {
     check()
 
     SW = await registerServiceWorker()
-    SW.update()
+    await SW.update()
 
     if (SW.installing) {
       console.log('SW installing')

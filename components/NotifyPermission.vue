@@ -16,6 +16,21 @@ async function requestNotificationPermission() {
 async function enable() {
   permission.value = await requestNotificationPermission()
 }
+
+async function sendTest() {
+  const SW = await navigator.serviceWorker.getRegistration()
+  if (SW === undefined) {
+    console.error('Service worker is undefined')
+    return
+  }
+
+  if (SW.active === null) {
+    console.error('Service worker is NOT active')
+    return
+  }
+
+  SW.active.postMessage('Provolone')
+}
 </script>
 
 <template>
@@ -28,8 +43,15 @@ async function enable() {
       Enable notifications
     </button>
 
-    <div v-if="permission == 'granted'" class="text-green-700">
-      Notifications are enabled :)
+    <div v-if="permission == 'granted'">
+      <div class="text-green-700">Notifications are enabled :)</div>
+
+      <button
+        class="rounded-lg border bg-orange-200 p-2 hover:bg-orange-400"
+        @click="sendTest()"
+      >
+        Send test
+      </button>
     </div>
 
     <div v-if="permission == 'denied'" class="text-red-400">
