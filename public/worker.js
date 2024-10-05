@@ -16,6 +16,10 @@ async function notificator() {
   }
 }
 
+function notify(title, body) {
+  self.registration.showNotification(title, { body: body })
+}
+
 async function main() {
   console.log('Hello from worker :)')
 
@@ -23,7 +27,7 @@ async function main() {
   notificator()
 
   self.addEventListener('message', (m) => {
-    console.log('Received:', m.data)
+    notify('Test notification', m.data)
   })
 }
 
