@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const today = Date.now()
-const end = new Date(today + 60 * 60 * 1000).getTime()
+const today = await getToday()
+const end = new Date(today.getTime() + 1000 * 60 * 60)
 
 const $props = defineProps<{
   event?: EventType
@@ -11,10 +11,10 @@ const _errorMessage = ref('')
 const _summaryMessage = ref('')
 
 const _title = ref('')
-const _startDate = ref<string>(formatDate(today))
-const _startTime = ref<string>(formatTime(today))
-const _endDate = ref<string>(formatDate(end))
-const _endTime = ref<string>(formatTime(end))
+const _startDate = ref<string>(formatDate(today.getTime()))
+const _startTime = ref<string>(formatTime(today.getTime()))
+const _endDate = ref<string>(formatDate(end.getTime()))
+const _endTime = ref<string>(formatTime(end.getTime()))
 const _location = ref('')
 const _note = ref('')
 const _category = ref('Not categorized')
@@ -147,7 +147,6 @@ function deleteEvent() {
     <h1 class="text-xl font-bold">
       {{ $props.event ? 'Modify event' : 'Add event' }}
     </h1>
-
     <form class="flex flex-col gap-2" @submit.prevent="">
       <div>
         <label>Title:</label>

@@ -5,26 +5,8 @@ const $emits = defineEmits<{
 
 const { data: _today } = await useFetch('/api/tm')
 
-// TODO: Move to another file
-function formatDate(date: Date) {
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const day = date.getDate().toString().padStart(2, '0')
-  return `${date.getFullYear()}-${month}-${day}`
-}
-
-// TODO: Move to another file
-function formatTime(date: Date) {
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  return `${hours}:${minutes}`
-}
-
-const _date = ref(
-  formatDate(_today.value ? new Date(_today.value) : new Date())
-)
-const _time = ref(
-  formatTime(_today.value ? new Date(_today.value) : new Date())
-)
+const _date = ref(formatDate(_today.value ? _today.value : Date.now()))
+const _time = ref(formatTime(_today.value ? _today.value : Date.now()))
 
 function close() {
   $emits('close')
