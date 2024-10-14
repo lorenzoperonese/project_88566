@@ -195,6 +195,7 @@ function deleteEvent() {
           @close="_showRepetition = false"
           @save="addRepetition"
         />
+        <CalendarNotification :start="_startTime" />
       </div>
 
       <div class="flex">

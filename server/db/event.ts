@@ -14,6 +14,11 @@ export interface IEvent extends Document {
     repeatOn?: number[] | number
     end?: number
   }
+  notify?: {
+    advance: number
+    period: number
+    hour: number
+  }[]
   user_id: Types.ObjectId
 }
 
@@ -26,6 +31,7 @@ const schema = new Schema<IEvent>(
     note: { type: String },
     category: { type: String },
     repetition: { type: Object },
+    notify: { type: Array },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'users' }
   },
   {

@@ -37,6 +37,12 @@ export declare global {
     end?: number
   }
 
+  interface Notify {
+    advance: number
+    period: EventPeriod
+    hour: number
+  }
+
   interface EventType {
     id: string
     title: string
@@ -46,6 +52,7 @@ export declare global {
     note?: string
     category?: string
     repetition?: Repetition
+    notify?: Notify
   }
 
   interface Task {
