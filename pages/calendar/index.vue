@@ -4,7 +4,7 @@ const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
 const _today = ref(await getToday())
 
-const _displayDate = ref(_today.value)
+const _displayDate = ref(new Date(_today.value))
 const _currentMonth = ref(_displayDate.value.getMonth())
 const _currentYear = ref(_displayDate.value.getFullYear())
 const _currentView = ref('month')
