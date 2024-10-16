@@ -8,7 +8,7 @@ const $props = defineProps<{
 const _title = ref('')
 const _endDate = ref<string>(formatDate(end.getTime()))
 const _endTime = ref<string>(formatTime(end.getTime()))
-const _note = ref('')
+const _note = ref<string | null>('')
 const _category = ref('Not categorized')
 const _completed = ref(false)
 
@@ -16,7 +16,7 @@ if ($props.task) {
   _title.value = $props.task.title
   _endDate.value = formatDate($props.task.end)
   _endTime.value = formatTime($props.task.end)
-  _note.value = $props.task.note || ''
+  _note.value = $props.task.note || null
   _category.value = $props.task.category || 'Not categorized'
   _completed.value = $props.task.completed
 }
@@ -27,19 +27,12 @@ function saveTask() {
   _errorMessage.value = ''
   const endDate = new Date(_endDate.value + ' ' + _endTime.value).getTime()
 
-  const ifEmtpyNull = (a: string) => {
-    if (a.length == 0) {
-      return undefined
-    }
-    return a
-  }
-
   const e: Task = {
     id: '0',
     title: _title.value,
     end: endDate,
-    note: ifEmtpyNull(_note.value),
-    category: ifEmtpyNull(_category.value),
+    note: _note.value,
+    category: _category.value,
     completed: _completed.value
   }
 

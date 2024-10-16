@@ -33,8 +33,8 @@ export declare global {
   interface Repetition {
     every: number
     period: EventPeriod
-    repeatOn?: number[] | number
-    end?: number
+    repeatOn: number[] | number | null
+    end: number | null
   }
 
   interface Notify {
@@ -48,18 +48,18 @@ export declare global {
     title: string
     start: number
     end: number
-    location?: string
-    note?: string
-    category?: string
-    repetition?: Repetition
-    notify?: Notify
+    location: string | null
+    note: string | null
+    category: string
+    repetition: Repetition | null
+    notify: Notify[] | null
   }
 
   interface Task {
     id: string
     title: string
     end: number
-    note?: string
+    note: string | null
     completed: boolean
     category?: string
   }

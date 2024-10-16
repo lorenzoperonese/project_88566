@@ -27,11 +27,11 @@ const schema = new Schema<IEvent>(
     title: { type: String, required: true },
     start: { type: Number, required: true },
     end: { type: Number, required: true },
-    location: { type: String },
-    note: { type: String },
-    category: { type: String },
-    repetition: { type: Object },
-    notify: { type: Array },
+    location: { type: String, required: true },
+    note: { type: String, required: true },
+    category: { type: String, required: true },
+    repetition: { type: Object, required: true },
+    notify: { type: Array, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'users' }
   },
   {

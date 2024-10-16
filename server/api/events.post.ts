@@ -44,6 +44,7 @@ export default defineEventHandler(async (event) => {
       note: body.note,
       category: body.category,
       repetition: body.repetition,
+      notify: body.notify,
       user_id: event.context.auth.id
     })
 

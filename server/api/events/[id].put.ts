@@ -56,7 +56,8 @@ export default defineEventHandler(async (event) => {
         location: body.location,
         note: body.note,
         category: body.category,
-        repetition: body.repetition
+        repetition: body.repetition,
+        notify: body.notify
       }
     )
 

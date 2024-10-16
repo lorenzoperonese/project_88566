@@ -1,14 +1,15 @@
 <script setup lang="ts">
 const $emits = defineEmits<{
   (e: 'close'): void
-  (e: 'save', r: Repetition): void
+  (e: 'save', r: Repetition | null): void
 }>()
 
 const $props = defineProps<{
   day: string
-  repetition: Repetition | undefined
+  repetition: Repetition | null
 }>()
 
+const onoff = ref(false)
 const day = new Date($props.day).getDate()
 
 const weekNumber = (d: string) => {
@@ -41,19 +42,19 @@ const _ends = ref('Never')
 const _endDate = ref($props.day)
 const _endAfter = ref(1)
 
-if ($props.repetition !== undefined) {
-  console.log($props.repetition)
+if ($props.repetition !== null) {
+  onoff.value = true
   _repetition.value = $props.repetition.every
   _eventPeriod.value = $props.repetition.period
   if (
     _eventPeriod.value == 2 &&
-    $props.repetition.repeatOn !== undefined &&
+    $props.repetition.repeatOn !== null &&
     Array.isArray($props.repetition.repeatOn)
   )
     _weekDays.value = $props.repetition.repeatOn
   else if (
     _eventPeriod.value == 3 &&
-    $props.repetition.repeatOn !== undefined &&
+    $props.repetition.repeatOn !== null &&
     !Array.isArray($props.repetition.repeatOn)
   )
     _monthRepetition.value = $props.repetition.repeatOn
@@ -63,11 +64,11 @@ if ($props.repetition !== undefined) {
       : 'On'
     : 'Never'
   _endDate.value =
-    _ends.value == 'On' && $props.repetition.end !== undefined
+    _ends.value == 'On' && $props.repetition.end !== null
       ? formatDate($props.repetition.end)
       : $props.day
   _endAfter.value =
-    _ends.value == 'After' && $props.repetition.end !== undefined
+    _ends.value == 'After' && $props.repetition.end !== null
       ? $props.repetition.end
       : 1
 }
@@ -88,6 +89,10 @@ function reset() {
 */
 
 function save() {
+  if (!onoff.value) {
+    $emits('save', null)
+    return
+  }
   const r = {
     every: _repetition.value,
     period: _eventPeriod.value
@@ -109,7 +114,7 @@ function save() {
   }
 
   if (_ends.value == 'Never') {
-    r.end = undefined
+    r.end = null
   } else if (_ends.value == 'Day') {
     r.end = new Date(_endDate.value).getTime()
     if (r.end < new Date().getTime()) {
@@ -117,7 +122,7 @@ function save() {
       return
     }
   } else if (_ends.value == 'After') {
-    if (_endAfter.value > 100000000000) r.end = undefined
+    if (_endAfter.value > 100000000000) r.end = null
     else r.end = _endAfter.value
   }
   $emits('save', r)
@@ -141,8 +146,20 @@ function cancel() {
       <header>
         <h1 class="text-xl font-bold">Repetition</h1>
       </header>
-
-      <main>
+      <div>
+        <label class="inline-flex cursor-pointer items-center">
+          <input
+            v-model="onoff"
+            type="checkbox"
+            value=""
+            class="peer sr-only"
+          />
+          <div
+            class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"
+          ></div>
+        </label>
+      </div>
+      <main v-show="onoff">
         <div class="flex gap-2">
           <div>Repeat every</div>
           <input
