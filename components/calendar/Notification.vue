@@ -1,129 +1,133 @@
 <script setup lang="ts">
-const $emits = defineEmits<{
+const $emit = defineEmits<{
   (e: 'close'): void
   (e: 'save', n: Notify[] | null): void
 }>()
 
 const $props = defineProps<{
   end: number
-  notify: Notify[] | null
+  notifications: Notify[]
 }>()
 
-const onoff = ref(false)
-const _advance = ref(1)
-const _period = ref(1)
-const _hour = ref(formatTime(new Date($props.end).getTime()))
-
-if ($props.notify && $props.notify.length > 0) {
-  onoff.value = true
-  _advance.value = $props.notify[0].advance
-  _period.value = $props.notify[0].period
-  _hour.value = formatTime(new Date($props.notify[0].hour).getTime())
+interface NotifyWithHour {
+  advance: number
+  period: number
+  hour: string
 }
 
-const _errorMessage = ref('')
+const _notifications = ref<NotifyWithHour[]>(
+  $props.notifications.map((n) => ({ ...n, hour: formatTime(n.hour) }))
+)
 
-/*
-function reset() {
-  _repetition.value = 1
-  _eventPeriod.value = 1
-  _weekDays.value = []
-  _monthRepetition.value = 0
-  _ends.value = 'Never'
-  _endDate.value = $props.day
-  _endAfter.value = 1
-  _errorMessage.value = ''
-}
-*/
+const newNotification = ref<NotifyWithHour>({
+  advance: 1,
+  period: 1,
+  hour: formatTime($props.end)
+})
+
+const errorMessage = ref('')
 
 function save() {
-  if (!onoff.value) {
-    $emits('save', null)
-    return
-  }
-  const notification = {
-    advance: _advance.value,
-    period: _period.value,
-    hour: new Date('1900-01-01 ' + _hour.value).getTime()
-  } as Notify
-
-  if (notification.advance < 1 || notification.advance == undefined) {
-    _errorMessage.value = 'Value must be greater than 0'
-    return
-  }
-  const n: Notify[] = []
-  n.push(notification)
-  $emits('save', n)
+  errorMessage.value = ''
+  _notifications.value.forEach((n) => {
+    if (n.advance < 1) {
+      errorMessage.value = 'Invalid input'
+      return
+    }
+  })
+  if (errorMessage.value) return
+  $emit(
+    'save',
+    _notifications.value.map((n) => ({
+      ...n,
+      hour: new Date('1900-01-01 ' + n.hour).getTime()
+    }))
+  )
 }
 
 function cancel() {
-  // reset()
-  $emits('close')
+  $emit('close')
 }
 </script>
 
 <template>
   <div
-    class="absolute left-0 top-0 grid h-full w-full bg-gray-400 bg-opacity-50"
-    @click="cancel()"
+    class="fixed inset-0 flex h-full w-full items-center justify-center overflow-y-auto bg-gray-600 bg-opacity-50"
+    @click="cancel"
   >
     <div
-      class="flex w-96 flex-col gap-4 place-self-center rounded-lg bg-white p-4"
-      @click.stop=""
+      class="flex max-h-[90vh] w-full max-w-md flex-col rounded-lg bg-white p-6 shadow-xl"
+      @click.stop
     >
-      <header>
-        <h1 class="text-xl font-bold">Notifications</h1>
-      </header>
-      <div>
-        <label class="inline-flex cursor-pointer items-center">
+      <h2 class="mb-4 text-2xl font-bold">Notifications</h2>
+
+      <div class="mb-6 flex-grow space-y-4 overflow-y-auto">
+        <div
+          v-for="(notification, index) in _notifications"
+          :key="index"
+          class="flex items-center space-x-2"
+        >
           <input
-            v-model="onoff"
-            type="checkbox"
-            value=""
-            class="peer sr-only"
-          />
-          <div
-            class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"
-          ></div>
-        </label>
-      </div>
-      <main v-show="onoff">
-        <div class="flex gap-2">
-          <input
-            v-model="_advance"
+            v-model="notification.advance"
             type="number"
             min="1"
             required
-            class="w-10 rounded border p-2 outline-none invalid:border-red-500 invalid:text-red-600 hover:bg-gray-200"
+            class="w-16 rounded border p-2"
           />
-          <select v-model="_period">
-            <option value="1">{{ _advance === 1 ? 'Day' : 'Days' }}</option>
-            <option value="2">{{ _advance === 1 ? 'Week' : 'Weeks' }}</option>
-            <option value="3">{{ _advance === 1 ? 'Month' : 'Months' }}</option>
-            <option value="4">{{ _advance === 1 ? 'Year' : 'Years' }}</option>
+          <select v-model="notification.period" class="rounded border p-2">
+            <option value="1">
+              {{ notification.advance === 1 ? 'Day' : 'Days' }}
+            </option>
+            <option value="2">
+              {{ notification.advance === 1 ? 'Week' : 'Weeks' }}
+            </option>
+            <option value="3">
+              {{ notification.advance === 1 ? 'Month' : 'Months' }}
+            </option>
+            <option value="4">
+              {{ notification.advance === 1 ? 'Year' : 'Years' }}
+            </option>
           </select>
-          before at
-          <input v-model="_hour" type="time" class="border p-2" />
+          <span>before at</span>
+          <input
+            v-model="notification.hour"
+            type="time"
+            class="rounded border p-2"
+          />
+          <button
+            class="text-red-500 hover:text-red-700"
+            @click="_notifications.splice(index, 1)"
+          >
+            X
+          </button>
         </div>
-        <p class="mt-2 text-center text-red-500">{{ _errorMessage }}</p>
-      </main>
+      </div>
 
-      <footer>
-        <div class="flex justify-evenly">
-          <button
-            class="rounded-lg border bg-red-300 p-2 hover:bg-red-500"
-            @click="cancel()"
-          >
-            Cancel
-          </button>
-          <button
-            class="rounded-lg border bg-blue-300 p-2 hover:bg-blue-500"
-            @click="save()"
-          >
-            Save
-          </button>
-        </div>
-      </footer>
+      <div class="mb-4 flex items-center space-x-2">
+        <button
+          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          @click="_notifications.push({ ...newNotification })"
+        >
+          Add
+        </button>
+      </div>
+
+      <p v-if="errorMessage" class="mb-4 text-red-500">{{ errorMessage }}</p>
+
+      <div class="flex justify-end space-x-4">
+        <button
+          class="rounded bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400"
+          @click="cancel"
+        >
+          Cancel
+        </button>
+        <button
+          class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          @click="save"
+        >
+          Save
+        </button>
+      </div>
     </div>
   </div>
 </template>

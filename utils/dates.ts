@@ -30,9 +30,10 @@ export function formatDate(d: number) {
   return `${date.getFullYear()}-${month}-${day}`
 }
 
-export function formatTime(d: number) {
+export function formatTime(d: number, ampm = false) {
   const date = new Date(d)
   const hours = date.getHours().toString().padStart(2, '0')
   const minutes = date.getMinutes().toString().padStart(2, '0')
-  return `${hours}:${minutes}`
+  if (!ampm) return `${hours}:${minutes}`
+  return `${parseInt(hours) % 12}:${minutes} ${parseInt(hours) >= 12 ? 'PM' : 'AM'}`
 }

@@ -112,8 +112,8 @@ function saveEvent() {
     location: _location.value || null,
     note: _note.value || null,
     category: _category.value || 'Not categorized',
-    repetition: _repetition.value,
-    notify: _notifications.value
+    repetition: _repetition.value || null,
+    notify: _notifications.value || null
   }
 
   if (e.title.length == 0 || e.start > e.end) {
@@ -144,6 +144,7 @@ function deleteEvent() {
 
 function addNotifications(n: Notify[] | null) {
   _errorMessage.value = ''
+  _notificationsSummary.value = ''
   _showNotifications.value = false
   if (!n) {
     _notifications.value = []
@@ -161,7 +162,8 @@ function addNotifications(n: Notify[] | null) {
             ? 'month'
             : 'year'
     period += i.advance > 1 ? 's' : ''
-    _notificationsSummary.value += `Every ${i.advance} ${period} before at ${formatTime(i.hour)}\n`
+    _notificationsSummary.value +=
+      ` ${i.advance} ${period} before at ${formatTime(i.hour, true)}` + '\n'
   })
 }
 </script>
@@ -228,11 +230,11 @@ function addNotifications(n: Notify[] | null) {
         >
           Notifications
         </button>
-        <p>{{ _notificationsSummary }}</p>
+        <pre>{{ _notificationsSummary }}</pre>
         <CalendarNotification
           v-show="_showNotifications"
           :end="new Date('1900-01-01 ' + _startTime).getTime()"
-          :notify="_notifications"
+          :notifications="_notifications"
           @close="_showNotifications = false"
           @save="addNotifications"
         />
