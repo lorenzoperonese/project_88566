@@ -176,7 +176,7 @@ function addNotifications(n: Notify[] | null) {
     <form class="flex flex-col gap-2" @submit.prevent="">
       <div>
         <label>Title:</label>
-        <input v-model="_title" class="rounded border p-2" />
+        <input v-model="_title" class="rounded border p-2" required />
       </div>
 
       <div>
