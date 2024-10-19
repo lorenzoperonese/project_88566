@@ -12,8 +12,11 @@ async function notificator() {
       //notify("Event", 'Checking notification for event: ' + i)
       //console.log('Checking notification for event: ', events[i])
 
-      if (await needToNotify(events[i])) {
-        notify('Event', `Id: ${events[i].id}, title: ${events[i].title}`)
+      if (await needToNotify(i)) {
+        notify(
+          `${events[i].title}`,
+          `Start: ${new Date(events[i].start)}\nNote: ${events[i].note}`
+        )
       }
     }
 
@@ -23,7 +26,8 @@ async function notificator() {
 
 const DELTA = 90 * 1000
 
-async function needToNotify(event) {
+async function needToNotify(eventIndex) {
+  let event = events[eventIndex]
   if (event.notify === null && event.notify.length === 0) return false
 
   const tm = await fetch('/api/tm')
@@ -68,6 +72,8 @@ async function needToNotify(event) {
     if (Math.abs(tmp.getTime() - today.getTime()) < DELTA) {
       // Only one notification should match, so there is no need to keep going
       // with the array
+      //notify("DBG", `HERE`)
+      events[eventIndex].notify.splice(i, 1)
       return true
     }
   }
