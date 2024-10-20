@@ -29,7 +29,9 @@ async function sendTest() {
     return
   }
 
-  SW.active.postMessage('Provolone')
+  //SW.active.postMessage('Provolone')
+
+  fetch('/api/notify')
 }
 </script>
 

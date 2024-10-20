@@ -1,11 +1,12 @@
 import webpush from 'web-push'
 
 export default defineEventHandler(async (event) => {
-  const options = await useStorage().getItem<PushSubscription>(
+  const options = await useStorage().getItem<webpush.PushSubscription>(
     `notify:${event.context.auth.id}`
   )
+  console.log(options)
   if (options) {
-    webpush.sendNotification(options as any, 'Hola')
+    webpush.sendNotification(options, 'Hola')
   } else {
     const err = 'Options for notify are empty'
     console.error(err)
