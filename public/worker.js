@@ -1,3 +1,18 @@
+const urlB64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+  const rawData = atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+const applicationServerKey = urlB64ToUint8Array(
+  'BJ50dYyaHqkf3WY_z3ivPl94JzHT32bF4gkpTNUhisQVhjrTEx0-Dpa78fMje7PMwyKnLeZ5nHulhMRkPUTopmQ'
+)
+
 let events = []
 
 async function fetchEvents() {
@@ -7,20 +22,16 @@ async function fetchEvents() {
 
 // This functions runs in a loop and check if notifications should be sent
 async function notificator() {
-  while (true) {
-    for (let i = 0; i < events.length; i++) {
-      //notify("Event", 'Checking notification for event: ' + i)
-      //console.log('Checking notification for event: ', events[i])
+  for (let i = 0; i < events.length; i++) {
+    //notify("Event", 'Checking notification for event: ' + i)
+    //console.log('Checking notification for event: ', events[i])
 
-      if (await needToNotify(i)) {
-        notify(
-          `${events[i].title}`,
-          `Start: ${new Date(events[i].start)}\nNote: ${events[i].note}`
-        )
-      }
+    if (await needToNotify(i)) {
+      notify(
+        `${events[i].title}`,
+        `Start: ${new Date(events[i].start)}\nNote: ${events[i].note}`
+      )
     }
-
-    await new Promise((r) => setTimeout(r, 15 * 1000))
   }
 }
 
@@ -85,14 +96,52 @@ function notify(title, body) {
   self.registration.showNotification(title, { body: body })
 }
 
+async function saveSubscription(subscription) {
+  // TODO: Modify when deploy
+  const SERVER_URL = 'http://localhost:3000/api/notify'
+  const response = await fetch(SERVER_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(subscription)
+  })
+
+  return response.json()
+}
+
 async function main() {
   //console.log('Hello from worker :)')
 
-  events = await fetchEvents()
-  notificator()
+  //events = await fetchEvents()
+  //setInterval(notificator, 15 * 1000)
 
   self.addEventListener('message', (m) => {
     notify('Test notification', m.data)
+    console.log('provolone')
+  })
+
+  self.addEventListener('activate', async () => {
+    try {
+      const options = {
+        applicationServerKey,
+        userVisibleOnly: true
+      }
+      const subscription =
+        await self.registration.pushManager.subscribe(options)
+      const response = await saveSubscription(subscription)
+      console.log(response)
+    } catch (err) {
+      console.log('Service worker: ', err)
+    }
+  })
+
+  self.addEventListener('push', (event) => {
+    if (event.data) {
+      notify('Push', event.data.text())
+    } else {
+      console.log('Push event but no data')
+    }
   })
 }
 
