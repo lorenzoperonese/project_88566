@@ -5,6 +5,8 @@ import {
   CalendarViewWeek
 } from '#components'
 
+
+
 const { data: _events } = await useFetch<EventType[]>('/api/events')
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
@@ -99,6 +101,9 @@ function header(): string {
     <h1 class="bg-blue-500 p-4 text-center text-3xl font-bold text-white">
       CALENDAR
     </h1>
+    <div class="absolute top-4 right-4">
+      <CalendarSettingsPanel />
+    </div>
     <div class="relative flex items-center justify-between bg-blue-100 p-4">
       <button
         class="rounded bg-blue-500 px-4 py-2 text-white"

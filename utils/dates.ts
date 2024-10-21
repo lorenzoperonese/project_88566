@@ -23,6 +23,21 @@ export const months: string[] = [
   'December'
 ]
 
+export const shortMonths: string[] = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+]
+
 export function formatDate(d: number) {
   const date = new Date(d)
   const month = (date.getMonth() + 1).toString().padStart(2, '0')

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const today = await getToday()
 const end = new Date(today.getTime() + 1000 * 60 * 60)
 
@@ -239,7 +240,6 @@ function addNotifications(n: Notify[] | null) {
           @save="addNotifications"
         />
       </div>
-
       <div class="flex">
         <NuxtLink class="w-full" to="/calendar">
           <div
