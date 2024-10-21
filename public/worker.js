@@ -110,30 +110,46 @@ async function saveSubscription(subscription) {
   return response.json()
 }
 
+let ACTIVE = false
+
+async function activate() {
+  try {
+    const options = {
+      applicationServerKey,
+      userVisibleOnly: true
+    }
+    const subscription = await self.registration.pushManager.subscribe(options)
+    const response = await saveSubscription(subscription)
+    if (!response.ok) {
+      throw response
+    }
+    console.log(response)
+    ACTIVE = true
+  } catch (err) {
+    console.error('Service worker: ', err)
+    ACTIVE = false
+  }
+}
+
 async function main() {
-  //console.log('Hello from worker :)')
+  self.addEventListener('message', (event) => {
+    console.log(event)
+    if (!event.data) {
+      console.error('No data provided to event')
+      return
+    }
+    console.log(event.data)
 
-  //events = await fetchEvents()
-  //setInterval(notificator, 15 * 1000)
-
-  self.addEventListener('message', (m) => {
-    notify('Test notification', m.data)
-    console.log('provolone')
+    if (event.data.type === 'authenticated') {
+      console.log('User authenticated')
+      if (!ACTIVE) {
+        activate()
+      }
+    }
   })
 
   self.addEventListener('activate', async () => {
-    try {
-      const options = {
-        applicationServerKey,
-        userVisibleOnly: true
-      }
-      const subscription =
-        await self.registration.pushManager.subscribe(options)
-      const response = await saveSubscription(subscription)
-      console.log(response)
-    } catch (err) {
-      console.log('Service worker: ', err)
-    }
+    activate()
   })
 
   self.addEventListener('push', (event) => {

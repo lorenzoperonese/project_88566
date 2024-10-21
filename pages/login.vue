@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { postMessageToWoker } from '~/utils/worker'
 
 // login page is in dark mode by default
 document.documentElement.setAttribute('data-theme', 'dark')
@@ -39,6 +40,8 @@ async function login() {
     await signIn(credentials, { callbackUrl: '/' })
     changeTheme()
     wsSendAuth()
+
+    postMessageToWoker({ type: 'authenticated' })
   } catch (err: Error) {
     console.error(err)
     _error.value = err.response._data.err
@@ -56,16 +59,9 @@ async function login() {
             <label for="input-mail" class="label">
               <span class="label-text"> Username or mail </span>
             </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
-              <input
-                id="input-text"
-                v-model="_username"
-                type="text"
-                class="X-required grow invalid:text-error"
-                placeholder="Enter Username"
-              />
+            <div class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error">
+              <input id="input-text" v-model="_username" type="text" class="X-required grow invalid:text-error"
+                placeholder="Enter Username" />
             </div>
           </div>
 
@@ -73,16 +69,9 @@ async function login() {
             <label for="input-password" class="label">
               <span class="label-text"> Password </span>
             </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
-              <input
-                id="input-password"
-                v-model="_password"
-                type="password"
-                class="X-required grow invalid:text-error"
-                placeholder="Enter password"
-              />
+            <div class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error">
+              <input id="input-password" v-model="_password" type="password" class="X-required grow invalid:text-error"
+                placeholder="Enter password" />
             </div>
           </div>
 
@@ -98,9 +87,7 @@ async function login() {
         <div class="divider">OR</div>
         <div class="text-center">
           <p>Don't have an account?</p>
-          <NuxtLink to="/register" class="link link-primary"
-            >Sign up now</NuxtLink
-          >
+          <NuxtLink to="/register" class="link link-primary">Sign up now</NuxtLink>
         </div>
       </div>
     </div>
