@@ -17,7 +17,6 @@ export interface IEvent extends Document {
   notify?: {
     advance: number
     period: number
-    hour: number
   }[]
   user_id: Types.ObjectId
 }

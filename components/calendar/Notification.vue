@@ -1,29 +1,14 @@
 <script setup lang="ts">
 const $emit = defineEmits<{
   (e: 'close'): void
-  (e: 'save', n: Notify[] | null): void
+  (e: 'save', n: Notify[] | []): void
 }>()
 
 const $props = defineProps<{
-  end: number
   notifications: Notify[]
 }>()
 
-interface NotifyWithHour {
-  advance: number
-  period: number
-  hour: string
-}
-
-const _notifications = ref<NotifyWithHour[]>(
-  $props.notifications.map((n) => ({ ...n, hour: formatTime(n.hour) }))
-)
-
-const newNotification = ref<NotifyWithHour>({
-  advance: 1,
-  period: 1,
-  hour: formatTime($props.end)
-})
+const _notifications = ref($props.notifications)
 
 const errorMessage = ref('')
 
@@ -36,13 +21,7 @@ function save() {
     }
   })
   if (errorMessage.value) return
-  $emit(
-    'save',
-    _notifications.value.map((n) => ({
-      ...n,
-      hour: new Date('1900-01-01 ' + n.hour).getTime()
-    }))
-  )
+  $emit('save', _notifications.value)
 }
 
 function cancel() {
@@ -76,24 +55,20 @@ function cancel() {
           />
           <select v-model="notification.period" class="rounded border p-2">
             <option value="1">
-              {{ notification.advance === 1 ? 'Day' : 'Days' }}
+              {{ notification.advance === 1 ? 'Minute' : 'Minutes' }}
             </option>
             <option value="2">
-              {{ notification.advance === 1 ? 'Week' : 'Weeks' }}
+              {{ notification.advance === 1 ? 'Hour' : 'Hours' }}
             </option>
             <option value="3">
-              {{ notification.advance === 1 ? 'Month' : 'Months' }}
+              {{ notification.advance === 1 ? 'Day' : 'Days' }}
             </option>
             <option value="4">
-              {{ notification.advance === 1 ? 'Year' : 'Years' }}
+              {{ notification.advance === 1 ? 'Week' : 'Weeks' }}
             </option>
           </select>
-          <span>before at</span>
-          <input
-            v-model="notification.hour"
-            type="time"
-            class="rounded border p-2"
-          />
+          <span>before</span>
+
           <button
             class="text-red-500 hover:text-red-700"
             @click="_notifications.splice(index, 1)"
@@ -106,7 +81,7 @@ function cancel() {
       <div class="mb-4 flex items-center space-x-2">
         <button
           class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-          @click="_notifications.push({ ...newNotification })"
+          @click="_notifications.push({ advance: 1, period: 1 })"
         >
           Add
         </button>

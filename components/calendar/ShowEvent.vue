@@ -3,7 +3,7 @@ const $props = defineProps<{
   event: EventType
 }>()
 
-function repetitionMessage (r: Repetition) {
+function repetitionMessage(r: Repetition) {
   let message = ''
   if (r.every != 1) {
     let tmp
@@ -37,11 +37,9 @@ function repetitionMessage (r: Repetition) {
     }
   }
   if (r.period == 2 && r.repeatOn && Array.isArray(r.repeatOn)) {
-    message +=
-      ', on ' + r.repeatOn.map((e: number) => days[e]).join(', ')
+    message += ', on ' + r.repeatOn.map((e: number) => days[e]).join(', ')
   } else if (r.period == 3) {
-    message +=
-      r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
+    message += r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
   }
   if (r.end === null) {
     message += ', forever'
@@ -54,7 +52,7 @@ function repetitionMessage (r: Repetition) {
   return message
 }
 
-function notifyMessage (n: Notify[]) {
+function notifyMessage(n: Notify[]) {
   let message = ''
   n.forEach((i) => {
     let period =
@@ -66,12 +64,11 @@ function notifyMessage (n: Notify[]) {
             ? 'month'
             : 'year'
     period += i.advance > 1 ? 's' : ''
-    message +=
-      ` ${i.advance} ${period} before at ${formatTime(i.hour, true)}` + '\n'
+    message += ` ${i.advance} ${period} before , `
   })
+  message = message.slice(0, -2)
   return message
 }
-
 </script>
 
 <template>
@@ -79,13 +76,35 @@ function notifyMessage (n: Notify[]) {
     <div>
       <div>
         <div>Title: {{ $props.event.title.toUpperCase() }}</div>
-        <div>When: {{ formatTime($props.event.start, true) }} - {{ formatTime($props.event.end, true) }}</div>
-        <div>Location: {{ $props.event.location ? $props.event.location : 'unknown' }}</div>
-        <div>Notes: {{ $props.event.note ? $props.event.note : 'No notes' }}</div>
-        <div>Repetition: {{ $props.event.repetition ? repetitionMessage($props.event.repetition) : 'No' }}</div>
-        <div>Notify: {{ $props.event.notify ? notifyMessage($props.event.notify) : 'No' }}</div>
+        <div>
+          When: {{ formatTime($props.event.start, true) }} -
+          {{ formatTime($props.event.end, true) }}
+        </div>
+        <div>
+          Location:
+          {{ $props.event.location ? $props.event.location : 'unknown' }}
+        </div>
+        <div>
+          Notes: {{ $props.event.note ? $props.event.note : 'No notes' }}
+        </div>
+        <div>
+          Repetition:
+          {{
+            $props.event.repetition
+              ? repetitionMessage($props.event.repetition)
+              : 'No'
+          }}
+        </div>
+        <div>
+          Notify:
+          {{
+            $props.event.notify.length > 0
+              ? notifyMessage($props.event.notify)
+              : 'No'
+          }}
+        </div>
       </div>
     </div>
-    <CalendarAddToCalendar :event="event"/>
+    <CalendarAddToCalendar :event="event" />
   </div>
 </template>
