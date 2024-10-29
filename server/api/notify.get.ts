@@ -6,7 +6,15 @@ export default defineEventHandler(async (event) => {
   )
   console.log(options)
   if (options) {
-    webpush.sendNotification(options, 'Hola')
+    const resp = webpush.sendNotification(
+      options,
+      JSON.stringify({
+        title: 'Test notification',
+        body: 'This is a test from the backend'
+      })
+    )
+
+    console.log(await resp)
   } else {
     const err = 'Options for notify are empty'
     console.error(err)

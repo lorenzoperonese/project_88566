@@ -13,7 +13,13 @@ const applicationServerKey = urlB64ToUint8Array(
   'BJ50dYyaHqkf3WY_z3ivPl94JzHT32bF4gkpTNUhisQVhjrTEx0-Dpa78fMje7PMwyKnLeZ5nHulhMRkPUTopmQ'
 )
 
-function notify(title, body) {
+async function notify(title, body) {
+  //const response = await fetch('api/session')
+  //console.log(response)
+  //if (!response.ok) {
+  //  return
+  //}
+  //
   self.registration.showNotification(title, { body: body })
 }
 
@@ -74,8 +80,11 @@ async function main() {
   })
 
   self.addEventListener('push', (event) => {
+    console.log('Push received')
+    console.log(event)
+    console.log(event.data.json())
     if (event.data) {
-      const data = JSON.parse(event.data)
+      const data = event.data.json()
 
       notify(data.title, data.body)
     } else {
