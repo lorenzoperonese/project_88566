@@ -63,4 +63,20 @@ export declare global {
     completed: boolean
     category?: string
   }
+
+  //interface ChatRoom {
+  //  roomId: string,
+  //  roomName: string,
+  //  users: ChatUser[]
+  //  typingUsers: number[]
+  //}
+  //
+  //interface ChatMessage {
+  //  _id: string,
+  //  content: string,
+  //  senderId: string,
+  //  saved: bool,
+  //  distributed: bool,
+  //  seen: bool
+  //}
 }

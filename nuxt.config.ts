@@ -47,5 +47,12 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {}
     }
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tagName) => {
+        return tagName === 'vue-advanced-chat' || tagName === 'emoji-picker'
+      }
+    }
   }
 })
