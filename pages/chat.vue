@@ -54,28 +54,36 @@ function showAddRoom() {
   adding_room.value = true
 }
 
-function addRoom() {
+async function addRoom() {
   // Should check if this room exist :)
   // add_room_name.value
 
-  console.log('Adding room: ', add_room_name.value)
+  try {
+    const res = await $fetch('/api/chat/rooms', {
+      method: 'POST',
+      body: JSON.stringify({
+        person: add_room_name.value
+      })
+    })
 
-  let tmp = rooms.value as ChatRoom[]
-  // Fetch new room
-  tmp.push({
-    roomId: '3',
-    roomName: add_room_name.value,
-    avatar: '',
-    users: [],
-    typingUsers: ['2222']
-  })
+    if (!res) {
+      console.error('Error adding room')
+      return
+    }
 
-  console.log(tmp)
+    console.log(res)
+    console.log('Adding room:')
+    let tmp = rooms.value as ChatRoom[]
+    // Fetch new room
+    tmp.push(res as ChatRoom)
 
-  rooms.value = tmp as ChatRoom[]
-  console.log(rooms.value)
+    rooms.value = tmp as ChatRoom[]
+    console.log(rooms.value)
 
-  adding_room.value = false
+    adding_room.value = false
+  } catch (e) {
+    console.error(e)
+  }
 }
 </script>
 
