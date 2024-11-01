@@ -7,7 +7,7 @@ const $props = defineProps<{
 useHead({
   script: [
     {
-      src: 'https://cdn.addevent.com/libs/atc/1.6.1/atc.min.js'
+      src: '/atc.min.js'
     }
   ],
   link: [
