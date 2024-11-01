@@ -16,7 +16,10 @@ const loading_messages = ref(true)
 const rooms_loaded = ref(false)
 const messages_loaded = ref(false)
 
-const currentUserId = ref('1')
+const { getSession } = useAuth()
+const userID: string = (toRaw(await getSession()) as any)?.s.user_id
+
+const currentUserId = ref(userID)
 const rooms = ref<ChatRoom[]>([])
 const messages = ref<ChatMessage[]>([])
 const roomActions = [
@@ -27,7 +30,6 @@ const roomActions = [
 
 onMounted(async () => {
   await fetchRooms()
-  await fetchMessages(1)
 })
 
 async function fetchRooms() {
@@ -39,12 +41,15 @@ async function fetchRooms() {
   rooms_loaded.value = true
 }
 
-async function fetchMessages(room: number) {
+async function fetchMessages({ room, options }: any) {
+  room = toRaw(room) as ChatRoom
+  console.log(room)
+  console.log(options)
   console.log('Fetching messages')
   loading_messages.value = true
   messages_loaded.value = false
 
-  const data = await $fetch(`/api/chat/rooms/${room}`)
+  const data = await $fetch(`/api/chat/rooms/${room.roomId}`)
   messages.value = data as ChatMessage[]
   console.log('Messages fetched: ', messages.value)
   loading_messages.value = false
@@ -87,6 +92,51 @@ async function addRoom() {
     error.value = e
   }
 }
+
+async function sendMessage({
+  roomId,
+  content,
+  files,
+  replyMessage,
+  userTag
+}: {
+  roomId: string
+  content: string
+  files: any[]
+  replyMessage: any
+  userTag: any
+}) {
+  console.log('Sending message')
+  console.log(roomId)
+  console.log(content)
+  console.log(files)
+  console.log(replyMessage)
+  console.log(userTag)
+
+  try {
+    const { data, error } = await useFetch(`/api/chat/rooms/${roomId}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        content: content,
+        roomId: roomId
+      })
+    })
+
+    if (error.value) {
+      console.error('Error sending message')
+      throw error.value.data.err
+    }
+
+    console.log(data)
+    console.log('Message sent:')
+    let tmp = messages.value as ChatMessage[]
+    tmp.push(data.value as ChatMessage)
+    messages.value = tmp as ChatMessage[]
+    console.log(messages.value)
+  } catch (e: any) {
+    console.error(e)
+  }
+}
 </script>
 
 <template>
@@ -100,8 +150,9 @@ async function addRoom() {
       :room-actions="JSON.stringify(roomActions)"
       :show-files="false"
       :show-audio="false"
-      @fetch-messages="fetchMessages(1)"
       @add-room="showAddRoom"
+      @fetch-messages="fetchMessages($event.detail[0])"
+      @send-message="sendMessage($event.detail[0])"
     />
 
     <!-- DA SPOSTARE -->
