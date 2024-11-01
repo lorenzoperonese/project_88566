@@ -9,6 +9,7 @@ register()
 
 const adding_room = ref(false)
 const add_room_name = ref('')
+const error = ref('')
 
 const loading_rooms = ref(true)
 const loading_messages = ref(true)
@@ -59,30 +60,31 @@ async function addRoom() {
   // add_room_name.value
 
   try {
-    const res = await $fetch('/api/chat/rooms', {
+    const { data, error } = await useFetch('/api/chat/rooms', {
       method: 'POST',
       body: JSON.stringify({
         person: add_room_name.value
       })
     })
 
-    if (!res) {
+    if (error.value) {
       console.error('Error adding room')
-      return
+      throw error.value.data.err
     }
 
-    console.log(res)
+    console.log(data)
     console.log('Adding room:')
     let tmp = rooms.value as ChatRoom[]
     // Fetch new room
-    tmp.push(res as ChatRoom)
+    tmp.push(data.value as ChatRoom)
 
     rooms.value = tmp as ChatRoom[]
     console.log(rooms.value)
 
     adding_room.value = false
-  } catch (e) {
+  } catch (e: any) {
     console.error(e)
+    error.value = e
   }
 }
 </script>
@@ -108,6 +110,9 @@ async function addRoom() {
       <button class="rounded border p-2 hover:bg-gray-200" @click="addRoom">
         Add Room
       </button>
+      <div class="text-red-600">
+        {{ error }}
+      </div>
     </div>
   </div>
 </template>

@@ -38,6 +38,18 @@ export default defineEventHandler(async (event): Promise<ChatRoom | Object> => {
       }
     }
 
+    const room = await Room.findOne({
+      roomName: body.person
+    })
+
+    if (room) {
+      setResponseStatus(event, 400)
+      return {
+        code: 'ROOM_EXISTS',
+        err: 'Room already exists'
+      }
+    }
+
     const r = new Room({
       roomId: new Types.ObjectId(),
       roomName: user.username,
