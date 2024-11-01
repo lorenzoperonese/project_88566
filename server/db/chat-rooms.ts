@@ -1,11 +1,9 @@
 import { Schema, model } from 'mongoose'
-import type { Types } from 'mongoose'
 import type { Room } from 'vue-advanced-chat'
 import RoomUser from './chat-room-user'
-import User from './user'
 
 interface IRoom extends Room {
-  user_id: Types.ObjectId
+  conversationId: Schema.Types.ObjectId
 }
 
 const schema = new Schema<IRoom>({
@@ -20,7 +18,7 @@ const schema = new Schema<IRoom>({
   index: { type: Date },
   lastMessage: { type: Object },
   typingUsers: { type: [String] },
-  user_id: { type: Schema.Types.ObjectId, required: true, ref: User }
+  conversationId: { type: Schema.Types.ObjectId }
 })
 
 schema.set('toJSON', {

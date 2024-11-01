@@ -1,5 +1,5 @@
 import type { Message as ChatMessage } from 'vue-advanced-chat'
-import { Message } from '@/server/db'
+import { Message, Room } from '@/server/db'
 
 export default defineEventHandler(async (event): Promise<ChatMessage[]> => {
   const id = getRouterParam(event, 'id')
@@ -10,8 +10,17 @@ export default defineEventHandler(async (event): Promise<ChatMessage[]> => {
   }
 
   try {
-    const messages = await Message.find({
+    const room = await Room.findOne({
       roomId: id
+    })
+
+    if (!room) {
+      setResponseStatus(event, 404)
+      return []
+    }
+
+    const messages = await Message.find({
+      conversationId: room.conversationId
     })
 
     return messages

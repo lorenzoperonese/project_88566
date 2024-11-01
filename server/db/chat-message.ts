@@ -1,16 +1,15 @@
 import { Schema, model, Types } from 'mongoose'
 import type { Message } from 'vue-advanced-chat'
 import User from './user'
-import Room from './chat-rooms'
 
 interface IMessage extends Message {
-  roomId: Types.ObjectId
+  conversationId: Types.ObjectId
 }
 
 const schema = new Schema<IMessage>({
   senderId: { type: String, required: true, ref: User },
   content: { type: String },
-  roomId: { type: Schema.Types.ObjectId, required: true, ref: Room }
+  conversationId: { type: Schema.Types.ObjectId, required: true }
 })
 
 export default model<IMessage>('Message', schema, 'messages')

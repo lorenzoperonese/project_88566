@@ -50,17 +50,29 @@ export default defineEventHandler(async (event): Promise<ChatRoom | Object> => {
       }
     }
 
+    const conversationId = new Types.ObjectId()
+
     const r = new Room({
       roomId: new Types.ObjectId(),
       roomName: user.username,
       avatar: 'none',
       users: [user._id, event.context.auth.id],
       typingUsers: [event.context.auth.id],
-      user_id: event.context.auth.id
+      conversationId: conversationId
     })
 
     const r2 = await r.save()
     console.log(r2)
+
+    const r_other = new Room({
+      roomId: new Types.ObjectId(),
+      roomName: event.context.auth.username,
+      avatar: 'none',
+      users: [user._id, event.context.auth.id],
+      typingUsers: [user._id],
+      conversationId: conversationId
+    })
+    r_other.save()
 
     let r3 = await r2.populate('users')
     if (!r3) {
