@@ -1,33 +1,18 @@
-import { Schema, model } from 'mongoose'
-import type { Room } from 'vue-advanced-chat'
-import RoomUser from './chat-room-user'
+import { Schema, Types, model } from 'mongoose'
+import User from './user'
 
-interface IRoom extends Room {
-  conversationId: Schema.Types.ObjectId
+interface Room {
+  roomName: string
+  senderId: Types.ObjectId
+  receiverId: Types.ObjectId
+  conversationId: Types.ObjectId
 }
 
-const schema = new Schema<IRoom>({
-  roomId: { type: String, required: true, unique: true },
+const schema = new Schema<Room>({
   roomName: { type: String, required: true },
-  avatar: { type: String, required: true },
-  users: {
-    type: [{ type: Schema.Types.ObjectId, ref: RoomUser }],
-    required: true
-  },
-  unreadCount: { type: Number },
-  index: { type: Date },
-  lastMessage: { type: Object },
-  typingUsers: { type: [String] },
+  senderId: { type: Schema.Types.ObjectId, required: true, ref: User },
+  receiverId: { type: Schema.Types.ObjectId, required: true, ref: User },
   conversationId: { type: Schema.Types.ObjectId }
 })
 
-schema.set('toJSON', {
-  virtuals: true,
-  versionKey: false,
-  transform: (_, ret) => {
-    ret.roomId = ret._id
-    delete ret._id
-  }
-})
-
-export default model<IRoom>('Room', schema, 'rooms')
+export default model<Room>('Room', schema, 'rooms')

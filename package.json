@@ -24,7 +24,6 @@
     "nuxt": "^3.13.0",
     "typescript": "^5.6.2",
     "vue": "latest",
-    "vue-advanced-chat": "^2.1.0",
     "vue-router": "latest"
   },
   "devDependencies": {

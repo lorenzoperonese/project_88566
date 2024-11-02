@@ -1,6 +1,7 @@
 import { Peer, Message } from 'crossws'
-import { Room } from '@/server/db'
+import { Room, User } from '@/server/db'
 import { Schema, Types } from 'mongoose'
+import { createRooms } from '../utils/chat'
 
 export default defineWebSocketHandler({
   open: async (peer: Peer) => {
@@ -27,6 +28,8 @@ export default defineWebSocketHandler({
 
       const ptoken = new Types.ObjectId(s.user_id)
       console.log('Auth:', token)
+
+      peer.subscribe(ptoken.toString())
 
       const rooms = await Room.find()
         .where('users')
@@ -65,6 +68,20 @@ export default defineWebSocketHandler({
         console.error(e)
         return
       }
+    }
+
+    if (data.type == 'room_add') {
+      data.person
+      await createRooms(data.senderId, data.person)
+
+      let receiver = await User.findOne({ username: data.person })
+      if (!receiver) {
+        throw new Error('Receiver not found')
+      }
+      peer.publish((receiver._id as Types.ObjectId).toString(), {
+        type: 'room_add'
+      })
+      peer.send({ type: 'room_add' })
     }
   },
 
