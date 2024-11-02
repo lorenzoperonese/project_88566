@@ -14,10 +14,31 @@ const { status, data, send, open, close } = useWebSocket(
   'ws://localhost:3000/_ws'
 )
 
+watch(data, (newData) => {
+  console.log('New data:', newData)
+
+  if (newData.type != 'chat_message') return
+
+  if (current_room_user_id.value == newData.roomId) {
+    messages_loaded.value = false
+    loading_messages.value = true
+
+    let tmp = messages.value
+    tmp.push(newData.message)
+    messages.value = tmp
+
+    loading_messages.value = false
+    messages_loaded.value = true
+  }
+
+  console.log(newData)
+})
+
 send(JSON.stringify({ type: 'message', data: 'Hello' }))
 
 const adding_room = ref(false)
 const add_room_name = ref('')
+const current_room_user_id = ref('')
 const error = ref('')
 
 const loading_rooms = ref(true)
@@ -43,7 +64,6 @@ onMounted(async () => {
 
 async function fetchRooms() {
   rooms_loaded.value = false
-
   const data = await $fetch('/api/chat/rooms')
   rooms.value = data as ChatRoom[]
   loading_rooms.value = false
@@ -122,28 +142,42 @@ async function sendMessage({
   console.log(replyMessage)
   console.log(userTag)
 
+  //try {
+  //  const { data, error } = await useFetch(`/api/chat/rooms/${roomId}`, {
+  //    method: 'POST',
+  //    body: JSON.stringify({
+  //      content: content,
+  //      roomId: roomId
+  //    })
+  //  })
+  //
+  //  if (error.value) {
+  //    console.error('Error sending message')
+  //    throw error.value.data.err
+  //  }
+  //
+  //  console.log(data)
+  //  console.log('Message sent:')
+  //  let tmp = messages.value as ChatMessage[]
+  //  tmp.push(data.value as ChatMessage)
+  //  messages.value = tmp as ChatMessage[]
+  //  console.log(messages.value)
+  //} catch (e: any) {
+  //  console.error(e)
+  //}
+
   try {
-    const { data, error } = await useFetch(`/api/chat/rooms/${roomId}`, {
-      method: 'POST',
-      body: JSON.stringify({
+    send(
+      JSON.stringify({
+        type: 'chat_message',
+        roomId: roomId,
         content: content,
-        roomId: roomId
+        senderId: userID
       })
-    })
-
-    if (error.value) {
-      console.error('Error sending message')
-      throw error.value.data.err
-    }
-
-    console.log(data)
-    console.log('Message sent:')
-    let tmp = messages.value as ChatMessage[]
-    tmp.push(data.value as ChatMessage)
-    messages.value = tmp as ChatMessage[]
-    console.log(messages.value)
+    )
   } catch (e: any) {
     console.error(e)
+    error.value = e
   }
 }
 </script>
