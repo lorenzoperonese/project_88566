@@ -39,7 +39,6 @@ function calculateReminder(reminder: Notify[]) {
       return period * r.advance
     })
     .sort((a, b) => a - b)
-  console.log(n.at(0))
   return n.at(0)
 }
 

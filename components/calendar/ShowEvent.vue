@@ -85,6 +85,12 @@ function notifyMessage(n: Notify[]) {
           {{ $props.event.location ? $props.event.location : 'unknown' }}
         </div>
         <div>
+          Category:
+          {{
+            $props.event.category ? $props.event.category : 'Not categotized'
+          }}
+        </div>
+        <div>
           Notes: {{ $props.event.note ? $props.event.note : 'No notes' }}
         </div>
         <div>

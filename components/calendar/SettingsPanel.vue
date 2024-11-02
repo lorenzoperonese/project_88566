@@ -13,7 +13,7 @@ const _isOpen = ref(false)
 function calculateWeekDays(e: EventType) {
   if (e.repetition === null) return undefined
   if (
-    e.repetition.period === 2 &&
+    parseInt(e.repetition.period.toString()) === 2 &&
     e.repetition.repeatOn &&
     Array.isArray(e.repetition.repeatOn)
   )
@@ -34,7 +34,7 @@ function calculateWeekDays(e: EventType) {
 function calculateMonthDays(e: EventType) {
   if (e.repetition === null) return undefined
   if (
-    e.repetition.period === 3 &&
+    parseInt(e.repetition.period.toString()) === 3 &&
     e.repetition.repeatOn &&
     !Array.isArray(e.repetition.repeatOn) &&
     e.repetition.repeatOn === 1
@@ -43,11 +43,11 @@ function calculateMonthDays(e: EventType) {
   return undefined
 }
 
-function calculateRecurrence(e: EventType): CalendarRecurrence | undefined {
+function calculateRecurrenceOUT(e: EventType): CalendarRecurrence | undefined {
   const r = e.repetition
   if (!r) return undefined
   return {
-    frequency: `${r.period === 1 ? 'DAILY' : r.period === 2 ? 'WEEKLY' : r.period === 3 ? 'MONTHLY' : 'YEARLY'}`,
+    frequency: `${parseInt(r.period.toString()) === 1 ? 'DAILY' : parseInt(r.period.toString()) === 2 ? 'WEEKLY' : parseInt(r.period.toString()) === 3 ? 'MONTHLY' : 'YEARLY'}`,
     interval: r.every,
     count:
       r.end !== null && r.end < new Date('1900-01-01 00:00 AM').getTime()
@@ -63,14 +63,17 @@ function calculateRecurrence(e: EventType): CalendarRecurrence | undefined {
 }
 
 function exportCal() {
-  if (!$props.events || $props.events.length === 0) return
+  if (!$props.events || $props.events.length === 0) {
+    alert('No events to export') // toast in the future
+    return
+  }
   const calendar = new ICalendar({
     title: $props.events[0].title,
     description: $props.events[0].note || '',
     location: $props.events[0].location || '',
     start: new Date($props.events[0].start),
     end: new Date($props.events[0].end),
-    recurrence: calculateRecurrence($props.events[0])
+    recurrence: calculateRecurrenceOUT($props.events[0])
   })
   const eventsWitoutFirst = $props.events.slice(1)
   eventsWitoutFirst.forEach((e) => {
@@ -80,7 +83,7 @@ function exportCal() {
       location: e.location || '',
       start: new Date(e.start),
       end: new Date(e.end),
-      recurrence: calculateRecurrence(e)
+      recurrence: calculateRecurrenceOUT(e)
     })
     calendar.addEvent(event)
   })
@@ -133,17 +136,16 @@ const parseICSContent = (icsData: string) => {
         title: event.summary,
         note: event.description,
         location: event.location,
-        category: 'Not categorized',
+        category: 'Imported event',
         start: event.startDate.toJSDate().getTime(),
         end: event.endDate.toJSDate().getTime(),
-        repetition: null,
+        repetition: calculateRecurrenceIN(event),
         notify: []
       }
       if (e.title.length == 0 || e.start > e.end) {
         alert('Invalid input file')
         return
       }
-      console.log(e)
       $fetch('/api/events', {
         method: 'POST',
         body: JSON.stringify(e)
@@ -154,6 +156,12 @@ const parseICSContent = (icsData: string) => {
       `Errore nel parsing del file ICS: ${err instanceof Error ? err.message : 'Errore sconosciuto'}`
     )
   }
+}
+
+function calculateRecurrenceIN(event: ICAL.Event): Repetition | null {
+  // not supported yet
+  console.log("I'm here to not trigger lint, don't mind at me\n" + event)
+  return null
 }
 </script>
 
