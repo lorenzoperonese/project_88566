@@ -54,5 +54,10 @@ export default defineNuxtConfig({
         return tagName === 'vue-advanced-chat' || tagName === 'emoji-picker'
       }
     }
+  },
+  nitro: {
+    experimental: {
+      websocket: true
+    }
   }
 })

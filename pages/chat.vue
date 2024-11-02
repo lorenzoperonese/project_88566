@@ -7,6 +7,15 @@ import type {
 
 register()
 
+import { useWebSocket } from '@vueuse/core'
+
+// TODO: DA CAMBIARE
+const { status, data, send, open, close } = useWebSocket(
+  'ws://localhost:3000/_ws'
+)
+
+send(JSON.stringify({ type: 'message', data: 'Hello' }))
+
 const adding_room = ref(false)
 const add_room_name = ref('')
 const error = ref('')
