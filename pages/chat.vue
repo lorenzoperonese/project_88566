@@ -135,12 +135,14 @@ const closeRooms = () => {
           class="drawer-overlay"
         ></label>
 
-        <div class="h-full w-full overflow-clip bg-primary-content p-2">
+        <div
+          class="h-full w-full overflow-clip border-r border-r-neutral bg-primary-content p-2"
+        >
           <div class="mx-2 mb-4 flex justify-between">
             <div class="flex items-center justify-center">
               <h2 class="text-2xl font-bold">Rooms</h2>
             </div>
-            <button class="btn btn-square" @click="closeRooms">
+            <button class="btn btn-square md:hidden" @click="closeRooms">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6"
