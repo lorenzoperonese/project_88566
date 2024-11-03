@@ -15,6 +15,13 @@ const userID: string = (toRaw(await getSession()) as any)?.s.user_id
 const rooms = ref<ChatRoom[]>([])
 const messages = ref<ChatMessage[]>([])
 
+watch(current_room_id, async (newRoomId) => {
+  if (newRoomId) {
+    console.log('Room changed')
+    await fetchMessages(newRoomId)
+  }
+})
+
 // TODO: DA CAMBIARE
 const { status, data, send, open, close } = useWebSocket(
   'ws://localhost:3000/_ws'
@@ -28,7 +35,9 @@ watch(data, (newData) => {
   console.log('here3')
 
   if (d.type == 'chat_message') {
-    fetchMessages(rooms.value[0])
+    if (current_room_id.value) {
+      fetchMessages(current_room_id.value)
+    }
     //console.log("here4")
     //if (current_room_user_id.value == d.roomId) { messages_loaded.value = false
     //  loading_messages.value = true
@@ -47,13 +56,7 @@ watch(data, (newData) => {
 })
 
 onMounted(async () => {
-  console.log('here1')
   await fetchRooms()
-  console.log('here2')
-
-  current_room_id.value = rooms.value[0].id
-
-  fetchMessages(rooms.value[0])
 })
 
 async function fetchRooms() {
@@ -64,26 +67,19 @@ async function fetchRooms() {
   rooms_loaded.value = true
 }
 
-async function fetchMessages(room: ChatRoom) {
+async function fetchMessages(roomId: string) {
   console.log('Fetching messages')
   loading_messages.value = true
   messages_loaded.value = false
 
-  const data = await $fetch(`/api/chat/rooms/${room.id}`)
+  const data = await $fetch(`/api/chat/rooms/${roomId}`)
   messages.value = data as ChatMessage[]
   console.log('Messages fetched: ', messages.value)
   loading_messages.value = false
   messages_loaded.value = true
 }
 
-function showAddRoom() {
-  adding_room.value = true
-}
-
 async function addRoom(name: string) {
-  // Should check if this room exist :)
-  // add_room_name.value
-
   try {
     send(
       JSON.stringify({
@@ -111,7 +107,9 @@ async function sendMessage(message: string) {
       })
     )
 
-    await fetchMessages(rooms.value[0])
+    if (current_room_id.value) {
+      fetchMessages(current_room_id.value)
+    }
   } catch (e: any) {
     console.error(e)
     error.value = e
@@ -121,8 +119,13 @@ async function sendMessage(message: string) {
 
 <template>
   <div class="h-screen min-h-screen">
-    <div class="flex h-96">
-      <ChatRooms :rooms="rooms" class="w-1/3" @add-room="addRoom" />
+    <div class="flex h-full">
+      <ChatRooms
+        :rooms="rooms"
+        class="w-1/3"
+        @add-room="addRoom"
+        v-model="current_room_id"
+      />
       <ChatMessages
         :messages="messages"
         :currentUserId="userID"
