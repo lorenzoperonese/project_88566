@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, defineModel } from 'vue'
-
 const current_room_id = defineModel<string | undefined>({
   default: undefined
 })

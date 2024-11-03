@@ -14,7 +14,10 @@ export default defineEventHandler(async (event): Promise<ChatRoom[]> => {
       id: room._id.toString(),
       roomName: room.roomName.toString(),
       senderId: room.senderId.toString(),
-      receiver: room.receiverId
+      receiver: {
+        id: (room.receiverId as any)._id.toString(),
+        username: room.receiverId.username
+      }
     })) as ChatRoom[]
   } catch (err) {
     console.error(err)

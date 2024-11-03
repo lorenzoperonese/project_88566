@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { useWebSocket } from '@vueuse/core'
 
-const adding_room = ref(false)
+const { $toast } = useNuxtApp()
+
 const current_room_id = ref<string | undefined>()
+const new_message_sender = ref('')
+const new_message_toast = ref(false)
 const error = ref('')
 
-const loading_rooms = ref(true)
-const loading_messages = ref(true)
-const rooms_loaded = ref(false)
-const messages_loaded = ref(false)
 const { getSession } = useAuth()
 const userID: string = (toRaw(await getSession()) as any)?.s.user_id
 
@@ -27,6 +26,10 @@ const { status, data, send, open, close } = useWebSocket(
   'ws://localhost:3000/_ws'
 )
 
+const roomFromReceiver = (senderId: string) => {
+  return rooms.value.find((r) => r.receiver.id == senderId)
+}
+
 watch(data, (newData) => {
   console.log('New data:', newData)
 
@@ -35,20 +38,14 @@ watch(data, (newData) => {
   console.log('here3')
 
   if (d.type == 'chat_message') {
-    if (current_room_id.value) {
+    if (
+      current_room_id.value &&
+      current_room_id.value == roomFromReceiver(d.senderId)?.id
+    ) {
       fetchMessages(current_room_id.value)
+    } else {
+      $toast.info('New message from ' + roomFromReceiver(d.senderId)?.roomName)
     }
-    //console.log("here4")
-    //if (current_room_user_id.value == d.roomId) { messages_loaded.value = false
-    //  loading_messages.value = true
-    //
-    //  let tmp = messages.value
-    //  tmp.push(d.message)
-    //  messages.value = tmp
-    //
-    //  loading_messages.value = false
-    //  messages_loaded.value = true
-    //}
   } else if (d.type == 'room_add') {
     console.log('Adding room')
     fetchRooms()
@@ -60,23 +57,16 @@ onMounted(async () => {
 })
 
 async function fetchRooms() {
-  rooms_loaded.value = false
   const data = await $fetch('/api/chat/rooms')
   rooms.value = data as ChatRoom[]
-  loading_rooms.value = false
-  rooms_loaded.value = true
 }
 
 async function fetchMessages(roomId: string) {
   console.log('Fetching messages')
-  loading_messages.value = true
-  messages_loaded.value = false
 
   const data = await $fetch(`/api/chat/rooms/${roomId}`)
   messages.value = data as ChatMessage[]
   console.log('Messages fetched: ', messages.value)
-  loading_messages.value = false
-  messages_loaded.value = true
 }
 
 async function addRoom(name: string) {
