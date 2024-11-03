@@ -32,10 +32,7 @@ function handleTimerStop() {
     <h1 class="mb-6 text-center text-3xl font-bold">Pomodoro Timer</h1>
 
     <div v-if="!isTimerRunning" class="mb-4 text-center">
-      <button
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-        @click="showPropose = !showPropose"
-      >
+      <button class="btn btn-info" @click="showPropose = !showPropose">
         {{ showPropose ? 'Imposta manualmente' : 'Proponi un Pomodoro' }}
       </button>
     </div>
