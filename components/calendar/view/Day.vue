@@ -55,18 +55,19 @@ function isEventInThePast(e: EventType): boolean {
 </script>
 
 <template>
-  <div class="flex-grow bg-gray-100 p-2">
+  <div class="flex-grow bg-base-200 p-2">
     <div class="flex h-full flex-col">
       <div class="p-2 text-center font-bold">
         {{
-          `${days[$props.displayDate.getDay()]}, ${$props.displayDate.getDate()} ${months[$props.displayDate.getMonth()]} ${$props.displayDate.getFullYear()}`
+          `${days[$props.displayDate.getDay()]}, ${$props.displayDate.getDate()} ${months[$props.displayDate.getMonth()]}
+        ${$props.displayDate.getFullYear()}`
         }}
       </div>
       <div
         class="flex-grow overflow-y-auto p-2"
         :class="{
-          'bg-white': !isToday($props.displayDate.getDate()),
-          'bg-gray-200': isToday($props.displayDate.getDate())
+          'bg-base-100': !isToday($props.displayDate.getDate()),
+          'bg-base-200': isToday($props.displayDate.getDate())
         }"
       >
         <NuxtLink
@@ -75,7 +76,7 @@ function isEventInThePast(e: EventType): boolean {
           :to="`/calendar/e/${event.id}`"
         >
           <div
-            class="mt-1 w-full cursor-pointer rounded bg-blue-100 p-2 text-sm hover:bg-blue-200"
+            class="mt-1 w-full cursor-pointer rounded bg-primary-content p-2 text-sm text-primary hover:bg-blue-200"
             :class="{ 'opacity-60': isEventInThePast(event) }"
           >
             <div class="font-semibold">{{ event.title }}</div>
