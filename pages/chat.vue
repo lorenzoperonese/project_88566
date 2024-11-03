@@ -20,7 +20,7 @@ watch(current_room_id, async (newRoomId) => {
 
 // TODO: DA CAMBIARE
 const { status, data, send, open, close } = useWebSocket(
-  'ws://localhost:3000/_ws'
+  `ws://${window.location.host}/_ws`
 )
 
 const roomFromReceiver = (senderId: string) => {
