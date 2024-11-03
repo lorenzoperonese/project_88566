@@ -20,6 +20,11 @@
         >Pomodoro</NuxtLink
       >
       <NuxtLink
+        class="button rounded-lg border p-2 hover:bg-gray-200"
+        to="/chat"
+        >chat</NuxtLink
+      >
+      <NuxtLink
         to="/profile"
         class="button rounded-lg border p-2 hover:bg-gray-200"
         >Profile

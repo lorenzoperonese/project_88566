@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose'
 import type { Document, Types } from 'mongoose'
+import User from './user'
 
 export interface ITask extends Document {
   title: string
@@ -17,7 +18,7 @@ const schema = new Schema<ITask>(
     note: { type: String, required: true },
     category: { type: String, required: true },
     completed: { type: Boolean, required: true },
-    user_id: { type: Schema.Types.ObjectId, required: true, ref: 'users' }
+    user_id: { type: Schema.Types.ObjectId, required: true, ref: User }
   },
   {
     timestamps: true // Log when user is added and modified

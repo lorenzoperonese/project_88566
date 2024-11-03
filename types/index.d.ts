@@ -63,4 +63,18 @@ export declare global {
     completed: boolean
     category?: string
   }
+
+  interface ChatRoom {
+    id: string
+    roomName: string
+    senderId: string
+    receiver: User
+  }
+
+  interface ChatMessage {
+    id: string
+    senderId: string
+    content: string
+    conversationId: string
+  }
 }
