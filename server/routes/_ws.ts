@@ -70,13 +70,14 @@ export default defineWebSocketHandler({
     }
 
     if (data.type == 'room_add') {
-      data.person
-      await createRooms(data.senderId, data.person)
-
       let receiver = await User.findOne({ username: data.person })
       if (!receiver) {
+        peer.send({ type: 'error', message: 'Receiver not found' })
         throw new Error('Receiver not found')
       }
+
+      await createRooms(data.senderId, data.person)
+
       peer.publish((receiver._id as Types.ObjectId).toString(), {
         type: 'room_add'
       })

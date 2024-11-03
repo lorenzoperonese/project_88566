@@ -4,9 +4,6 @@ import { useWebSocket } from '@vueuse/core'
 const { $toast } = useNuxtApp()
 
 const current_room_id = ref<string | undefined>()
-const new_message_sender = ref('')
-const new_message_toast = ref(false)
-const error = ref('')
 
 const { getSession } = useAuth()
 const userID: string = (toRaw(await getSession()) as any)?.s.user_id
@@ -49,6 +46,8 @@ watch(data, (newData) => {
   } else if (d.type == 'room_add') {
     console.log('Adding room')
     fetchRooms()
+  } else if (d.type == 'error') {
+    $toast.error(d.message)
   }
 })
 
@@ -70,39 +69,44 @@ async function fetchMessages(roomId: string) {
 }
 
 async function addRoom(name: string) {
-  try {
-    send(
-      JSON.stringify({
-        type: 'room_add',
-        person: name,
-        senderId: userID
-      })
-    )
-
-    fetchRooms()
-  } catch (e: any) {
-    console.error(e)
-    error.value = e
+  if (rooms.value.find((r) => r.roomName == name)) {
+    $toast.error('Room already exists')
+    return
   }
+
+  const res = send(
+    JSON.stringify({
+      type: 'room_add',
+      person: name,
+      senderId: userID
+    })
+  )
+
+  if (!res) {
+    $toast.error('Error adding room')
+    return
+  }
+
+  fetchRooms()
 }
 
 async function sendMessage(message: string) {
-  try {
-    send(
-      JSON.stringify({
-        type: 'chat_message',
-        roomId: current_room_id.value,
-        content: message,
-        senderId: userID
-      })
-    )
+  const res = send(
+    JSON.stringify({
+      type: 'chat_message',
+      roomId: current_room_id.value,
+      content: message,
+      senderId: userID
+    })
+  )
 
-    if (current_room_id.value) {
-      fetchMessages(current_room_id.value)
-    }
-  } catch (e: any) {
-    console.error(e)
-    error.value = e
+  if (!res) {
+    $toast.error('Error sending message')
+    return
+  }
+
+  if (current_room_id.value) {
+    fetchMessages(current_room_id.value)
   }
 }
 
