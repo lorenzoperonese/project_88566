@@ -7,7 +7,7 @@
       <RouterLink class="btn" to="/calendar">Calendario</RouterLink>
       <NuxtLink class="btn" to="/notes">Notes</NuxtLink>
       <NuxtLink class="btn" to="/pomodoro">Pomodoro</NuxtLink>
-      <NuxtLink class="btn" to="/chat">chat</NuxtLink>
+      <NuxtLink class="btn" to="/chat">Chat</NuxtLink>
       <NuxtLink class="btn" to="/profile">Profile </NuxtLink>
     </div>
 

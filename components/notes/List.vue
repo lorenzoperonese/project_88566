@@ -9,8 +9,8 @@ const $emits = defineEmits<{
 </script>
 
 <template>
-  <div>
-    <div v-if="$props.notes.length > 0">
+  <div class="mt-10">
+    <div v-if="$props.notes.length > 0" class="flex flex-col gap-4">
       <template v-for="note in $props.notes" :key="note.id">
         <NotesNote
           :note="note"

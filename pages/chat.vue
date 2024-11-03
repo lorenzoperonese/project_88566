@@ -136,7 +136,7 @@ const closeRooms = () => {
         ></label>
 
         <div
-          class="h-full w-full overflow-clip border-r border-r-neutral bg-primary-content p-2"
+          class="h-full w-full overflow-clip border-r border-r-neutral bg-base-100 p-2"
         >
           <div class="mx-2 mb-4 flex justify-between">
             <div class="flex items-center justify-center">
