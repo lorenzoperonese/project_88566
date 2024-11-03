@@ -40,8 +40,13 @@ function sendMessage() {
 
 <template>
   <div class="flex h-screen flex-col bg-primary-content">
+    <div class="md:hidden">
+      <label for="rooms" class="btn btn-primary drawer-button"
+        >Open drawer</label
+      >
+    </div>
     <div
-      class="h-full flex-1 flex-col justify-end overflow-y-scroll"
+      class="h-full flex-1 flex-col overflow-y-auto px-4 py-2"
       id="messages-container"
     >
       <div v-for="m in messages" :key="m.id">

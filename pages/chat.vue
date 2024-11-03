@@ -105,24 +105,63 @@ async function sendMessage(message: string) {
     error.value = e
   }
 }
+
+const closeRooms = () => {
+  const rooms = document.getElementById('rooms') as HTMLInputElement
+  rooms.checked = false
+}
 </script>
 
 <template>
-  <div class="h-screen min-h-screen">
-    <div class="flex h-full">
-      <ChatRooms
-        :rooms="rooms"
-        class="w-1/3"
-        @add-room="addRoom"
-        v-model="current_room_id"
-      />
-      <ChatMessages
-        :messages="messages"
-        :currentUserId="userID"
-        :currentRoomId="current_room_id"
-        @send-message="sendMessage"
-        class="w-full"
-      />
+  <div class="h-screen">
+    <div class="drawer h-full md:drawer-open">
+      <input id="rooms" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex h-full flex-col">
+        <ChatMessages
+          :messages="messages"
+          :currentUserId="userID"
+          :currentRoomId="current_room_id"
+          @send-message="sendMessage"
+        />
+      </div>
+      <div class="drawer-side">
+        <label
+          for="rooms"
+          aria-label="close sidebar"
+          class="drawer-overlay"
+        ></label>
+
+        <div class="h-full w-full overflow-clip bg-primary-content p-2">
+          <div class="mx-2 mb-4 flex justify-between">
+            <div class="flex items-center justify-center">
+              <h2 class="text-2xl font-bold">Rooms</h2>
+            </div>
+            <button class="btn btn-square" @click="closeRooms">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <ChatRooms
+            :rooms="rooms"
+            class="h-full w-full"
+            @add-room="addRoom"
+            v-model="current_room_id"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
