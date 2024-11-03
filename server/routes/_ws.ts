@@ -1,18 +1,11 @@
 import { Peer, Message } from 'crossws'
-import { Room, User } from '@/server/db'
+import { Room, User, Message as DBMessage } from '@/server/db'
 import { Schema, Types } from 'mongoose'
 import { createRooms } from '../utils/chat'
 
 export default defineWebSocketHandler({
   open: async (peer: Peer) => {
     try {
-      peer.send(
-        JSON.stringify({
-          type: 'welcome',
-          message: 'Welcome to the ws'
-        })
-      )
-
       const index = (peer.headers as any).cookie.indexOf('auth:token')
       if (index == -1) {
         console.error('Invalid auth')
@@ -31,12 +24,7 @@ export default defineWebSocketHandler({
 
       peer.subscribe(ptoken.toString())
 
-      const rooms = await Room.find()
-        .where('users')
-        .equals(ptoken)
-        .where('typingUsers')
-        .equals(ptoken)
-        .exec()
+      const rooms = await Room.find().where('senderId').equals(ptoken).exec()
 
       console.log('Rooms:', rooms)
 
@@ -55,12 +43,23 @@ export default defineWebSocketHandler({
 
     if (data.type == 'chat_message') {
       try {
-        const room = await Room.findOne({ roomId: data.roomId })
+        const room = await Room.findById(data.roomId)
         if (!room) {
           throw new Error('Room not found')
         }
 
+        console.log(room)
+
+        const m = new DBMessage({
+          senderId: data.senderId,
+          content: data.content,
+          conversationId: room.conversationId
+        })
+
+        await m.save()
+
         peer.publish(room.conversationId.toString(), {
+          type: 'chat_message',
           content: data.content,
           senderId: data.senderId
         })
