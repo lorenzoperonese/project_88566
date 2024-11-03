@@ -119,6 +119,7 @@ async function sendMessage(message: string) {
       <ChatMessages
         :messages="messages"
         :currentUserId="userID"
+        :currentRoomId="current_room_id"
         @send-message="sendMessage"
         class="w-full"
       />

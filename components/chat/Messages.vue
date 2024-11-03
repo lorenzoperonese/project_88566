@@ -3,7 +3,8 @@ const message = ref('')
 
 const $props = defineProps({
   messages: { type: Array as PropType<ChatMessage[]>, required: true },
-  currentUserId: { type: String, required: true }
+  currentUserId: { type: String, required: true },
+  currentRoomId: { type: String }
 })
 
 const $emits = defineEmits<{
@@ -61,7 +62,7 @@ function sendMessage() {
       </div>
     </div>
 
-    <div class="flex justify-between gap-4 p-2">
+    <div class="flex justify-between gap-4 p-2" v-show="currentRoomId">
       <input
         type="text"
         placeholder="Type here"
