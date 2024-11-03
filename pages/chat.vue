@@ -2,10 +2,7 @@
 import { useWebSocket } from '@vueuse/core'
 
 const adding_room = ref(false)
-const add_room_name = ref('')
-const current_room_user_id = ref('')
-const current_room_id = ref('')
-const message_content = ref('')
+const current_room_id = ref<string | undefined>()
 const error = ref('')
 
 const loading_rooms = ref(true)
@@ -33,8 +30,7 @@ watch(data, (newData) => {
   if (d.type == 'chat_message') {
     fetchMessages(rooms.value[0])
     //console.log("here4")
-    //if (current_room_user_id.value == d.roomId) {
-    //  messages_loaded.value = false
+    //if (current_room_user_id.value == d.roomId) { messages_loaded.value = false
     //  loading_messages.value = true
     //
     //  let tmp = messages.value
@@ -84,7 +80,7 @@ function showAddRoom() {
   adding_room.value = true
 }
 
-async function addRoom() {
+async function addRoom(name: string) {
   // Should check if this room exist :)
   // add_room_name.value
 
@@ -92,7 +88,7 @@ async function addRoom() {
     send(
       JSON.stringify({
         type: 'room_add',
-        person: add_room_name.value,
+        person: name,
         senderId: userID
       })
     )
@@ -104,16 +100,18 @@ async function addRoom() {
   }
 }
 
-async function sendMessage() {
+async function sendMessage(message: string) {
   try {
     send(
       JSON.stringify({
         type: 'chat_message',
         roomId: current_room_id.value,
-        content: message_content.value,
+        content: message,
         senderId: userID
       })
     )
+
+    await fetchMessages(rooms.value[0])
   } catch (e: any) {
     console.error(e)
     error.value = e
@@ -122,25 +120,15 @@ async function sendMessage() {
 </script>
 
 <template>
-  <div>
-    <button @click="showAddRoom">Add room</button>
-    <div>Rooms: {{ rooms }}</div>
-    <div>Messages: {{ messages }}</div>
-  </div>
-
-  <div>
-    <input class="rounded border p-2" type="text" v-model="message_content" />
-    <button @click="sendMessage">Send</button>
-  </div>
-
-  <!--DA SPOSTARE-->
-  <div v-show="adding_room" class="mt-5">
-    <input type="text" class="rounded border p-2" v-model="add_room_name" />
-    <button class="rounded border p-2 hover:bg-gray-200" @click="addRoom">
-      Add Room
-    </button>
-    <div class="text-red-600">
-      {{ error }}
+  <div class="h-screen min-h-screen">
+    <div class="flex h-96">
+      <ChatRooms :rooms="rooms" class="w-1/3" @add-room="addRoom" />
+      <ChatMessages
+        :messages="messages"
+        :currentUserId="userID"
+        @send-message="sendMessage"
+        class="w-full"
+      />
     </div>
   </div>
 </template>
