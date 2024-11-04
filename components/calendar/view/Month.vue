@@ -99,6 +99,7 @@ function getTasksForDay(day: number, index: number): Task[] {
       $props.displayDate.getMonth() - 1,
       day
     )
+    console.log(date)
   } else if (isInNextMonth(index)) {
     date = new Date(
       $props.displayDate.getFullYear(),
@@ -118,6 +119,8 @@ function getTasksForDay(day: number, index: number): Task[] {
   return $props.tasks
     .filter((e) => {
       const taskDate = new Date(e.end)
+      console.log('task:', taskDate.toDateString())
+      console.log('date:', date.toDateString())
       return taskDate.toDateString() === date.toDateString()
     })
     .sort((a, b) => a.end - b.end)
@@ -152,24 +155,27 @@ function isEventInThePast(e: EventType): boolean {
 </script>
 
 <template>
-  <div class="grid flex-grow grid-cols-7 gap-1 bg-gray-100 p-2">
+  <div class="grid flex-grow grid-cols-7 gap-1 bg-base-200 p-2">
     <div v-for="day in days" :key="day" class="p-2 text-center font-bold">
       {{ day }}
     </div>
     <div
       v-for="(day, index) in _days"
       :key="index"
-      class="h-32 overflow-y-auto p-2"
-      :class="{
-        'bg-gray-200': isToday(day, index),
-        'bg-white': !isToday(day, index)
-      }"
+      class="h-32 overflow-y-auto rounded border border-neutral p-2"
     >
       <div
         class="font-semibold"
         :class="{ 'opacity-20': !isInCurrentMonth(index) }"
       >
-        {{ day }}
+        <div
+          :class="{
+            'h-6 w-6 rounded-full bg-primary text-center text-primary-content':
+              isToday(day, index)
+          }"
+        >
+          {{ day }}
+        </div>
       </div>
       <NuxtLink
         v-for="event in getEventsForDay(day, index)"
@@ -177,7 +183,7 @@ function isEventInThePast(e: EventType): boolean {
         :to="`/calendar/e/${event.id}`"
       >
         <div
-          class="mt-1 w-full cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+          class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
           :class="{ 'opacity-60': isEventInThePast(event) }"
         >
           <div class="font-semibold">{{ event.title }}</div>
@@ -188,12 +194,12 @@ function isEventInThePast(e: EventType): boolean {
       </NuxtLink>
 
       <NuxtLink
-        v-for="task in getTasksForDay(day, -1)"
+        v-for="task in getTasksForDay(day, index)"
         :key="task.id"
         :to="`/calendar/t/${task.id}`"
       >
         <div
-          class="mt-1 cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+          class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
         >
           <div :class="['font-semibold', { 'line-through': task.completed }]">
             {{ task.title }}

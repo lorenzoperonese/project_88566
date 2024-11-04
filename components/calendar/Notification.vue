@@ -10,6 +10,20 @@ const $props = defineProps<{
 
 const _notifications = ref($props.notifications)
 
+function repetitions(n: number) {
+  const base = [
+    { value: 1, name: 'Day' },
+    { value: 2, name: 'Week' },
+    { value: 3, name: 'Month' },
+    { value: 4, name: 'Year' }
+  ]
+  if(n != 1) {
+    for(let i=0; i<base.length, i++)
+      base[i].name += s;
+  }
+  return base
+}
+
 const errorMessage = ref('')
 
 function save() {
@@ -30,79 +44,84 @@ function cancel() {
 </script>
 
 <template>
-  <div
-    class="fixed inset-0 flex h-full w-full items-center justify-center overflow-y-auto bg-gray-600 bg-opacity-50"
-    @click="cancel"
-  >
-    <div
-      class="flex max-h-[90vh] w-full max-w-md flex-col rounded-lg bg-white p-6 shadow-xl"
-      @click.stop
+  <div>
+    <button
+      class="btn btn-outline btn-secondary w-full"
+      onclick="my_modal_1.showModal()"
     >
-      <h2 class="mb-4 text-2xl font-bold">Notifications</h2>
+      Notifications
+    </button>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box flex h-1/2 flex-col overflow-clip">
+        <div>
+          <h2 class="mb-4 text-2xl font-bold">Notifications</h2>
 
-      <div class="mb-6 flex-grow space-y-4 overflow-y-auto">
-        <div
-          v-for="(notification, index) in _notifications"
-          :key="index"
-          class="flex items-center space-x-2"
-        >
-          <input
-            v-model="notification.advance"
-            type="number"
-            min="1"
-            required
-            class="w-16 rounded border p-2"
-          />
-          <select v-model="notification.period" class="rounded border p-2">
-            <option value="1">
-              {{ notification.advance === 1 ? 'Minute' : 'Minutes' }}
-            </option>
-            <option value="2">
-              {{ notification.advance === 1 ? 'Hour' : 'Hours' }}
-            </option>
-            <option value="3">
-              {{ notification.advance === 1 ? 'Day' : 'Days' }}
-            </option>
-            <option value="4">
-              {{ notification.advance === 1 ? 'Week' : 'Weeks' }}
-            </option>
-          </select>
-          <span>before</span>
+          <div class="h-64 overflow-scroll">
+            <div class="">
+              <div
+                v-for="(notification, index) in _notifications"
+                :key="index"
+                class="flex items-center space-x-2"
+              >
+                <input
+                  v-model="notification.advance"
+                  type="number"
+                  min="1"
+                  required
+                  class="input input-bordered w-20 text-center"
+                />
 
-          <button
-            class="text-red-500 hover:text-red-700"
-            @click="_notifications.splice(index, 1)"
-          >
-            X
-          </button>
+                <SelectDrop
+                  v-model="notification.period"
+                  :options="repetitions"
+                />
+                <span>before</span>
+
+                <button
+                  class="btn btn-square btn-outline btn-error"
+                  @click="_notifications.splice(index, 1)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4 flex items-center space-x-2">
+            <button
+              class="btn btn-outline btn-info"
+              @click="_notifications.push({ advance: 1, period: 1 })"
+            >
+              Add
+            </button>
+          </div>
+
+          <p v-if="errorMessage" class="mb-4 text-red-500">
+            {{ errorMessage }}
+          </p>
+        </div>
+
+        <div class="modal-action">
+          <form method="dialog" class="flex w-full justify-between">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn" @click="cancel">Close</button>
+            <button class="btn btn-secondary" @click="save">Save</button>
+          </form>
         </div>
       </div>
-
-      <div class="mb-4 flex items-center space-x-2">
-        <button
-          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-          @click="_notifications.push({ advance: 1, period: 1 })"
-        >
-          Add
-        </button>
-      </div>
-
-      <p v-if="errorMessage" class="mb-4 text-red-500">{{ errorMessage }}</p>
-
-      <div class="flex justify-end space-x-4">
-        <button
-          class="rounded bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400"
-          @click="cancel"
-        >
-          Cancel
-        </button>
-        <button
-          class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-          @click="save"
-        >
-          Save
-        </button>
-      </div>
-    </div>
+    </dialog>
   </div>
 </template>

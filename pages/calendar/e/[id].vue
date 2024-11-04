@@ -8,7 +8,7 @@ const editMode = ref(false)
 </script>
 
 <template>
-  <div v-if="_event" class="flex justify-center">
+  <div v-if="_event" class="flex h-full items-center justify-center">
     <div v-if="!editMode">
       <CalendarShowEvent :event="_event" />
       <button

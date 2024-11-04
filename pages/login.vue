@@ -23,42 +23,54 @@ async function login() {
 </script>
 
 <template>
-  <div class="grid h-full">
-    <div class="place-self-center rounded-xl border p-5 shadow-xl">
-      <h1 class="mb-5 text-center text-xl font-bold">Selfie</h1>
-      <form class="flex flex-col gap-5" @click.prevent="">
-        <div>
-          <label for="username">Username: </label>
-          <input
-            id="username"
-            v-model="_username"
-            type="text"
-            required
-            class="w-full rounded-lg border p-2 outline-none"
-          />
-        </div>
+  <div class="flex min-h-screen items-center justify-center bg-base-200">
+    <div class="card w-96 bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Login</h2>
+        <form @click.prevent="">
+          <div class="form-control">
+            <label for="input-mail" class="label">
+              <span class="label-text"> Username or mail </span>
+            </label>
+            <div
+              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
+            >
+              <input
+                id="input-text"
+                type="text"
+                class="X-required grow invalid:text-error"
+                placeholder="Enter Username"
+                v-model="_username"
+              />
+            </div>
+          </div>
 
-        <div>
-          <label for="password">Password: </label>
-          <input
-            id="password"
-            v-model="_password"
-            type="password"
-            required
-            class="w-full rounded-lg border p-2 outline-none"
-          />
-        </div>
+          <div class="form-control">
+            <label for="input-password" class="label">
+              <span class="label-text"> Password </span>
+            </label>
+            <div
+              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
+            >
+              <input
+                id="input-password"
+                type="password"
+                class="X-required grow invalid:text-error"
+                placeholder="Enter password"
+                v-model="_password"
+              />
+            </div>
+          </div>
 
-        <button
-          class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400"
-          @click="login"
-        >
-          Login
-        </button>
-        <div class="text-red-600">
-          {{ _error }}
-        </div>
-      </form>
+          <div class="mt-5 text-error">
+            {{ _error }}
+          </div>
+
+          <div class="form-control mt-6">
+            <button class="btn btn-primary" @click="login">Login</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>

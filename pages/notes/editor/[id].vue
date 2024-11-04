@@ -56,48 +56,49 @@ async function save() {
     <h1 class="m-2 mb-5 w-full text-center text-3xl font-bold">Note Editor</h1>
     <form
       v-if="data"
-      class="flex rounded-lg border bg-gray-50"
+      class="flex gap-4 rounded-lg border bg-base-200 p-4"
       @click.prevent=""
     >
       <div class="w-full">
-        <div class="flex justify-between p-4">
+        <div class="flex justify-between">
           <input
             v-model="data.title"
             type="text"
             class="w-full rounded-t-lg bg-transparent text-2xl font-bold outline-none focus:underline"
           />
-          <div class="group w-60 hover:drop-shadow-lg">
-            <div class="w-60 rounded-t-lg p-2 group-hover:bg-white">
-              Category: {{ _categoryName }}
+
+          <div class="dropdown dropdown-hover">
+            <div
+              tabindex="0"
+              role="button"
+              class="btn m-1 border border-neutral"
+            >
+              <div class="w-60 rounded-t-lg p-2 group-hover:bg-white">
+                Category: {{ _categoryName }}
+              </div>
             </div>
-            <div>
-              <ul
-                class="collapse absolute w-60 rounded-b-lg bg-white group-hover:visible"
+            <ul
+              tabindex="0"
+              class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
+            >
+              <li @click="_selected = ''">
+                <a> Not categorized </a>
+              </li>
+              <li
+                v-for="c in _categories"
+                :key="c.id"
+                @click="_selected = c.id"
               >
-                <li
-                  class="p-2 text-gray-600 hover:bg-gray-100"
-                  @click="_selected = ''"
-                >
-                  Not categorized
-                </li>
-                <li
-                  v-for="c in _categories"
-                  :key="c.id"
-                  class="p-2 hover:bg-gray-100"
-                  :class="{ 'bg-gray-100': _selected == c.id }"
-                  @click="_selected = c.id"
-                >
-                  {{ c.name }}
-                </li>
-              </ul>
-            </div>
+                <a> {{ c.name }} </a>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="w-full">
           <textarea
             id="noteBody"
             v-model="data.body"
-            class="w-full resize-none rounded-b-lg bg-transparent p-4 outline-none"
+            class="w-full resize-none rounded-b-lg bg-transparent outline-none"
           >
           </textarea>
         </div>
@@ -106,16 +107,8 @@ async function save() {
 
       <div class="flex items-center">
         <div class="flex h-40 max-h-96 flex-col justify-evenly">
-          <button
-            class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400"
-            @click="save()"
-          >
-            Save
-          </button>
-          <NuxtLink
-            class="rounded-lg border bg-red-200 p-2 hover:bg-red-400"
-            :to="`/notes/${data.id}`"
-          >
+          <button class="btn btn-success" @click="save()">Save</button>
+          <NuxtLink class="btn btn-error" :to="`/notes/${data.id}`">
             Cancel
           </NuxtLink>
         </div>
@@ -125,14 +118,9 @@ async function save() {
     <!-- Error -->
     <div v-else class="grid h-full">
       <div class="place-self-center">
-        <div class="font-bold text-red-700">Something went wrong :(</div>
+        <div class="text-2xl font-bold text-error">Something went wrong :(</div>
         <div class="mt-5 flex justify-center">
-          <NuxtLink
-            to="/"
-            class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400"
-          >
-            Home
-          </NuxtLink>
+          <NuxtLink to="/" class="btn btn-info"> Home </NuxtLink>
         </div>
       </div>
     </div>

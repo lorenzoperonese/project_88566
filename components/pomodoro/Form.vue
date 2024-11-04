@@ -117,7 +117,7 @@ function skip() {
             min="1"
             required
             type="number"
-            class="border py-4 text-center text-xl outline-none invalid:border-red-500 invalid:text-red-600"
+            class="input input-bordered w-full max-w-xs text-center invalid:border-error invalid:text-error"
           />
         </div>
         <div class="flex flex-col">
@@ -127,7 +127,7 @@ function skip() {
             min="1"
             required
             type="number"
-            class="border py-4 text-center text-xl outline-none invalid:border-red-500 invalid:text-red-600"
+            class="input input-bordered w-full max-w-xs text-center invalid:border-error invalid:text-error"
           />
         </div>
         <div class="flex flex-col">
@@ -137,16 +137,11 @@ function skip() {
             min="1"
             required
             type="number"
-            class="border py-4 text-center text-xl outline-none invalid:border-red-500 invalid:text-red-600"
+            class="input input-bordered w-full max-w-xs text-center invalid:border-error invalid:text-error"
           />
         </div>
       </div>
-      <button
-        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-        @click="start"
-      >
-        Inizia
-      </button>
+      <button class="btn btn-success" @click="start">Inizia</button>
       <p class="mt-2 text-red-500">{{ _errorMessage }}</p>
     </div>
 
@@ -155,39 +150,14 @@ function skip() {
       <p class="mb-4 text-xl">
         Ciclo {{ _cycleCounter }} - {{ isStudying ? 'Studio' : 'Pausa' }}
       </p>
-      <div class="flex flex-col gap-2">
-        <button
-          v-if="!_paused"
-          class="w-full rounded bg-yellow-500 px-40 py-2 text-white hover:bg-yellow-600"
-          @click="pause"
-        >
+      <div class="flex w-96 flex-col gap-2">
+        <button v-if="!_paused" class="btn btn-warning" @click="pause">
           Pausa
         </button>
-        <button
-          v-else
-          class="w-full rounded bg-blue-500 px-40 py-2 text-white hover:bg-blue-600"
-          @click="start"
-        >
-          Riprendi
-        </button>
-        <button
-          class="w-full rounded bg-purple-500 px-40 py-2 text-white hover:bg-purple-600"
-          @click="skip"
-        >
-          Salta
-        </button>
-        <button
-          class="w-full rounded bg-red-500 px-40 py-2 text-white hover:bg-red-600"
-          @click="stop"
-        >
-          Ferma
-        </button>
-        <button
-          class="w-full rounded bg-green-500 px-40 py-2 text-white hover:bg-green-600"
-          @click="restart"
-        >
-          Ricomincia
-        </button>
+        <button v-else class="btn btn-info" @click="start">Riprendi</button>
+        <button class="btn btn-secondary" @click="skip">Salta</button>
+        <button class="btn btn-error" @click="stop">Ferma</button>
+        <button class="btn btn-success" @click="restart">Ricomincia</button>
       </div>
     </div>
   </div>

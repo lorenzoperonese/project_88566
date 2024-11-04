@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const $emits = defineEmits<{
-  (e: 'close'): void
   (e: 'save', r: Repetition | null): void
 }>()
 
@@ -25,8 +24,16 @@ const weekNumber = (d: string) => {
         : value.toString() + 'th'
 }
 
+const weekDay = days[(new Date($props.day).getDay() + 6) % 7] // TODO CAMBIARE
+
+const repetitions = [
+  { value: 1, name: 'Day' },
+  { value: 2, name: 'Week' },
+  { value: 3, name: 'Month' },
+  { value: 4, name: 'Year' }
+]
 const _repetition = ref(1)
-const _eventPeriod = ref<RepetitionPeriod>(1)
+const _eventPeriod = ref<EventPeriod>(1)
 const _weekDays = ref<number[]>([])
 const _monthRepetition = ref(1)
 const _ends = ref('Never')
@@ -119,135 +126,154 @@ function save() {
   }
   $emits('save', r)
 }
-
-function cancel() {
-  // reset()
-  $emits('close')
-}
 </script>
 
 <template>
-  <div
-    class="absolute left-0 top-0 grid h-full w-full bg-gray-400 bg-opacity-50"
-    @click="cancel()"
-  >
-    <div
-      class="flex w-96 flex-col gap-4 place-self-center rounded-lg bg-white p-4"
-      @click.stop=""
+  <div>
+    <button
+      class="btn btn-outline btn-primary w-full"
+      onclick="my_modal_5.showModal()"
     >
-      <header>
-        <h1 class="text-xl font-bold">Repetition</h1>
-      </header>
-      <div>
-        <label class="inline-flex cursor-pointer items-center">
-          <input
-            v-model="onoff"
-            type="checkbox"
-            value=""
-            class="peer sr-only"
-          />
-          <div
-            class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"
-          ></div>
-        </label>
+      Repetitions
+    </button>
+    <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <div
+          class="flex flex-col gap-4 place-self-center rounded-lg p-4"
+          @click.stop=""
+        >
+          <header>
+            <h1 class="text-xl font-bold">Repetition</h1>
+          </header>
+          <div>
+            <label class="inline-flex cursor-pointer items-center">
+              <div class="form-control w-52">
+                <label class="label cursor-pointer">
+                  <input
+                    type="checkbox"
+                    class="toggle toggle-primary"
+                    v-model="onoff"
+                  />
+                </label>
+              </div>
+            </label>
+          </div>
+          <main v-show="onoff">
+            <div class="flex gap-2">
+              <div class="flex items-center">
+                <div>Repeat every</div>
+              </div>
+              <input
+                v-model="_repetition_value"
+                type="number"
+                min="1"
+                required
+                class="input input-bordered w-20 text-center"
+              />
+
+              <SelectDrop v-model="_eventPeriod" :options="repetitions" />
+            </div>
+
+            <div v-show="_eventPeriod == 2" class="flex gap-3">
+              <template
+                v-for="[i, o] in ['M', 'T', 'W', 'T', 'F', 'S', 'S'].entries()"
+                :key="i"
+              >
+                <input
+                  v-model="_weekDays"
+                  type="checkbox"
+                  :value="i"
+                  class="checkbox"
+                />
+                <label>{{ o }}</label>
+              </template>
+            </div>
+
+            <div v-show="_eventPeriod == 3" class="mt-2">
+              <SelectDrop
+                v-model="_monthRepetition"
+                :options="[
+                  { value: 1, name: 'Monthly on day ' + day },
+                  {
+                    value: 2,
+                    name:
+                      'Monthly on the' + weekNumber($props.day) + ' ' + days[new Date($props.day).getDay()]
+                  }
+                ]"
+              />
+            </div>
+
+            <div class="mt-4 flex flex-col">
+              <h2 class="text-lg font-bold">Ends:</h2>
+
+              <div class="form-control">
+                <label class="label flex cursor-pointer justify-start gap-4">
+                  <input
+                    v-model="_ends"
+                    type="radio"
+                    name="end"
+                    value="Never"
+                    class="radio"
+                  />
+                  <span class="label-text">Never</span>
+                </label>
+              </div>
+
+              <div></div>
+
+              <div class="form-control">
+                <label class="label flex cursor-pointer justify-start gap-4">
+                  <input
+                    v-model="_ends"
+                    type="radio"
+                    name="end"
+                    class="peer radio"
+                    value="Day"
+                  />
+                  <span class="label-text">Day</span>
+                  <input
+                    v-model="_endDate"
+                    type="date"
+                    class="intput-bordered input ml-4 disabled:text-gray-500"
+                    :disabled="_ends != 'Day'"
+                  />
+                </label>
+              </div>
+
+              <div class="form-control">
+                <label class="label flex cursor-pointer justify-start gap-4">
+                  <input
+                    v-model="_ends"
+                    type="radio"
+                    name="end"
+                    value="After"
+                    class="radio"
+                  />
+                  <span class="label-text">After</span>
+
+                  <input
+                    v-model="_endAfter"
+                    type="number"
+                    min="1"
+                    class="input input-bordered w-20 text-center"
+                    required
+                    :disabled="_ends != 'After'"
+                  />
+                </label>
+              </div>
+            </div>
+            <p class="mt-2 text-center text-red-500">{{ _errorMessage }}</p>
+          </main>
+        </div>
+
+        <div class="modal-action">
+          <form method="dialog" class="flex w-full justify-between">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Close</button>
+            <button class="btn btn-primary" @click="save()">Save</button>
+          </form>
+        </div>
       </div>
-      <main v-show="onoff">
-        <div class="flex gap-2">
-          <div>Repeat every</div>
-          <input
-            v-model="_repetition"
-            type="number"
-            min="1"
-            required
-            class="w-10 rounded border p-2 outline-none invalid:border-red-500 invalid:text-red-600 hover:bg-gray-200"
-          />
-          <select
-            v-model="_eventPeriod"
-            class="rounded border bg-white px-2 hover:bg-gray-200"
-          >
-            <option value="1">{{ _repetition == 1 ? 'Day' : 'Days' }}</option>
-            <option value="2">{{ _repetition == 1 ? 'Week' : 'Weeks' }}</option>
-            <option value="3">
-              {{ _repetition == 1 ? 'Month' : 'Months' }}
-            </option>
-            <option value="4">{{ _repetition == 1 ? 'Year' : 'Years' }}</option>
-          </select>
-        </div>
-
-        <div v-show="_eventPeriod == 2" class="flex gap-3">
-          <template
-            v-for="[i, o] in ['M', 'T', 'W', 'T', 'F', 'S', 'S'].entries()"
-            :key="i"
-          >
-            <input v-model="_weekDays" type="checkbox" :value="i" />
-            <label>{{ o }}</label>
-          </template>
-        </div>
-
-        <div v-show="_eventPeriod == 3" class="mt-2">
-          <select v-model="_monthRepetition" class="rounded p-2">
-            <option value="1">Monthly on day {{ day }}</option>
-            <option value="2">
-              Monthly on the {{ weekNumber($props.day) }}
-              {{ days[new Date($props.day).getDay()] }}
-            </option>
-          </select>
-        </div>
-
-        <div class="flex flex-col">
-          <h2>Ends:</h2>
-          <div>
-            <input v-model="_ends" type="radio" name="end" value="Never" />
-            <label>Never</label>
-          </div>
-          <div>
-            <input
-              v-model="_ends"
-              type="radio"
-              name="end"
-              class="peer"
-              value="Day"
-            />
-            <label>Day</label>
-            <input
-              v-model="_endDate"
-              type="date"
-              class="ml-4 disabled:text-gray-500"
-              :disabled="_ends != 'Day'"
-            />
-          </div>
-          <div>
-            <input v-model="_ends" type="radio" name="end" value="After" />
-            <label>After</label>
-            <input
-              v-model="_endAfter"
-              type="number"
-              min="1"
-              class="ml-4 rounded border p-2 outline-none invalid:border-red-500 disabled:text-gray-500"
-              required
-              :disabled="_ends != 'After'"
-            />
-          </div>
-        </div>
-        <p class="mt-2 text-center text-red-500">{{ _errorMessage }}</p>
-      </main>
-
-      <footer>
-        <div class="flex justify-evenly">
-          <button
-            class="rounded-lg border bg-red-300 p-2 hover:bg-red-500"
-            @click="cancel()"
-          >
-            Cancel
-          </button>
-          <button
-            class="rounded-lg border bg-blue-300 p-2 hover:bg-blue-500"
-            @click="save()"
-          >
-            Save
-          </button>
-        </div>
-      </footer>
-    </div>
+    </dialog>
   </div>
 </template>

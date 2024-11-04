@@ -168,100 +168,121 @@ function addNotifications(n: Notify[] | null) {
 </script>
 
 <template>
-  <div class="w-80">
-    <h1 class="text-xl font-bold">
-      {{ $props.event ? 'Modify event' : 'Add event' }}
-    </h1>
-    <form class="flex flex-col gap-2" @submit.prevent="">
-      <div>
-        <label>Title:</label>
-        <input v-model="_title" class="rounded border p-2" required />
-      </div>
-
-      <div>
-        <label>Start:</label>
-        <input v-model="_startDate" class="rounded border p-2" type="date" />
-        <input v-model="_startTime" class="rounded border p-2" type="time" />
-      </div>
-
-      <div>
-        <label>End:</label>
-        <input v-model="_endDate" class="rounded border p-2" type="date" />
-        <input v-model="_endTime" class="rounded border p-2" type="time" />
-      </div>
-
-      <div>
-        <label>Location:</label>
-        <input v-model="_location" class="rounded border p-2" type="string" />
-      </div>
-
-      <div>
-        <label>Note:</label>
-        <textarea v-model="_note" class="rounded border p-2"> </textarea>
-      </div>
-
-      <div>
-        <label>Category:</label>
-        <input v-model="_category" class="rounded border p-2" type="string" />
-      </div>
-
-      <div>
-        <button
-          class="rounded border bg-orange-300 p-2 hover:bg-orange-500"
-          @click="_showRepetition = true"
-        >
-          Repetition
-        </button>
-        <p>{{ _repetitionSummary }}</p>
-        <CalendarRepetition
-          v-show="_showRepetition"
-          :day="_startDate"
-          :repetition="_repetition"
-          @close="_showRepetition = false"
-          @save="addRepetition"
-        />
-      </div>
-
-      <div>
-        <button
-          class="rounded border bg-orange-300 p-2 hover:bg-orange-500"
-          @click="_showNotifications = true"
-        >
-          Notifications
-        </button>
-        <pre>{{ _notificationsSummary }}</pre>
-        <CalendarNotification
-          v-show="_showNotifications"
-          :notifications="_notifications"
-          @close="_showNotifications = false"
-          @save="addNotifications"
-        />
-      </div>
-      <div class="flex">
-        <NuxtLink class="w-full" to="/calendar">
-          <div
-            class="w-full rounded border bg-red-300 p-2 text-center hover:bg-red-500"
+  <div class="card w-1/2 bg-base-100 shadow-xl">
+    <div class="card-body w-full">
+      <div class="card-actions justify-end">
+        <NuxtLink class="btn btn-square btn-sm" to="/calendar">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            Cancel
-          </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </NuxtLink>
-
-        <button
-          v-if="$props.event"
-          class="w-full rounded border bg-orange-300 p-2 hover:bg-orange-500"
-          @click="deleteEvent()"
-        >
-          Delete event
-        </button>
-
-        <button
-          class="w-full rounded border bg-blue-300 p-2 hover:bg-blue-500"
-          @click="saveEvent()"
-        >
-          {{ $props.event ? 'Save' : 'Add event' }}
-        </button>
       </div>
-    </form>
-    <p class="text-red-500">{{ _errorMessage }}</p>
+      <h1 class="text-xl font-bold">
+        {{ $props.event ? 'Modify event' : 'Add event' }}
+      </h1>
+      <form class="flex flex-col gap-2" @submit.prevent="">
+        <div>
+          <label>Title:</label>
+          <input
+            v-model="_title"
+            type="text"
+            placeholder="Type here"
+            class="input input-bordered w-full max-w-xs"
+            required
+          />
+        </div>
+
+        <div>
+          <label>Start:</label>
+          <input
+            v-model="_startDate"
+            class="input input-bordered"
+            type="date"
+          />
+          <input
+            v-model="_startTime"
+            class="input input-bordered"
+            type="time"
+          />
+        </div>
+
+        <div>
+          <label>End:</label>
+          <input v-model="_endDate" class="input input-bordered" type="date" />
+          <input v-model="_endTime" class="input input-bordered" type="time" />
+        </div>
+
+        <div>
+          <label>Location:</label>
+          <input
+            v-model="_location"
+            class="input input-bordered"
+            type="string"
+          />
+        </div>
+
+        <div>
+          <label>Note:</label>
+          <textarea
+            v-model="_note"
+            class="textarea textarea-bordered w-full"
+            placeholder="Bio"
+          ></textarea>
+        </div>
+
+        <div>
+          <label>Category:</label>
+          <input
+            v-model="_category"
+            class="input input-bordered"
+            type="string"
+          />
+        </div>
+
+        <div>
+          <CalendarRepetition
+            :day="_startDate"
+            :repetition="_repetition"
+            @save="addRepetition"
+          />
+        </div>
+
+        <div>
+          <pre>{{ _notificationsSummary }}</pre>
+          <CalendarNotification
+            :end="new Date('1900-01-01 ' + _startTime).getTime()"
+            :notifications="_notifications"
+            @close="_showNotifications = false"
+            @save="addNotifications"
+          />
+        </div>
+
+        <div class="flex justify-evenly">
+          <button
+            v-if="$props.event"
+            class="btn btn-error w-2/5"
+            @click="deleteEvent()"
+          >
+            Delete event
+          </button>
+
+          <button class="btn btn-success w-2/5" @click="saveEvent()">
+            {{ $props.event ? 'Save' : 'Add event' }}
+          </button>
+        </div>
+      </form>
+      <p class="text-red-500">{{ _errorMessage }}</p>
+    </div>
   </div>
 </template>

@@ -52,7 +52,7 @@ function save() {
 <template>
   <div class="flex justify-center">
     <form
-      class="w-full max-w-[40rem] rounded-lg border drop-shadow-md"
+      class="w-full max-w-[40rem] rounded-lg border border-neutral-300 bg-base-200 shadow-xl"
       @click.prevent=""
     >
       <input
@@ -60,13 +60,13 @@ function save() {
         v-model="_noteTitle"
         type="text"
         placeholder="Title"
-        class="w-full rounded-t-lg p-4 font-bold outline-none"
+        class="w-full rounded-t-lg border-b border-b-neutral-700 bg-base-200 p-4 font-bold outline-none"
       />
       <textarea
         id="noteBody"
         v-model="_noteBody"
         type="text"
-        class="w-full resize-none px-4 py-2 outline-none placeholder:text-gray-600"
+        class="w-full resize-none bg-base-200 px-4 py-2 outline-none placeholder:text-gray-600"
         placeholder="Take a note..."
         :class="{ 'rounded-lg': !_adding }"
         autosize="true"
@@ -75,53 +75,43 @@ function save() {
       </textarea>
       <div
         v-if="_adding"
-        class="flex justify-between rounded-b-lg bg-white p-1"
+        class="flex justify-between rounded-b-lg bg-base-200 p-1"
       >
-        <button
-          class="rounded-lg bg-red-200 p-2 hover:bg-red-400"
-          @click="del()"
-        >
-          Delete
-        </button>
-        <div
-          class="group w-72 bg-white hover:rounded-t-lg hover:border-x hover:border-t"
-        >
+        <button class="btn btn-error" @click="del()">Delete</button>
+
+        <div class="dropdown dropdown-hover w-52">
           <div
-            class="flex h-full w-full items-center p-1 align-middle group-hover:border-b"
+            tabindex="0"
+            role="button"
+            class="btn m-1 w-full bg-neutral-content text-neutral hover:bg-neutral-300"
           >
             <span
-              class="block"
+              class="block w-full"
               :class="{ 'text-gray-600': _selected.length == 0 }"
             >
               {{ _categoryName }}
             </span>
           </div>
           <ul
-            class="bg-whiteborder-x collapse absolute w-72 rounded-b-lg border-b bg-white group-hover:visible"
+            tabindex="0"
+            class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
           >
-            <li
-              class="p-2 text-gray-600 hover:bg-gray-100"
-              @click="_selected = ''"
-            >
-              Not categorized
+            <li @click="_selected = ''">
+              <a> Not categorized </a>
             </li>
             <li
               v-for="c in $props.categories"
               :key="c.id"
-              class="p-2 hover:bg-gray-100"
-              :class="{ 'bg-gray-100': _selected == c.id }"
               @click="_selected = c.id"
             >
-              {{ c.name }}
+              <a>
+                {{ c.name }}
+              </a>
             </li>
           </ul>
         </div>
-        <button
-          class="rounded-lg bg-blue-200 p-2 hover:bg-blue-400"
-          @click="save()"
-        >
-          Save
-        </button>
+
+        <button class="btn btn-success" @click="save()">Save</button>
       </div>
     </form>
   </div>

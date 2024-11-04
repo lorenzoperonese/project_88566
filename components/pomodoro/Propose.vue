@@ -34,14 +34,14 @@ function acceptProposal() {
   <div class="grid h-full place-items-center">
     <div class="text-center">
       <h2 class="mb-4 text-2xl font-bold">Proponi un Pomodoro</h2>
-      <div class="mb-4 flex space-x-4">
+      <div class="mb-4 flex justify-center space-x-4">
         <div class="flex flex-col">
           <label class="mb-1 font-bold">Tempo totale (in minuti)</label>
           <input
             v-model.number="_totalTime"
             type="number"
             required
-            class="border py-4 text-center text-xl outline-none"
+            class="input input-bordered w-full max-w-xs text-center"
             :min="1"
           />
         </div>

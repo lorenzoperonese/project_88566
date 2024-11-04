@@ -27,13 +27,15 @@
     "nuxt": "^3.13.0",
     "typescript": "^5.6.2",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@nuxt/image": "^1.8.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.20",
+    "daisyui": "^4.12.14",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
