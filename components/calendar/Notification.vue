@@ -17,9 +17,8 @@ function repetitions(n: number) {
     { value: 3, name: 'Month' },
     { value: 4, name: 'Year' }
   ]
-  if(n != 1) {
-    for(let i=0; i<base.length, i++)
-      base[i].name += s;
+  if (n != 1) {
+    for (let i = 0; i < base.length; i++) base[i].name += 's'
   }
   return base
 }
@@ -73,7 +72,7 @@ function cancel() {
 
                 <SelectDrop
                   v-model="notification.period"
-                  :options="repetitions"
+                  :options="repetitions(notification.advance)"
                 />
                 <span>before</span>
 

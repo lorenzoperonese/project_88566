@@ -29,7 +29,7 @@ const addCategory = () => {
 <template>
   <div class="bg-base-100 p-2">
     <label class="input input-bordered flex items-center gap-2">
-      <input type="text" class="grow" placeholder="Search" v-model="_search" />
+      <input v-model="_search" type="text" class="grow" placeholder="Search" />
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"

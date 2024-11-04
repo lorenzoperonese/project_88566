@@ -28,14 +28,14 @@ export async function createRooms(user_id: string, receiver: string) {
 
   const conversationId = new Types.ObjectId()
 
-  let r = new Room({
+  const r = new Room({
     roomName: receiver,
     senderId: user_id,
     receiverId: receiver_user._id,
     conversationId: conversationId
   })
 
-  let r2 = new Room({
+  const r2 = new Room({
     roomName: sender_user.username,
     senderId: receiver_user._id,
     receiverId: user_id,

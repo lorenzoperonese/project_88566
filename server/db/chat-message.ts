@@ -1,4 +1,5 @@
-import { Schema, model, Types } from 'mongoose'
+import type { Types } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import User from './user'
 
 interface Message {

@@ -24,8 +24,6 @@ const weekNumber = (d: string) => {
         : value.toString() + 'th'
 }
 
-const weekDay = days[(new Date($props.day).getDay() + 6) % 7] // TODO CAMBIARE
-
 const repetitions = [
   { value: 1, name: 'Day' },
   { value: 2, name: 'Week' },
@@ -33,7 +31,7 @@ const repetitions = [
   { value: 4, name: 'Year' }
 ]
 const _repetition = ref(1)
-const _eventPeriod = ref<EventPeriod>(1)
+const _eventPeriod = ref<RepetitionPeriod>(1)
 const _weekDays = ref<number[]>([])
 const _monthRepetition = ref(1)
 const _ends = ref('Never')
@@ -87,6 +85,7 @@ function reset() {
 */
 
 function save() {
+  // controls now do not work, if wrong data is entered the modal will save it anyway
   if (!onoff.value) {
     $emits('save', null)
     return
@@ -150,9 +149,9 @@ function save() {
               <div class="form-control w-52">
                 <label class="label cursor-pointer">
                   <input
+                    v-model="onoff"
                     type="checkbox"
                     class="toggle toggle-primary"
-                    v-model="onoff"
                   />
                 </label>
               </div>
@@ -164,7 +163,7 @@ function save() {
                 <div>Repeat every</div>
               </div>
               <input
-                v-model="_repetition_value"
+                v-model="_repetition"
                 type="number"
                 min="1"
                 required
@@ -197,7 +196,10 @@ function save() {
                   {
                     value: 2,
                     name:
-                      'Monthly on the' + weekNumber($props.day) + ' ' + days[new Date($props.day).getDay()]
+                      'Monthly on the' +
+                      weekNumber($props.day) +
+                      ' ' +
+                      days[new Date($props.day).getDay()]
                   }
                 ]"
               />
@@ -234,7 +236,7 @@ function save() {
                   <input
                     v-model="_endDate"
                     type="date"
-                    class="intput-bordered input ml-4 disabled:text-gray-500"
+                    class="input input-bordered ml-4 disabled:text-gray-500"
                     :disabled="_ends != 'Day'"
                   />
                 </label>

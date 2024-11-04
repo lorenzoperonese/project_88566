@@ -46,8 +46,8 @@ function sendMessage() {
       >
     </div>
     <div
-      class="h-full flex-1 flex-col overflow-y-auto px-4 py-2"
       id="messages-container"
+      class="h-full flex-1 flex-col overflow-y-auto px-4 py-2"
     >
       <div v-for="m in messages" :key="m.id">
         <div
@@ -67,12 +67,12 @@ function sendMessage() {
       </div>
     </div>
 
-    <div class="flex justify-between gap-4 p-2" v-show="currentRoomId">
+    <div v-show="currentRoomId" class="flex justify-between gap-4 p-2">
       <input
+        v-model="message"
         type="text"
         placeholder="Type here"
         class="input input-bordered w-full"
-        v-model="message"
         @keyup.enter="sendMessage"
       />
       <button class="btn btn-primary" @click="sendMessage">Send</button>
