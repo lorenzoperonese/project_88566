@@ -111,10 +111,14 @@ function calculateRecurring(e: EventType) {
         >
       </p>
     </div>
-    <span class="start">{{ new Date($props.event.start).toISOString() }}</span>
-    <span class="end">{{ new Date($props.event.end).toISOString() }}</span>
+    <span class="start">{{
+      new Date($props.event.start).toLocaleString('it-IT')
+    }}</span>
+    <span class="end">{{
+      new Date($props.event.end).toLocaleString('it-IT')
+    }}</span>
     <span class="timezone"
-      >Europe/Paris
+      >Europe/Rome
       <!-- TODO -->
     </span>
     <span class="title">{{ $props.event.title }}</span>
