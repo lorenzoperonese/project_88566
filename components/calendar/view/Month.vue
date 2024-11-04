@@ -99,6 +99,7 @@ function getTasksForDay(day: number, index: number): Task[] {
       $props.displayDate.getMonth() - 1,
       day
     )
+    console.log(date)
   } else if (isInNextMonth(index)) {
     date = new Date(
       $props.displayDate.getFullYear(),
@@ -118,6 +119,8 @@ function getTasksForDay(day: number, index: number): Task[] {
   return $props.tasks
     .filter((e) => {
       const taskDate = new Date(e.end)
+      console.log('task:', taskDate.toDateString())
+      console.log('date:', date.toDateString())
       return taskDate.toDateString() === date.toDateString()
     })
     .sort((a, b) => a.end - b.end)
@@ -191,12 +194,12 @@ function isEventInThePast(e: EventType): boolean {
       </NuxtLink>
 
       <NuxtLink
-        v-for="task in getTasksForDay(day, -1)"
+        v-for="task in getTasksForDay(day, index)"
         :key="task.id"
         :to="`/calendar/t/${task.id}`"
       >
         <div
-          class="mt-1 cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+          class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
         >
           <div :class="['font-semibold', { 'line-through': task.completed }]">
             {{ task.title }}

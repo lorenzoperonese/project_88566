@@ -9,22 +9,23 @@ const eventOrTask = computed(() => {
 
 <template>
   <div>
-    <div class="flex w-full justify-between">
-      <button
-        class="w-full rounded border p-2 hover:bg-blue-200 disabled:bg-blue-400"
-        :disabled="!addTask"
+    <div role="tablist" class="tabs-boxed tabs">
+      <a
+        role="tab"
+        class="tab"
+        :class="{ 'tab-active': !addTask }"
         @click="addTask = false"
+        >Tab 1</a
       >
-        Event
-      </button>
-      <button
-        class="w-full rounded border p-2 hover:bg-blue-200 disabled:bg-blue-400"
-        :disabled="addTask"
+      <a
+        role="tab"
+        class="tab"
+        :class="{ 'tab-active': addTask }"
         @click="addTask = true"
+        >Tab 2</a
       >
-        Task
-      </button>
     </div>
+
     <div class="flex justify-center">
       <component :is="eventOrTask" class="h-full"> </component>
     </div>

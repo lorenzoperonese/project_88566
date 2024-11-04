@@ -94,7 +94,7 @@ function isEventInThePast(e: EventType): boolean {
           :to="`/calendar/t/${task.id}`"
         >
           <div
-            class="mt-1 cursor-pointer rounded bg-blue-100 p-2 text-sm hover:bg-blue-200"
+            class="mt-1 cursor-pointer rounded bg-primary-content p-2 text-sm text-primary hover:bg-blue-200"
           >
             <div :class="['font-semibold', { 'line-through': task.completed }]">
               {{ task.title }}

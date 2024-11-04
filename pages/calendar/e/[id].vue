@@ -6,7 +6,7 @@ const _event = await $fetch(`/api/events/${_id}`)
 </script>
 
 <template>
-  <div class="flex justify-center">
+  <div class="flex h-full items-center justify-center">
     <CalendarEventAdder v-if="_event" :event="_event" />
   </div>
 </template>
