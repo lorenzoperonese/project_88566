@@ -116,109 +116,37 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="flex">
-      <Transition name="slide-fade">
-        <div
-          v-show="__showSideMenu"
-          class="z-10 w-80 bg-white p-4 drop-shadow-lg"
-        >
-          <div class="flex justify-between border-b pb-2">
-            <div class="p-2 text-xl font-bold">Filters</div>
-            <button
-              class="rounded-lg border p-2 hover:bg-gray-200"
-              @click="__showSideMenu = false"
-            >
-              Close
-            </button>
-          </div>
-          <div class="mb-2 mt-2 border-b pb-2">
-            <input
-              v-model="_search"
-              type="text"
-              class="w-full rounded-lg border p-2 outline-none"
-              placeholder="Search..."
-            />
-          </div>
-          <div>
-            <div class="text-lg font-bold">Categories</div>
-            <div class="ml-2">
-              <ul class="list-inside list-disc">
-                <li
-                  v-for="category in _notesCategories"
-                  :key="category.id"
-                  class="flex justify-between"
-                >
-                  <div>
-                    {{ category.name }}
-                  </div>
-                  <button
-                    class="text-gray-400 hover:text-black"
-                    @click="deleteCategory(category.id)"
-                  >
-                    x
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <div class="ml-2 flex justify-between">
-              <input
-                v-model="_newCategory"
-                type="text"
-                class="border-b outline-none"
-                placeholder="New category"
-                @keyup.enter="
-                  addCategory({
-                    id: '0',
-                    name: _newCategory
-                  })
-                "
-              />
-              <button
-                class="text-xl text-gray-400 hover:text-black"
-                @click="
-                  addCategory({
-                    id: '0',
-                    name: _newCategory
-                  })
-                "
-              >
-                +
-              </button>
-            </div>
-          </div>
+    <div class="drawer md:drawer-open">
+      <input id="notes-menu" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content">
+        <div class="w-full p-5">
+          <NotesAdder :categories="_notesCategories" @save="addNote" />
+          <NotesList
+            :notes="_search ? _filteredNotes : _notes"
+            class="h-svh overflow-y-auto"
+            @delete="deleteNote"
+            @duplicate="duplicate"
+          />
         </div>
-      </Transition>
-      <div class="w-full p-5">
-        <NotesAdder :categories="_notesCategories" @save="addNote" />
-        <NotesList
-          :notes="_search ? _filteredNotes : _notes"
-          class="h-svh overflow-y-auto"
-          @delete="deleteNote"
-          @duplicate="duplicate"
+
+        <label for="notes-menu" class="btn btn-primary drawer-button md:hidden"
+          >Open drawer</label
+        >
+      </div>
+      <div class="drawer-side">
+        <label
+          for="notes-menu"
+          aria-label="close sidebar"
+          class="drawer-overlay"
+        ></label>
+        <NotesMenu
+          v-model="_search"
+          :categories="_notesCategories"
+          class="h-full border-r border-r-neutral"
+          @add-category="addCategory"
+          @delete-category="deleteCategory"
         />
       </div>
     </div>
-
-    <button
-      class="position absolute left-5 top-5 rounded-lg border p-2"
-      @click="__showSideMenu = true"
-    >
-      MENU
-    </button>
   </div>
 </template>
-
-<style scoped>
-.slide-fade-enter-active {
-  transition: all 0.3s linear;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.3s linear;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateX(-400px);
-}
-</style>

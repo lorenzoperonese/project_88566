@@ -37,24 +37,21 @@ async function sendTest() {
   <div>
     <button
       v-if="permission == 'default'"
-      class="rounded-lg border bg-yellow-200 p-2 hover:bg-yellow-400"
+      class="btn btn-accent"
       @click="enable()"
     >
       Enable notifications
     </button>
 
     <div v-if="permission == 'granted'">
-      <div class="text-green-700">Notifications are enabled :)</div>
+      <div class="text-accent">Notifications are enabled :)</div>
 
-      <button
-        class="rounded-lg border bg-orange-200 p-2 hover:bg-orange-400"
-        @click="sendTest()"
-      >
+      <button class="btn btn-warning mt-2" @click="sendTest()">
         Send test
       </button>
     </div>
 
-    <div v-if="permission == 'denied'" class="text-red-400">
+    <div v-if="permission == 'denied'" class="text-error">
       Notifications are disabled :(
     </div>
   </div>

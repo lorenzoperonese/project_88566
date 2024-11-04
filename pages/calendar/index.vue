@@ -96,35 +96,24 @@ function header(): string {
 
 <template>
   <div class="flex h-full flex-col">
-    <h1 class="bg-blue-500 p-4 text-center text-3xl font-bold text-white">
+    <h1 class="bg-base-300 p-4 text-center text-3xl font-bold text-white">
       CALENDAR
     </h1>
-    <div class="relative flex items-center justify-between bg-blue-100 p-4">
-      <button
-        class="rounded bg-blue-500 px-4 py-2 text-white"
-        @click="previousPeriod"
-      >
-        Previous
-      </button>
+    <div class="relative flex items-center justify-between bg-base-100 p-4">
+      <button class="btn btn-info" @click="previousPeriod">Previous</button>
       <h2 class="text-2xl font-semibold">
         {{ header() }}
       </h2>
-      <button
-        class="rounded bg-blue-500 px-4 py-2 text-white"
-        @click="nextPeriod"
-      >
-        Next
-      </button>
+      <button class="btn btn-info" @click="nextPeriod">Next</button>
     </div>
 
-    <div class="flex justify-center space-x-2 bg-blue-100 p-2">
+    <div class="flex justify-center space-x-2 bg-base-100 p-2">
       <button
         v-for="view in ['month', 'week', 'day']"
         :key="view"
-        class="rounded px-3 py-1"
+        class="btn"
         :class="{
-          'bg-blue-500 text-white': _currentView === view,
-          'bg-white': _currentView !== view
+          'btn-info': _currentView === view
         }"
         @click="changeView(view)"
       >
@@ -142,11 +131,22 @@ function header(): string {
       :week-days="_weekDays"
     />
 
-    <NuxtLink
-      to="/calendar/add"
-      class="fixed bottom-4 right-4 rounded-lg bg-blue-500 p-4 text-white hover:bg-blue-600"
-    >
-      +
+    <NuxtLink to="/calendar/add" class="btn btn-primary fixed bottom-4 right-4">
+      <svg
+        class="text-content h-5 w-5"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" />
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
     </NuxtLink>
 
     <TmButton class="fixed bottom-4 left-4" @update="updateToday()" />

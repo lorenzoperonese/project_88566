@@ -56,7 +56,7 @@ function isEventInThePast(e: EventType): boolean {
 </script>
 
 <template>
-  <div class="grid flex-grow grid-cols-7 gap-1 bg-gray-100 p-2">
+  <div class="grid flex-grow grid-cols-7 gap-1 bg-base-200 p-2">
     <div
       v-for="(day, index) in $props.weekDays"
       :key="index"
@@ -70,8 +70,8 @@ function isEventInThePast(e: EventType): boolean {
       <div
         class="flex-grow overflow-y-auto p-2"
         :class="{
-          'bg-white': !isToday(day.getDate()),
-          'bg-gray-200': isToday(day.getDate())
+          'bg-base-100': !isToday(day.getDate()),
+          'bg-base-200': isToday(day.getDate())
         }"
       >
         <NuxtLink
@@ -80,7 +80,7 @@ function isEventInThePast(e: EventType): boolean {
           :to="`/calendar/e/${event.id}`"
         >
           <div
-            class="mt-1 w-full cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+            class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
             :class="{ 'opacity-60': isEventInThePast(event) }"
           >
             <div class="font-semibold">{{ event.title }}</div>
@@ -96,7 +96,7 @@ function isEventInThePast(e: EventType): boolean {
           :to="`/calendar/t/${task.id}`"
         >
           <div
-            class="mt-1 cursor-pointer rounded bg-blue-100 p-1 text-xs hover:bg-blue-200"
+            class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
           >
             <div :class="['font-semibold', { 'line-through': task.completed }]">
               {{ task.title }}

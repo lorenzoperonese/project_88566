@@ -23,40 +23,38 @@ const $emits = defineEmits<{
 </script>
 
 <template>
-  <div class="m-2 flex justify-between gap-4 rounded-lg border p-2">
-    <div class="w-full">
-      <NuxtLink :to="`/notes/${$props.note.id}`">
-        <!-- div>ID: {{ $props.note.id }}</div -->
-        <div class="flex justify-between">
-          <div class="text-2xl font-extrabold">{{ $props.note.title }}</div>
-          <div class="h-full text-gray-600">
-            {{ _categoryName }}
-          </div>
+  <div class="card w-full bg-base-200 shadow-lg">
+    <div class="card-body">
+      <div class="flex">
+        <div class="mr-4 w-full">
+          <NuxtLink :to="`/notes/${$props.note.id}`">
+            <!-- div>ID: {{ $props.note.id }}</div -->
+            <div class="flex justify-between">
+              <div class="text-2xl font-extrabold">{{ $props.note.title }}</div>
+              <div class="h-full text-gray-600">
+                {{ _categoryName }}
+              </div>
+            </div>
+            <div class="prose prose-sm">
+              <MDC :value="$props.note.body" />
+            </div>
+          </NuxtLink>
         </div>
-        <div class="prose prose-sm">
-          <MDC :value="$props.note.body" />
+        <div class="flex flex-col gap-2">
+          <NuxtLink
+            class="btn btn-info"
+            :to="`/notes/editor/${$props.note.id}`"
+          >
+            Modify
+          </NuxtLink>
+          <button class="btn btn-accent" @click="$emits('duplicate')">
+            Duplicate
+          </button>
+          <button class="btn btn-error" @click="$emits('delete')">
+            Delete
+          </button>
         </div>
-      </NuxtLink>
-    </div>
-    <div class="flex flex-col gap-2">
-      <NuxtLink
-        class="rounded-lg border bg-blue-200 p-2 hover:bg-blue-400"
-        :to="`/notes/editor/${$props.note.id}`"
-      >
-        Modify
-      </NuxtLink>
-      <button
-        class="rounded-lg border bg-green-200 p-2 hover:bg-green-400"
-        @click="$emits('duplicate')"
-      >
-        Duplicate
-      </button>
-      <button
-        class="rounded-lg border bg-red-200 p-2 hover:bg-red-400"
-        @click="$emits('delete')"
-      >
-        Delete
-      </button>
+      </div>
     </div>
   </div>
 </template>

@@ -4,32 +4,16 @@
   <div>
     <h1 class="p-5 text-xl font-bold">Home page</h1>
     <div class="flex gap-2 p-5">
-      <RouterLink
-        class="button rounded-lg border p-2 hover:bg-gray-200"
-        to="/calendar"
-        >Calendario</RouterLink
-      >
-      <NuxtLink
-        class="button rounded-lg border p-2 hover:bg-gray-200"
-        to="/notes"
-        >Notes</NuxtLink
-      >
-      <NuxtLink
-        class="button rounded-lg border p-2 hover:bg-gray-200"
-        to="/pomodoro"
-        >Pomodoro</NuxtLink
-      >
-      <NuxtLink
-        class="button rounded-lg border p-2 hover:bg-gray-200"
-        to="/chat"
-        >chat</NuxtLink
-      >
-      <NuxtLink
-        to="/profile"
-        class="button rounded-lg border p-2 hover:bg-gray-200"
-        >Profile
-      </NuxtLink>
+      <RouterLink class="btn" to="/calendar">Calendario</RouterLink>
+      <NuxtLink class="btn" to="/notes">Notes</NuxtLink>
+      <NuxtLink class="btn" to="/pomodoro">Pomodoro</NuxtLink>
+      <NuxtLink class="btn" to="/chat">Chat</NuxtLink>
+      <NuxtLink class="btn" to="/profile">Profile </NuxtLink>
     </div>
-    <NotifyPermission />
+
+    <h1 class="mt-5 pl-5 text-xl font-bold">Notifications</h1>
+    <div class="p-5">
+      <NotifyPermission />
+    </div>
   </div>
 </template>

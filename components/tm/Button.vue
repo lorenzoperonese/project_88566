@@ -13,12 +13,7 @@ function update() {
 
 <template>
   <div>
-    <button
-      class="rounded-lg bg-green-300 p-4 hover:bg-green-500"
-      @click="showConfig = true"
-    >
-      TM
-    </button>
+    <button class="btn btn-secondary" @click="showConfig = true">TM</button>
 
     <TmConfig
       v-if="showConfig"
