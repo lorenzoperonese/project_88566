@@ -162,7 +162,11 @@ function header(): string {
 
     <dialog id="modal" class="modal" ref="modal">
       <div class="modal-box">
-        <CalendarEventAdder v-if="_add_event_task" @close="closeModal" />
+        <CalendarEventAdder
+          v-if="_add_event_task"
+          @close="closeModal"
+          :modal="true"
+        />
         <CalendarTaskAdder v-else @close="closeModal" />
       </div>
     </dialog>

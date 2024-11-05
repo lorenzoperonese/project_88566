@@ -4,6 +4,7 @@ const end = new Date(today.getTime() + 1000 * 60 * 60)
 
 const $props = defineProps<{
   event?: EventType
+  modal?: boolean
 }>()
 
 const $emits = defineEmits<{
@@ -219,23 +220,25 @@ function addNotifications(n: Notify[] | null) {
         <input v-model="_category" class="input input-bordered" type="string" />
       </div>
 
-      <div>
-        <CalendarRepetition
-          :day="_startDate"
-          :repetition="_repetition"
-          @save="addRepetition"
-        />
-        <pre>{{ _repetitionSummary }}</pre>
-      </div>
+      <div v-if="!modal">
+        <div>
+          <CalendarRepetition
+            :day="_startDate"
+            :repetition="_repetition"
+            @save="addRepetition"
+          />
+          <pre>{{ _repetitionSummary }}</pre>
+        </div>
 
-      <div>
-        <CalendarNotification
-          :end="new Date('1900-01-01 ' + _startTime).getTime()"
-          :notifications="_notifications"
-          @close="_showNotifications = false"
-          @save="addNotifications"
-        />
-        <pre>{{ _notificationsSummary }}</pre>
+        <div>
+          <CalendarNotification
+            :end="new Date('1900-01-01 ' + _startTime).getTime()"
+            :notifications="_notifications"
+            @close="_showNotifications = false"
+            @save="addNotifications"
+          />
+          <pre>{{ _notificationsSummary }}</pre>
+        </div>
       </div>
 
       <div class="flex justify-evenly">
@@ -246,6 +249,26 @@ function addNotifications(n: Notify[] | null) {
         >
           Delete event
         </button>
+
+        <NuxtLink
+          :to="{
+            path: '/calendar/e/add',
+            query: {
+              title: _title,
+              start_date: _startDate,
+              start_time: _startTime,
+              end_date: _endDate,
+              end_time: _endTime,
+              location: _location,
+              note: _note,
+              category: _category
+            }
+          }"
+          class="btn btn-neutral w-2/5"
+          v-if="modal"
+        >
+          More options
+        </NuxtLink>
 
         <button class="btn btn-success w-2/5" @click="saveEvent()">
           {{ $props.event ? 'Save' : 'Add event' }}
