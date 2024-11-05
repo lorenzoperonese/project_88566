@@ -6,6 +6,10 @@ const $props = defineProps<{
   event?: EventType
 }>()
 
+const $emits = defineEmits<{
+  (e: 'close'): void
+}>()
+
 const _showRepetition = ref(false)
 const _showNotifications = ref(false)
 const _errorMessage = ref('')
@@ -132,7 +136,7 @@ function saveEvent() {
       body: JSON.stringify(e)
     })
   }
-  navigateTo('/calendar')
+  $emits('close')
 }
 
 function deleteEvent() {
@@ -168,122 +172,104 @@ function addNotifications(n: Notify[] | null) {
 </script>
 
 <template>
-  <div class="card w-1/2 bg-base-100 shadow-xl">
-    <div class="card-body w-full">
-      <div class="card-actions justify-end">
-        <NuxtLink class="btn btn-square btn-sm" to="/calendar">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </NuxtLink>
+  <div class="">
+    <h1 class="text-xl font-bold">
+      {{ $props.event ? 'Modify event' : 'Add event' }}
+    </h1>
+    <form class="flex flex-col gap-2" @submit.prevent="">
+      <div>
+        <label>Title:</label>
+        <input
+          v-model="_title"
+          type="text"
+          placeholder="Type here"
+          class="input input-bordered w-full max-w-xs"
+          required
+        />
       </div>
-      <h1 class="text-xl font-bold">
-        {{ $props.event ? 'Modify event' : 'Add event' }}
-      </h1>
-      <form class="flex flex-col gap-2" @submit.prevent="">
-        <div>
-          <label>Title:</label>
-          <input
-            v-model="_title"
-            type="text"
-            placeholder="Type here"
-            class="input input-bordered w-full max-w-xs"
-            required
-          />
-        </div>
 
-        <div>
-          <label>Start:</label>
-          <input
-            v-model="_startDate"
-            class="input input-bordered"
-            type="date"
-          />
-          <input
-            v-model="_startTime"
-            class="input input-bordered"
-            type="time"
-          />
-        </div>
+      <div>
+        <label>Start:</label>
+        <input v-model="_startDate" class="input input-bordered" type="date" />
+        <input v-model="_startTime" class="input input-bordered" type="time" />
+      </div>
 
-        <div>
-          <label>End:</label>
-          <input v-model="_endDate" class="input input-bordered" type="date" />
-          <input v-model="_endTime" class="input input-bordered" type="time" />
-        </div>
+      <div>
+        <label>End:</label>
+        <input v-model="_endDate" class="input input-bordered" type="date" />
+        <input v-model="_endTime" class="input input-bordered" type="time" />
+      </div>
 
-        <div>
-          <label>Location:</label>
-          <input
-            v-model="_location"
-            class="input input-bordered"
-            type="string"
-          />
-        </div>
+      <div>
+        <label>Location:</label>
+        <input v-model="_location" class="input input-bordered" type="string" />
+      </div>
 
-        <div>
-          <label>Note:</label>
-          <textarea
-            v-model="_note"
-            class="textarea textarea-bordered w-full"
-            placeholder="Bio"
-          ></textarea>
-        </div>
+      <div>
+        <label>Note:</label>
+        <textarea
+          v-model="_note"
+          class="textarea textarea-bordered w-full"
+          placeholder="Bio"
+        ></textarea>
+      </div>
 
-        <div>
-          <label>Category:</label>
-          <input
-            v-model="_category"
-            class="input input-bordered"
-            type="string"
-          />
-        </div>
+      <div>
+        <label>Category:</label>
+        <input v-model="_category" class="input input-bordered" type="string" />
+      </div>
 
-        <div>
-          <CalendarRepetition
-            :day="_startDate"
-            :repetition="_repetition"
-            @save="addRepetition"
-          />
-          <pre>{{ _repetitionSummary }}</pre>
-        </div>
+      <div>
+        <CalendarRepetition
+          :day="_startDate"
+          :repetition="_repetition"
+          @save="addRepetition"
+        />
+        <pre>{{ _repetitionSummary }}</pre>
+      </div>
 
-        <div>
-          <CalendarNotification
-            :end="new Date('1900-01-01 ' + _startTime).getTime()"
-            :notifications="_notifications"
-            @close="_showNotifications = false"
-            @save="addNotifications"
-          />
-          <pre>{{ _notificationsSummary }}</pre>
-        </div>
+      <div>
+        <CalendarNotification
+          :end="new Date('1900-01-01 ' + _startTime).getTime()"
+          :notifications="_notifications"
+          @close="_showNotifications = false"
+          @save="addNotifications"
+        />
+        <pre>{{ _notificationsSummary }}</pre>
+      </div>
+      <div>
+        <CalendarRepetition
+          :day="_startDate"
+          :repetition="_repetition"
+          @save="addRepetition"
+        />
+        <pre>{{ _repetitionSummary }}</pre>
+      </div>
 
-        <div class="flex justify-evenly">
-          <button
-            v-if="$props.event"
-            class="btn btn-error w-2/5"
-            @click="deleteEvent()"
-          >
-            Delete event
-          </button>
+      <div>
+        <CalendarNotification
+          :end="new Date('1900-01-01 ' + _startTime).getTime()"
+          :notifications="_notifications"
+          @close="_showNotifications = false"
+          @save="addNotifications"
+        />
+        <pre>{{ _notificationsSummary }}</pre>
+      </div>
 
-          <button class="btn btn-success w-2/5" @click="saveEvent()">
-            {{ $props.event ? 'Save' : 'Add event' }}
-          </button>
-        </div>
-      </form>
-      <p class="text-red-500">{{ _errorMessage }}</p>
-    </div>
+      <div class="flex justify-evenly">
+        <button
+          v-if="$props.event"
+          class="btn btn-error w-2/5"
+          @click="deleteEvent()"
+        >
+          Delete event
+        </button>
+
+        <button class="btn btn-success w-2/5" @click="saveEvent()">
+          {{ $props.event ? 'Save' : 'Add event' }}
+        </button>
+      </div>
+    </form>
+    <p class="text-red-500">{{ _errorMessage }}</p>
   </div>
 </template>
