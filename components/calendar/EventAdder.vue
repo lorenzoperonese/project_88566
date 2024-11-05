@@ -237,24 +237,6 @@ function addNotifications(n: Notify[] | null) {
         />
         <pre>{{ _notificationsSummary }}</pre>
       </div>
-      <div>
-        <CalendarRepetition
-          :day="_startDate"
-          :repetition="_repetition"
-          @save="addRepetition"
-        />
-        <pre>{{ _repetitionSummary }}</pre>
-      </div>
-
-      <div>
-        <CalendarNotification
-          :end="new Date('1900-01-01 ' + _startTime).getTime()"
-          :notifications="_notifications"
-          @close="_showNotifications = false"
-          @save="addNotifications"
-        />
-        <pre>{{ _notificationsSummary }}</pre>
-      </div>
 
       <div class="flex justify-evenly">
         <button
