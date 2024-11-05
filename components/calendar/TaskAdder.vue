@@ -5,10 +5,14 @@ const $props = defineProps<{
   task?: Task
 }>()
 
+const $emits = defineEmits<{
+  (e: 'close'): void
+}>()
+
 const _title = ref('')
 const _endDate = ref<string>(formatDate(end.getTime()))
 const _endTime = ref<string>(formatTime(end.getTime()))
-const _note = ref<string | null>('')
+const _note = ref<string>('')
 const _category = ref('Not categorized')
 const _completed = ref(false)
 
@@ -16,7 +20,9 @@ if ($props.task) {
   _title.value = $props.task.title
   _endDate.value = formatDate($props.task.end)
   _endTime.value = formatTime($props.task.end)
-  _note.value = $props.task.note || null
+
+  if ($props.task.note) _note.value = $props.task.note
+
   _category.value = $props.task.category || 'Not categorized'
   _completed.value = $props.task.completed
 }
@@ -53,13 +59,13 @@ function saveTask() {
       body: JSON.stringify(e)
     })
   }
-  navigateTo('/calendar')
+  $emits('close')
 }
 function deleteTask() {
   $fetch(`/api/tasks/${$props.task?.id}`, {
     method: 'DELETE'
   })
-  navigateTo('/calendar')
+  $emits('close')
 }
 </script>
 <template>

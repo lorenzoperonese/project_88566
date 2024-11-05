@@ -144,7 +144,7 @@ function deleteEvent() {
   $fetch(`/api/events/${$props.event?.id}`, {
     method: 'DELETE'
   })
-  navigateTo('/calendar')
+  $emits('close')
 }
 
 function addNotifications(n: Notify[] | null) {
