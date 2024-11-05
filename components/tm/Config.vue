@@ -32,58 +32,30 @@ async function save() {
 </script>
 
 <template>
-  <div
-    class="fixed left-0 top-0 grid h-full w-full bg-gray-300 bg-opacity-50"
-    @click="close()"
-  >
-    <div
-      class="place-self-center rounded-lg border bg-white p-5 drop-shadow-lg"
-      @click.stop=""
-    >
-      <h1 class="mb-5 w-full text-center text-lg font-bold">Time Machine</h1>
-      <form class="flex flex-col gap-2" @submit.prevent="">
+  <div class="" @click.stop="">
+    <h1 class="mb-5 w-full text-center text-lg font-bold">Time Machine</h1>
+    <form class="flex flex-col gap-2" @submit.prevent="">
+      <div class="flex justify-evenly">
         <div>
           <label> Date </label>
-          <input
-            v-model="_date"
-            type="date"
-            class="w-full rounded border p-2 outline-none"
-          />
+          <input v-model="_date" type="date" class="input input-bordered" />
         </div>
 
         <div>
           <label> Time </label>
-          <input
-            v-model="_time"
-            type="time"
-            class="w-full rounded border p-2 outline-none"
-          />
+          <input v-model="_time" type="time" class="input input-bordered" />
         </div>
+      </div>
 
-        <div class="mt-2">
-          <button
-            class="mb-2 w-full rounded-lg border bg-green-300 p-2 hover:bg-green-500"
-            @click="reset()"
-          >
-            Reset
-          </button>
+      <div class="mt-2">
+        <div class="flex justify-evenly">
+          <button class="btn btn-neutral" @click="close()">Cancel</button>
 
-          <div class="flex justify-evenly">
-            <button
-              class="w-20 rounded-lg border bg-red-300 p-2 hover:bg-red-500"
-              @click="close()"
-            >
-              Cancel
-            </button>
-            <button
-              class="w-20 rounded-lg border bg-blue-300 p-2 hover:bg-blue-500"
-              @click="save()"
-            >
-              Save
-            </button>
-          </div>
+          <button class="btn btn-warning" @click="reset()">Reset</button>
+
+          <button class="btn btn-success" @click="save()">Save</button>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </template>
