@@ -4,6 +4,8 @@ import { ICalendar } from 'datebook'
 import { saveAs } from 'file-saver'
 import ICAL from 'ical.js'
 
+const { $toast } = useNuxtApp()
+
 const $props = defineProps<{
   events: EventType[] | null
 }>()
@@ -151,10 +153,10 @@ const parseICSContent = (icsData: string) => {
         body: JSON.stringify(e)
       })
     })
+
+    $toast.success('File CIS imported')
   } catch (err) {
-    alert(
-      `Errore nel parsing del file ICS: ${err instanceof Error ? err.message : 'Errore sconosciuto'}`
-    )
+    $toast.error('Error parsing CIS file')
   }
 }
 
@@ -166,11 +168,11 @@ function calculateRecurrenceIN(event: ICAL.Event): Repetition | null {
 </script>
 
 <template>
-  <!-- This component will probably be in a navbar -->
-  <div class="relative">
-    <button
-      class="p-2 text-white hover:text-blue-200"
-      aria-label="Settings"
+  <div class="dropdown dropdown-end dropdown-bottom">
+    <div
+      tabindex="0"
+      role="button"
+      class="btn m-1 border-none bg-base-300 hover:bg-base-200"
       @click="_isOpen = !_isOpen"
     >
       <svg
@@ -190,40 +192,20 @@ function calculateRecurrenceIN(event: ICAL.Event): Repetition | null {
           d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
         ></path>
       </svg>
-    </button>
-    <div
-      v-if="_isOpen"
-      class="absolute right-0 z-50 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
-    >
-      <div
-        class="py-1"
-        role="menu"
-        aria-orientation="vertical"
-        aria-labelledby="options-menu"
-      >
-        <input
-          ref="fileInput"
-          type="file"
-          accept=".ics"
-          class="hidden"
-          @change="importCal"
-        />
-        <div
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          role="menuitem"
-          @click="$refs.fileInput.click()"
-        >
-          Import
-        </div>
-
-        <div
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          role="menuitem"
-          @click="exportCal()"
-        >
-          Export
-        </div>
-      </div>
     </div>
+    <ul
+      tabindex="0"
+      class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow"
+    >
+      <input
+        ref="fileInput"
+        type="file"
+        accept=".ics"
+        class="hidden"
+        @change="importCal"
+      />
+      <li><a @click="$refs.fileInput.click()">Import</a></li>
+      <li><a @click="exportCal()">Export</a></li>
+    </ul>
   </div>
 </template>

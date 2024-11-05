@@ -141,7 +141,7 @@ function header(): string {
     <h1 class="bg-base-300 p-4 text-center text-3xl font-bold text-white">
       CALENDAR
     </h1>
-    <div class="absolute right-4 top-4">
+    <div class="absolute right-4 top-2">
       <CalendarSettingsPanel :events="_events" />
     </div>
     <div class="relative flex items-center justify-between bg-base-100 p-4">
@@ -187,41 +187,34 @@ function header(): string {
       </div>
     </dialog>
 
-    <button class="btn btn-primary fixed bottom-4 right-4" @click="addEvent">
-      <svg
-        class="text-content h-5 w-5"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" />
-        <line x1="12" y1="5" x2="12" y2="19" />
-        <line x1="5" y1="12" x2="19" y2="12" />
-      </svg>
-    </button>
-
-    <button class="btn btn-info fixed bottom-4 right-24" @click="addTask">
-      <svg
-        class="text-content h-5 w-5"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" />
-        <line x1="12" y1="5" x2="12" y2="19" />
-        <line x1="5" y1="12" x2="19" y2="12" />
-      </svg>
-    </button>
+    <div class="fixed bottom-4 right-4">
+      <div class="dropdown dropdown-end dropdown-top">
+        <div tabindex="0" role="button" class="btn btn-info m-1">
+          <svg
+            class="text-content h-5 w-5"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" />
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </div>
+        <ul
+          tabindex="0"
+          class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow"
+        >
+          <li><a @click="addEvent"> Event </a></li>
+          <li><a @click="addTask"> Task </a></li>
+        </ul>
+      </div>
+    </div>
 
     <TmButton class="fixed bottom-4 left-4" @update="updateToday()" />
   </div>
