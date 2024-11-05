@@ -8,6 +8,48 @@ import {
 const { data: _events } = await useFetch<EventType[]>('/api/events')
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
+// false => add event, true => add task
+const _add_event_task = ref(false)
+const input = useTemplateRef('modal')
+
+const fetchEvents = async () => {
+  const tmp = await $fetch('/api/events')
+  _events.value = tmp
+}
+
+const fetchTasks = async () => {
+  const tmp = await $fetch('/api/tasks')
+  _tasks.value = tmp
+}
+
+function closeModal() {
+  if (_add_event_task.value) {
+    fetchTasks()
+  } else {
+    fetchEvents()
+  }
+
+  if (input.value) {
+    input.value.close()
+  }
+}
+
+function showModal() {
+  if (input.value) {
+    input.value.showModal()
+  }
+}
+
+function addTask() {
+  _add_event_task.value = true
+  showModal()
+}
+
+function addEvent() {
+  _add_event_task.value = false
+  showModal()
+}
+
 const _today = ref(await getToday())
 
 const _displayDate = ref(new Date(_today.value))
@@ -134,7 +176,18 @@ function header(): string {
       :week-days="_weekDays"
     />
 
-    <NuxtLink to="/calendar/add" class="btn btn-primary fixed bottom-4 right-4">
+    <dialog id="modal" class="modal" ref="modal">
+      <div class="modal-box">
+        <CalendarEventAdder
+          v-if="_add_event_task"
+          @close="closeModal"
+          :modal="true"
+        />
+        <CalendarTaskAdder v-else @close="closeModal" />
+      </div>
+    </dialog>
+
+    <button class="btn btn-primary fixed bottom-4 right-4" @click="addEvent">
       <svg
         class="text-content h-5 w-5"
         width="24"
@@ -150,7 +203,25 @@ function header(): string {
         <line x1="12" y1="5" x2="12" y2="19" />
         <line x1="5" y1="12" x2="19" y2="12" />
       </svg>
-    </NuxtLink>
+    </button>
+
+    <button class="btn btn-info fixed bottom-4 right-24" @click="addTask">
+      <svg
+        class="text-content h-5 w-5"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" />
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
 
     <TmButton class="fixed bottom-4 left-4" @update="updateToday()" />
   </div>

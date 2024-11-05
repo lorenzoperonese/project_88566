@@ -28,7 +28,7 @@ const update = (s: number, v: number) => {
     </div>
     <ul
       tabindex="0"
-      class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 shadow"
+      class="menu dropdown-content z-[1000] w-52 rounded-box bg-base-100 p-2 shadow"
     >
       <template v-for="[i, o] in $props.options.entries()">
         <li @click="update(i, o.value)">

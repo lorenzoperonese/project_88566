@@ -125,17 +125,25 @@ function save() {
   }
   $emits('save', r)
 }
+
+function close() {
+  const el = document.getElementById('repetition_modal')
+
+  if (el) {
+    ;(el as any).close()
+  }
+}
 </script>
 
 <template>
   <div>
     <button
       class="btn btn-outline btn-primary w-full"
-      onclick="my_modal_5.showModal()"
+      onclick="repetition_modal.showModal()"
     >
       Repetitions
     </button>
-    <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+    <dialog id="repetition_modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <div
           class="flex flex-col gap-4 place-self-center rounded-lg p-4"
@@ -269,9 +277,9 @@ function save() {
         </div>
 
         <div class="modal-action">
+          <button class="btn" @click="close">Close</button>
           <form method="dialog" class="flex w-full justify-between">
             <!-- if there is a button in form, it will close the modal -->
-            <button class="btn">Close</button>
             <button class="btn btn-primary" @click="save()">Save</button>
           </form>
         </div>

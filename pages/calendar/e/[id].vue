@@ -8,13 +8,10 @@ const editMode = ref(false)
 </script>
 
 <template>
-  <div v-if="_event" class="flex h-full items-center justify-center">
+  <div v-if="_event">
     <div v-if="!editMode">
       <CalendarShowEvent :event="_event" />
-      <button
-        class="w-full rounded border bg-blue-300 p-2 hover:bg-blue-500"
-        @click="editMode = true"
-      >
+      <button class="btn btn-primary w-full" @click="editMode = true">
         Edit
       </button>
     </div>
