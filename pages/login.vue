@@ -37,10 +37,10 @@ async function login() {
             >
               <input
                 id="input-text"
+                v-model="_username"
                 type="text"
                 class="X-required grow invalid:text-error"
                 placeholder="Enter Username"
-                v-model="_username"
               />
             </div>
           </div>
@@ -54,10 +54,10 @@ async function login() {
             >
               <input
                 id="input-password"
+                v-model="_password"
                 type="password"
                 class="X-required grow invalid:text-error"
                 placeholder="Enter password"
-                v-model="_password"
               />
             </div>
           </div>

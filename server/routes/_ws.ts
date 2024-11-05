@@ -1,4 +1,4 @@
-import { Peer, Message } from 'crossws'
+import type { Peer, Message } from 'crossws'
 import { Room, User, Message as DBMessage } from '@/server/db'
 import { Schema, Types } from 'mongoose'
 import { createRooms } from '../utils/chat'
@@ -70,7 +70,7 @@ export default defineWebSocketHandler({
     }
 
     if (data.type == 'room_add') {
-      let receiver = await User.findOne({ username: data.person })
+      const receiver = await User.findOne({ username: data.person })
       if (!receiver) {
         peer.send({ type: 'error', message: 'Receiver not found' })
         throw new Error('Receiver not found')

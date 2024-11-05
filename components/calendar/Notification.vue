@@ -1,36 +1,27 @@
 <script setup lang="ts">
 const $emit = defineEmits<{
   (e: 'close'): void
-  (e: 'save', n: Notify[] | null): void
+  (e: 'save', n: Notify[] | []): void
 }>()
 
 const $props = defineProps<{
-  end: number
   notifications: Notify[]
 }>()
 
-interface NotifyWithHour {
-  advance: number
-  period: number
-  hour: string
+const _notifications = ref($props.notifications)
+
+function repetitions(n: number) {
+  const base = [
+    { value: 1, name: 'Day' },
+    { value: 2, name: 'Week' },
+    { value: 3, name: 'Month' },
+    { value: 4, name: 'Year' }
+  ]
+  if (n != 1) {
+    for (let i = 0; i < base.length; i++) base[i].name += 's'
+  }
+  return base
 }
-
-const _notifications = ref<NotifyWithHour[]>(
-  $props.notifications.map((n) => ({ ...n, hour: formatTime(n.hour) }))
-)
-
-const newNotification = ref<NotifyWithHour>({
-  advance: 1,
-  period: 1,
-  hour: formatTime($props.end)
-})
-
-const repetitions = [
-  { value: 1, name: 'Day' },
-  { value: 2, name: 'Week' },
-  { value: 3, name: 'Month' },
-  { value: 4, name: 'Year' }
-]
 
 const errorMessage = ref('')
 
@@ -43,13 +34,7 @@ function save() {
     }
   })
   if (errorMessage.value) return
-  $emit(
-    'save',
-    _notifications.value.map((n) => ({
-      ...n,
-      hour: new Date('1900-01-01 ' + n.hour).getTime()
-    }))
-  )
+  $emit('save', _notifications.value)
 }
 
 function cancel() {
@@ -87,14 +72,9 @@ function cancel() {
 
                 <SelectDrop
                   v-model="notification.period"
-                  :options="repetitions"
+                  :options="repetitions(notification.advance)"
                 />
-                <span>before at</span>
-                <input
-                  v-model="notification.hour"
-                  type="time"
-                  class="input-numbered input"
-                />
+                <span>before</span>
 
                 <button
                   class="btn btn-square btn-outline btn-error"
@@ -122,7 +102,7 @@ function cancel() {
           <div class="mb-4 flex items-center space-x-2">
             <button
               class="btn btn-outline btn-info"
-              @click="_notifications.push({ ...newNotification })"
+              @click="_notifications.push({ advance: 1, period: 1 })"
             >
               Add
             </button>

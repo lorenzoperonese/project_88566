@@ -1,6 +1,6 @@
 import { User } from '@/server/db'
 
-export default defineEventHandler(async (event): Promise<User | Object> => {
+export default defineEventHandler(async (event): Promise<User | object> => {
   try {
     const u = await User.findById(event.context.auth.id)
     if (!u) {

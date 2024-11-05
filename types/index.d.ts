@@ -23,24 +23,30 @@ export declare global {
     cycles: number
   }
 
-  enum EventPeriod {
+  enum RepetitionPeriod {
     Day = 1,
     Week = 2,
     Month = 3,
     Year = 4
   }
 
+  enum NotifyPeriod {
+    Minute = 1,
+    Hour = 2,
+    Day = 3,
+    Week = 4
+  }
+
   interface Repetition {
     every: number
-    period: EventPeriod
+    period: RepetitionPeriod
     repeatOn: number[] | number | null
     end: number | null
   }
 
   interface Notify {
     advance: number
-    period: EventPeriod
-    hour: number
+    period: NotifyPeriod
   }
 
   interface EventType {
@@ -52,7 +58,7 @@ export declare global {
     note: string | null
     category: string
     repetition: Repetition | null
-    notify: Notify[] | null
+    notify: Notify[]
   }
 
   interface Task {

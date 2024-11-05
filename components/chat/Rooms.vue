@@ -29,10 +29,10 @@ const searchRooms = computed(() => {
       <div class="flex justify-between gap-4">
         <label class="input input-bordered flex items-center gap-2">
           <input
+            v-model="search"
             type="text"
             class="grow"
             placeholder="Search"
-            v-model="search"
           />
 
           <svg
@@ -77,10 +77,10 @@ const searchRooms = computed(() => {
           <h3 class="text-lg font-bold">Add room:</h3>
           <div class="mt-5 flex justify-between gap-2">
             <input
+              v-model="add_room_name"
               type="text"
               placeholder="Type here"
               class="input input-bordered w-full"
-              v-model="add_room_name"
             />
             <form method="dialog">
               <button class="btn btn-info" @click="addRoom">Add</button>
@@ -102,8 +102,8 @@ const searchRooms = computed(() => {
             :class="{
               'border-neutral-content bg-base-200': current_room_id == r.id
             }"
-            @click="current_room_id = r.id"
             class="flex items-center justify-center rounded border border-neutral p-2 text-lg font-bold hover:border-neutral-content hover:bg-base-200"
+            @click="current_room_id = r.id"
           >
             {{ r.roomName }}
           </div>

@@ -99,6 +99,9 @@ function header(): string {
     <h1 class="bg-base-300 p-4 text-center text-3xl font-bold text-white">
       CALENDAR
     </h1>
+    <div class="absolute right-4 top-4">
+      <CalendarSettingsPanel :events="_events" />
+    </div>
     <div class="relative flex items-center justify-between bg-base-100 p-4">
       <button class="btn btn-info" @click="previousPeriod">Previous</button>
       <h2 class="text-2xl font-semibold">

@@ -8,6 +8,8 @@ export const days: string[] = [
   'Saturday'
 ]
 
+export const shortDays: string[] = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+
 export const months: string[] = [
   'January',
   'February',
@@ -21,6 +23,21 @@ export const months: string[] = [
   'October',
   'November',
   'December'
+]
+
+export const shortMonths: string[] = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
 ]
 
 export function formatDate(d: number) {

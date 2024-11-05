@@ -123,8 +123,8 @@ const closeRooms = () => {
       <div class="drawer-content flex h-full flex-col">
         <ChatMessages
           :messages="messages"
-          :currentUserId="userID"
-          :currentRoomId="current_room_id"
+          :current-user-id="userID"
+          :current-room-id="current_room_id"
           @send-message="sendMessage"
         />
       </div>
@@ -161,10 +161,10 @@ const closeRooms = () => {
           </div>
 
           <ChatRooms
+            v-model="current_room_id"
             :rooms="rooms"
             class="h-full w-full"
             @add-room="addRoom"
-            v-model="current_room_id"
           />
         </div>
       </div>
