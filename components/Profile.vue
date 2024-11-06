@@ -10,10 +10,15 @@ fetch('/api/session')
   })
   .then((data) => {
     session.value = data
+    if (session.value) {
+      avatar.value = session.value.avatar
+    }
   })
   .catch((e) => {
     console.error(e)
   })
+
+const avatar = ref('Aidan')
 </script>
 
 <template>
@@ -26,6 +31,13 @@ fetch('/api/session')
       <div>
         <span> Username: </span>
         <span class="text-lg font-bold"> {{ session.username }} </span>
+      </div>
+
+      <div class="flex gap-4">
+        <div class="flex items-center">
+          <span> Avatar: </span>
+        </div>
+        <AvatarSelector v-model="session.avatar" class="" />
       </div>
     </div>
   </div>

@@ -13,7 +13,7 @@ const avatar = computed(() => {
     a = session.value.avatar
   }
 
-  return `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${a}&radius=50`
+  return getAvatarLink(a)
 })
 
 const showComponent = computed(() => {
