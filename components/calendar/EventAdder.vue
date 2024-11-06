@@ -5,6 +5,7 @@ const end = new Date(today.getTime() + 1000 * 60 * 60)
 const $props = defineProps<{
   event?: EventType
   modal?: boolean
+  isEventNew?: boolean
 }>()
 
 const $emits = defineEmits<{
@@ -125,7 +126,8 @@ function saveEvent() {
     _errorMessage.value = 'Invalid input'
     return
   }
-  if ($props.event) {
+
+  if (!$props.isEventNew && $props.event) {
     e.id = $props.event.id
     $fetch(`/api/events/${$props.event.id}`, {
       method: 'PUT',
@@ -141,10 +143,13 @@ function saveEvent() {
 }
 
 function deleteEvent() {
+  const router = useRouter()
+
   $fetch(`/api/events/${$props.event?.id}`, {
     method: 'DELETE'
   })
-  $emits('close')
+
+  router.push({ name: 'calendar' })
 }
 
 function addNotifications(n: Notify[] | null) {
@@ -242,8 +247,17 @@ function addNotifications(n: Notify[] | null) {
       </div>
 
       <div class="flex justify-evenly">
+        <NuxtLink
+          :to="{ name: 'calendar' }"
+          v-if="$props.isEventNew && !$props.modal"
+          class="btn btn-neutral w-2/5"
+          @click="deleteEvent()"
+        >
+          Close
+        </NuxtLink>
+
         <button
-          v-if="$props.event"
+          v-if="!$props.isEventNew && !$props.modal"
           class="btn btn-error w-2/5"
           @click="deleteEvent()"
         >
@@ -271,7 +285,7 @@ function addNotifications(n: Notify[] | null) {
         </NuxtLink>
 
         <button class="btn btn-success w-2/5" @click="saveEvent()">
-          {{ $props.event ? 'Save' : 'Add event' }}
+          {{ $props.isEventNew ? 'Add event' : 'Save' }}
         </button>
       </div>
     </form>

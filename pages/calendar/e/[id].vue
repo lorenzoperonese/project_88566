@@ -2,7 +2,12 @@
 const _route = useRoute()
 const _id = _route.params.id
 
-const _event = await $fetch(`/api/events/${_id}`)
+let _event = await $fetch(`/api/events/${_id}`)
+
+async function update() {
+  _event = (await $fetch(`/api/events/${_id}`)) as any
+  editMode.value = false
+}
 
 const editMode = ref(false)
 </script>
@@ -16,7 +21,7 @@ const editMode = ref(false)
       </button>
     </div>
     <div v-else>
-      <CalendarEventAdder :event="_event" />
+      <CalendarEventAdder :event="_event" @close="update" />
     </div>
   </div>
 </template>

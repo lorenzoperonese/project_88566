@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const route = useRoute()
-console.log(route.query)
 
 const _event: EventType = {
   id: '0',
@@ -18,5 +17,9 @@ const _event: EventType = {
 </script>
 
 <template>
-  <CalendarEventAdder :event="_event" />
+  <CalendarEventAdder
+    :event="_event"
+    :is-event-new="true"
+    @close="useRouter().push({ name: 'calendar' })"
+  />
 </template>
