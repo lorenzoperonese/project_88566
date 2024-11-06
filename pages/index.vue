@@ -15,5 +15,9 @@
     <div class="p-5">
       <NotifyPermission />
     </div>
+
+    <div class="divider"></div>
+
+    <NotificationsMenu />
   </div>
 </template>

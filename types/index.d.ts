@@ -83,4 +83,18 @@ export declare global {
     content: string
     conversationId: string
   }
+
+  interface Notification {
+    id: string
+    title: string
+    body: string
+    read: boolean
+    timestamp: number
+  }
+}
+
+export interface JSONResponse {
+  status: string
+  message?: string
+  err?: string
 }

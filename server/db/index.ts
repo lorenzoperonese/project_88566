@@ -5,5 +5,6 @@ export { default as Event } from './event'
 export { default as Task } from './task'
 export { default as Room } from './chat-rooms'
 export { default as Message } from './chat-message'
+export { default as Notification } from './notification'
 //export type { INote } from './note'
 //export type { IUser } from "./user"
