@@ -1,15 +1,14 @@
 <script setup lang="ts">
-const { data: _notifications } =
-  await useFetch<Notification[]>('/api/notifications')
-
 const { $toast } = useNuxtApp()
+
+const user = ref('')
 
 async function send() {
   console.log('Sending notification')
   const res = await sendNotification(
     'Hello world',
     'This is the body of the hello world',
-    'lollo'
+    user.value
   )
 
   if (res.status === 'error') {
@@ -23,13 +22,16 @@ async function send() {
 <template>
   <div>
     <button class="btn btn-outline btn-primary" @click="send">
-      Send notification
+      Send notification to other
     </button>
 
-    <div>
-      <div v-for="n in _notifications" :key="n.id">
-        {{ n }}
-      </div>
-    </div>
+    <input
+      type="text"
+      class="input input-bordered"
+      placeholder="user"
+      v-model="user"
+    />
+
+    <!-- NotificationsList /-->
   </div>
 </template>

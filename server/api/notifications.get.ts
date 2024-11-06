@@ -1,7 +1,8 @@
 import { Notification } from '@/server/db'
+import type { JSONResponse } from '@/types'
 
 export default defineEventHandler(
-  async (event): Promise<Notification[] | Object> => {
+  async (event): Promise<Notification[] | JSONResponse> => {
     const user_id = event.context.auth.id
 
     try {
@@ -15,11 +16,11 @@ export default defineEventHandler(
           read: notification.read,
           timestamp: notification.createdAt.getTime()
         }
-      })
+      }) as Notification[]
     } catch (error) {
       console.error(error)
       setResponseStatus(event, 500)
-      return { err: 'Cannot get notifications' }
+      return { err: 'Cannot get notifications', status: 'success' }
     }
   }
 )

@@ -25,3 +25,19 @@ export async function sendNotification(
     return { err: 'Error sending notification', status: 'error' }
   }
 }
+
+export async function setNotificationAsRead(id: string): Promise<JSONResponse> {
+  try {
+    const res = (await $fetch(`/api/notifications/${id}`, {
+      method: 'POST'
+    })) as any // JSONResponse generate a Excessive stack depth error
+
+    if (res.status === 'error') {
+      throw new Error(res.err)
+    }
+    return { status: 'success' }
+  } catch (error) {
+    console.error(error)
+    return { err: 'Error reading notifications', status: 'error' }
+  }
+}
