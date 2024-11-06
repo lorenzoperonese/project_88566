@@ -10,6 +10,7 @@ export declare global {
     id: string
     username: string
     name: string
+    avatar: string
   }
 
   interface NoteCategory {

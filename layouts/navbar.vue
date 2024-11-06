@@ -3,8 +3,18 @@ import { Profile, Settings } from '#components'
 const modal = useTemplateRef('navbar-modal')
 
 const { data: pending } = await useFetch<number>('/api/notifications/number')
+const { data: session } = await useFetch<User>('/api/session')
 
 const component = ref('')
+
+const avatar = computed(() => {
+  let a = 'Aidan'
+  if (session.value) {
+    a = session.value.avatar
+  }
+
+  return `https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${a}&radius=50`
+})
 
 const showComponent = computed(() => {
   return component.value === 'Profile' ? Profile : Settings
@@ -130,10 +140,7 @@ async function updatePending() {
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
           <div class="w-10 rounded-full">
-            <img
-              alt="avatar"
-              src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Maria&radius=50"
-            />
+            <img alt="avatar" :src="avatar" />
           </div>
         </div>
         <ul
