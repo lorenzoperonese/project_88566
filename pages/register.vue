@@ -47,10 +47,12 @@ function validate() {
 
   let e = ''
 
-  if (passwd1.value.length < 8) {
-    e = 'Insert a password of at least 8 character'
-    ok = false
-  } else if (passwd1.value != passwd2.value) {
+  //if (passwd1.value.length < 8) {
+  //  e = 'Insert a password of at least 8 character'
+  //  ok = false
+  //} else
+
+  if (passwd1.value != passwd2.value) {
     e = 'Passwords do not match'
     ok = false
   } else if (username.value.length < 3) {
@@ -98,7 +100,6 @@ function validate() {
                 id="input-password1"
                 type="password"
                 class="X-required grow invalid:text-error"
-                minlength="8"
                 v-model="passwd1"
                 placeholder="Choose a password"
               />
@@ -113,7 +114,6 @@ function validate() {
                 id="input-password2"
                 type="password"
                 class="X-required grow invalid:text-error"
-                minlength="8"
                 v-model="passwd2"
                 placeholder="Confirm password"
               />
