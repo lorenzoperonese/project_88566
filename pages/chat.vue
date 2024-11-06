@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'navbar'
+})
+
 import { useWebSocket } from '@vueuse/core'
 
 const { $toast } = useNuxtApp()
@@ -109,65 +113,23 @@ async function sendMessage(message: string) {
     fetchMessages(current_room_id.value)
   }
 }
-
-const closeRooms = () => {
-  const rooms = document.getElementById('rooms') as HTMLInputElement
-  rooms.checked = false
-}
 </script>
 
 <template>
-  <div class="h-screen">
-    <div class="drawer h-full md:drawer-open">
-      <input id="rooms" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex h-full flex-col">
-        <ChatMessages
-          :messages="messages"
-          :current-user-id="userID"
-          :current-room-id="current_room_id"
-          @send-message="sendMessage"
-        />
-      </div>
-      <div class="drawer-side">
-        <label
-          for="rooms"
-          aria-label="close sidebar"
-          class="drawer-overlay"
-        ></label>
+  <div class="flex" style="height: calc(100vh - var(--navbar-height))">
+    <ChatRooms
+      v-model="current_room_id"
+      :rooms="rooms"
+      class="h-full"
+      @add-room="addRoom"
+    />
 
-        <div
-          class="h-full w-full overflow-clip border-r border-r-neutral bg-base-100 p-2"
-        >
-          <div class="mx-2 mb-4 flex justify-between">
-            <div class="flex items-center justify-center">
-              <h2 class="text-2xl font-bold">Rooms</h2>
-            </div>
-            <button class="btn btn-square md:hidden" @click="closeRooms">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <ChatRooms
-            v-model="current_room_id"
-            :rooms="rooms"
-            class="h-full w-full"
-            @add-room="addRoom"
-          />
-        </div>
-      </div>
-    </div>
+    <ChatMessages
+      class="w-full"
+      :messages="messages"
+      :current-user-id="userID"
+      :current-room-id="current_room_id"
+      @send-message="sendMessage"
+    />
   </div>
 </template>

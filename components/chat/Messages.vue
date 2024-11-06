@@ -39,7 +39,7 @@ function sendMessage() {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col bg-base-200">
+  <div class="flex flex-col bg-base-200">
     <div class="md:hidden">
       <label for="rooms" class="btn btn-primary drawer-button"
         >Open drawer</label
