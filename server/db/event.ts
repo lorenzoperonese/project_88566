@@ -19,6 +19,10 @@ export interface IEvent extends Document {
     advance: number
     period: number
   }[]
+  guests: {
+    waiting: string[]
+    accepted: string[]
+  }
   user_id: Types.ObjectId
 }
 
@@ -31,7 +35,8 @@ const schema = new Schema<IEvent>(
     note: { type: String },
     category: { type: String, required: true },
     repetition: { type: Object },
-    notify: { type: Array },
+    notify: { type: Array, required: true },
+    guests: { type: Object, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: User }
   },
   {

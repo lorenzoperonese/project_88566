@@ -138,7 +138,8 @@ const parseICSContent = (icsData: string) => {
         start: event.startDate.toJSDate().getTime(),
         end: event.endDate.toJSDate().getTime(),
         repetition: calculateRecurrenceIN(event),
-        notify: []
+        notify: [],
+        guests: { accepted: [], waiting: [] }
       }
       if (e.title.length == 0 || e.start > e.end) {
         alert('Invalid input file')

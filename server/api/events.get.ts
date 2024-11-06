@@ -16,7 +16,8 @@ export default defineEventHandler(async (event): Promise<EventType[]> => {
       note: n.note,
       category: n.category,
       repetition: n.repetition as Repetition,
-      notify: n.notify as Notify[]
+      notify: n.notify as Notify[],
+      guests: n.guests as Guest
     })) as EventType[]
   } catch (err) {
     console.error(err)

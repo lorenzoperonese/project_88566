@@ -12,7 +12,8 @@ const _event: EventType = {
   note: route.query.note as string,
   category: route.query.category as string,
   repetition: null,
-  notify: []
+  notify: [],
+  guests: { accepted: [], waiting: [] }
 }
 </script>
 

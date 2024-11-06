@@ -49,6 +49,11 @@ export declare global {
     period: NotifyPeriod
   }
 
+  interface Guest {
+    waiting: string[]
+    accepted: string[]
+  }
+
   interface EventType {
     id: string
     title: string
@@ -59,6 +64,7 @@ export declare global {
     category: string
     repetition: Repetition | null
     notify: Notify[]
+    guests: Guest
   }
 
   interface Task {
