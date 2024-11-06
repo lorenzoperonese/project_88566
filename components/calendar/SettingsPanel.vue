@@ -6,11 +6,7 @@ import ICAL from 'ical.js'
 
 const { $toast } = useNuxtApp()
 
-const $props = defineProps<{
-  events: EventType[] | null
-}>()
-
-const _isOpen = ref(false)
+const { data: events } = useFetch<EventType[]>('/api/events')
 
 function calculateWeekDays(e: EventType) {
   if (e.repetition === null) return undefined
@@ -65,19 +61,19 @@ function calculateRecurrenceOUT(e: EventType): CalendarRecurrence | undefined {
 }
 
 function exportCal() {
-  if (!$props.events || $props.events.length === 0) {
+  if (!events.value || events.value.length === 0) {
     alert('No events to export') // toast in the future
     return
   }
   const calendar = new ICalendar({
-    title: $props.events[0].title,
-    description: $props.events[0].note || '',
-    location: $props.events[0].location || '',
-    start: new Date($props.events[0].start),
-    end: new Date($props.events[0].end),
-    recurrence: calculateRecurrenceOUT($props.events[0])
+    title: events.value[0].title,
+    description: events.value[0].note || '',
+    location: events.value[0].location || '',
+    start: new Date(events.value[0].start),
+    end: new Date(events.value[0].end),
+    recurrence: calculateRecurrenceOUT(events.value[0])
   })
-  const eventsWitoutFirst = $props.events.slice(1)
+  const eventsWitoutFirst = events.value.slice(1)
   eventsWitoutFirst.forEach((e) => {
     const event = new ICalendar({
       title: e.title,
@@ -168,44 +164,27 @@ function calculateRecurrenceIN(event: ICAL.Event): Repetition | null {
 </script>
 
 <template>
-  <div class="dropdown dropdown-end dropdown-bottom">
-    <div
-      tabindex="0"
-      role="button"
-      class="btn m-1 border-none bg-base-300 hover:bg-base-200"
-      @click="_isOpen = !_isOpen"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="feather feather-settings"
-      >
-        <circle cx="12" cy="12" r="3"></circle>
-        <path
-          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-        ></path>
-      </svg>
+  <div>
+    <div class="flex justify-between">
+      <span class="flex items-center"> Calendar (Ical) </span>
+      <div class="flex justify-evenly gap-4">
+        <input
+          ref="fileInput"
+          type="file"
+          accept=".ics"
+          class="hidden"
+          @change="importCal"
+        />
+        <button
+          class="btn btn-outline btn-neutral"
+          @click="$refs.fileInput.click()"
+        >
+          Import
+        </button>
+        <button class="btn btn-outline btn-neutral" @click="exportCal()">
+          Export
+        </button>
+      </div>
     </div>
-    <ul
-      tabindex="0"
-      class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow"
-    >
-      <input
-        ref="fileInput"
-        type="file"
-        accept=".ics"
-        class="hidden"
-        @change="importCal"
-      />
-      <li><a @click="$refs.fileInput.click()">Import</a></li>
-      <li><a @click="exportCal()">Export</a></li>
-    </ul>
   </div>
 </template>

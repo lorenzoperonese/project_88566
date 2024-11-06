@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'navbar'
+})
+
 interface Timer {
   study: number
   break: number

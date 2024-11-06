@@ -27,7 +27,7 @@ const addCategory = () => {
 </script>
 
 <template>
-  <div class="bg-base-100 p-2">
+  <div class="flex flex-col bg-base-100 p-2">
     <label class="input input-bordered flex items-center gap-2">
       <input v-model="_search" type="text" class="grow" placeholder="Search" />
       <svg
@@ -45,7 +45,7 @@ const addCategory = () => {
     </label>
 
     <div class="divider"></div>
-    <div>
+    <div class="">
       <div class="text-lg font-bold">Categories</div>
       <div class="mt-2">
         <ul class="list-inside list-disc">

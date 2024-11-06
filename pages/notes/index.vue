@@ -1,8 +1,11 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'navbar'
+})
+
 const _notes = ref<Note[]>([])
 const _notesCategories = ref<NoteCategory[]>([])
 
-const __showSideMenu = ref(false)
 const _search = ref('')
 
 const _newCategory = ref('')
@@ -89,7 +92,6 @@ async function deleteCategory(id: string) {
 
 function duplicate(id: string) {
   const n = _notes.value.find((x) => x.id == id)
-
   if (n) {
     addNote(n)
   } else {
@@ -115,38 +117,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <div class="drawer md:drawer-open">
-      <input id="notes-menu" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content">
-        <div class="w-full p-5">
-          <NotesAdder :categories="_notesCategories" @save="addNote" />
-          <NotesList
-            :notes="_search ? _filteredNotes : _notes"
-            class="h-svh overflow-y-auto"
-            @delete="deleteNote"
-            @duplicate="duplicate"
-          />
-        </div>
+  <div class="flex">
+    <NotesMenu
+      v-model="_search"
+      :categories="_notesCategories"
+      class="h-full border-r border-r-neutral"
+      @add-category="addCategory"
+      @delete-category="deleteCategory"
+      style="height: calc(100vh - var(--navbar-height))"
+    />
 
-        <label for="notes-menu" class="btn btn-primary drawer-button md:hidden"
-          >Open drawer</label
-        >
-      </div>
-      <div class="drawer-side">
-        <label
-          for="notes-menu"
-          aria-label="close sidebar"
-          class="drawer-overlay"
-        ></label>
-        <NotesMenu
-          v-model="_search"
-          :categories="_notesCategories"
-          class="h-full border-r border-r-neutral"
-          @add-category="addCategory"
-          @delete-category="deleteCategory"
-        />
-      </div>
+    <div
+      class="w-full overflow-y-auto p-5"
+      style="height: calc(100vh - var(--navbar-height))"
+    >
+      <NotesAdder :categories="_notesCategories" @save="addNote" />
+      <NotesList
+        :notes="_search ? _filteredNotes : _notes"
+        class=""
+        @delete="deleteNote"
+        @duplicate="duplicate"
+      />
     </div>
   </div>
 </template>

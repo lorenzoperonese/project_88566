@@ -19,3 +19,7 @@ body,
     -moz-appearance: textfield;
   }
 }
+
+* {
+  --navbar-height: 4.2rem;
+}
