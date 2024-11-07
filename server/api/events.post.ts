@@ -1,4 +1,4 @@
-import { Event } from '@/server/db'
+import { Event, User } from '@/server/db'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<EventType>(event)
@@ -45,9 +45,20 @@ export default defineEventHandler(async (event) => {
       category: body.category,
       repetition: body.repetition,
       notify: body.notify,
+      guests: body.guests,
       user_id: event.context.auth.id
     })
-
+    const sender = await User.findById(event.context.auth.id)
+    if (!sender) {
+      throw new Error('User not found')
+    }
+    e.guests.waiting.forEach((u: User) => {
+      sendNotification(
+        `You have been invited to an event by ${sender.username}`,
+        'prova',
+        u.id
+      )
+    })
     await e.save()
     return { message: 'Event created successfuly' }
   } catch (err) {

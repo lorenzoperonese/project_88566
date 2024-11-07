@@ -122,9 +122,9 @@ onMounted(async () => {
       v-model="_search"
       :categories="_notesCategories"
       class="h-full border-r border-r-neutral"
+      style="height: calc(100vh - var(--navbar-height))"
       @add-category="addCategory"
       @delete-category="deleteCategory"
-      style="height: calc(100vh - var(--navbar-height))"
     />
 
     <div

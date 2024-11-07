@@ -27,9 +27,9 @@ function closeModal() {
   <div>
     <button class="btn btn-secondary m-1" @click="showModal">
       <svg
+        id="_x32_"
         class="h-5 w-5"
         version="1.1"
-        id="_x32_"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 512 512"

@@ -47,14 +47,8 @@ function calculateRecurrenceOUT(e: EventType): CalendarRecurrence | undefined {
   return {
     frequency: `${parseInt(r.period.toString()) === 1 ? 'DAILY' : parseInt(r.period.toString()) === 2 ? 'WEEKLY' : parseInt(r.period.toString()) === 3 ? 'MONTHLY' : 'YEARLY'}`,
     interval: r.every,
-    count:
-      r.end !== null && r.end < new Date('1900-01-01 00:00 AM').getTime()
-        ? r.end
-        : undefined,
-    end:
-      r.end !== null && r.end >= new Date('1900-01-01 00:00 AM').getTime()
-        ? new Date(r.end)
-        : undefined,
+    count: r.endAfter ? r.endAfter : undefined,
+    end: r.endOn ? new Date(r.endOn) : undefined,
     weekdays: calculateWeekDays(e),
     monthdays: calculateMonthDays(e)
   }
@@ -138,7 +132,8 @@ const parseICSContent = (icsData: string) => {
         start: event.startDate.toJSDate().getTime(),
         end: event.endDate.toJSDate().getTime(),
         repetition: calculateRecurrenceIN(event),
-        notify: []
+        notify: [],
+        guests: { accepted: [], waiting: [] }
       }
       if (e.title.length == 0 || e.start > e.end) {
         alert('Invalid input file')

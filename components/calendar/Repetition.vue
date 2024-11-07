@@ -24,12 +24,18 @@ const weekNumber = (d: string) => {
         : value.toString() + 'th'
 }
 
-const repetitions = [
-  { value: 1, name: 'Day' },
-  { value: 2, name: 'Week' },
-  { value: 3, name: 'Month' },
-  { value: 4, name: 'Year' }
-]
+function repetitions(n: number) {
+  const obj = [
+    { value: 1, name: 'Day' },
+    { value: 2, name: 'Week' },
+    { value: 3, name: 'Month' },
+    { value: 4, name: 'Year' }
+  ]
+  if (n != 1) {
+    for (let i = 0; i < obj.length; i++) obj[i].name += 's'
+  }
+  return obj
+}
 const _repetition = ref(1)
 const _eventPeriod = ref<RepetitionPeriod>(1)
 const _weekDays = ref<number[]>([])
@@ -54,18 +60,18 @@ if ($props.repetition !== null) {
     !Array.isArray($props.repetition.repeatOn)
   )
     _monthRepetition.value = $props.repetition.repeatOn
-  _ends.value = $props.repetition.end
-    ? $props.repetition.end < Date.now() / 2
-      ? 'After'
-      : 'On'
-    : 'Never'
+  _ends.value = $props.repetition.endAfter
+    ? 'After'
+    : $props.repetition.endOn
+      ? 'On'
+      : 'Never'
   _endDate.value =
-    _ends.value == 'On' && $props.repetition.end !== null
-      ? formatDate($props.repetition.end)
+    _ends.value == 'On' && $props.repetition.endOn
+      ? formatDate($props.repetition.endOn)
       : $props.day
   _endAfter.value =
-    _ends.value == 'After' && $props.repetition.end !== null
-      ? $props.repetition.end
+    _ends.value == 'After' && $props.repetition.endAfter
+      ? $props.repetition.endAfter
       : 1
 }
 
@@ -92,7 +98,10 @@ function save() {
   }
   const r = {
     every: _repetition.value,
-    period: _eventPeriod.value
+    period: _eventPeriod.value,
+    repeatOn: null,
+    endOn: null,
+    endAfter: null
   } as Repetition
 
   if (r.every < 1 || r.every == undefined) {
@@ -110,18 +119,14 @@ function save() {
     r.repeatOn = _monthRepetition.value
   }
 
-  if (_ends.value == 'Never') {
-    r.end = null
-  } else if (_ends.value == 'Day') {
-    r.end = new Date(_endDate.value).getTime()
-    if (r.end < new Date().getTime()) {
+  if (_ends.value == 'Day') {
+    r.endOn = new Date(_endDate.value).getTime()
+    if (r.endOn < new Date().getTime()) {
       _errorMessage.value = 'End date must be in the future'
       return
     }
   } else if (_ends.value == 'After') {
-    const d = new Date('1900-01-01 00:00 AM').getTime()
-    if (_endAfter.value > d) r.end = null
-    else r.end = _endAfter.value
+    r.endAfter = _endAfter.value
   }
   $emits('save', r)
 }
@@ -178,7 +183,10 @@ function close() {
                 class="input input-bordered w-20 text-center"
               />
 
-              <SelectDrop v-model="_eventPeriod" :options="repetitions" />
+              <SelectDrop
+                v-model="_eventPeriod"
+                :options="repetitions(_repetition)"
+              />
             </div>
 
             <div v-show="_eventPeriod == 2" class="flex gap-3">

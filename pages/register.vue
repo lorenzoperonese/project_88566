@@ -81,9 +81,9 @@ function validate() {
             >
               <input
                 id="input-username"
+                v-model="username"
                 type="text"
                 class="X-required grow invalid:text-error"
-                v-model="username"
                 placeholder="Master725"
               />
             </div>
@@ -98,9 +98,9 @@ function validate() {
             >
               <input
                 id="input-password1"
+                v-model="passwd1"
                 type="password"
                 class="X-required grow invalid:text-error"
-                v-model="passwd1"
                 placeholder="Choose a password"
               />
             </div>
@@ -112,9 +112,9 @@ function validate() {
             >
               <input
                 id="input-password2"
+                v-model="passwd2"
                 type="password"
                 class="X-required grow invalid:text-error"
-                v-model="passwd2"
                 placeholder="Confirm password"
               />
             </div>
@@ -128,10 +128,10 @@ function validate() {
               >
                 <input
                   id="input-name"
+                  v-model="name"
                   type="text"
                   class="grow invalid:text-error"
                   placeholder="Alex"
-                  v-model="name"
                 />
               </div>
             </div>

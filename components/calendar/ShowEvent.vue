@@ -41,14 +41,12 @@ function repetitionMessage(r: Repetition) {
   } else if (r.period == 3) {
     message += r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
   }
-  if (r.end === null) {
-    message += ', forever'
-  } else if (r.end < new Date().getTime() / 2) {
-    message += `, for ${r.end} time`
-    message += r.end == 1 ? '' : 's'
-  } else {
-    message += `, until ${formatDate(new Date(r.end).getTime())}`
-  }
+  if (r.endAfter) {
+    message += `, for ${r.endAfter} time`
+    message += r.endAfter == 1 ? '' : 's'
+  } else if (r.endOn) {
+    message += `, until ${formatDate(new Date(r.endOn).getTime())}`
+  } else message += ', forever'
   return message
 }
 

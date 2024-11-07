@@ -70,8 +70,8 @@ async function readNotification(id: string) {
       </div>
 
       <div
-        class="flex justify-center p-2"
         v-show="_notifications_unread.length == 0"
+        class="flex justify-center p-2"
       >
         Inbox empty
       </div>

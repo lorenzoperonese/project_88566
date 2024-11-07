@@ -12,6 +12,10 @@ const $emits = defineEmits<{
   (e: 'close'): void
 }>()
 
+const { $toast } = useNuxtApp()
+
+const { data: _users } = await useFetch<User[]>('/api/users')
+
 const _showRepetition = ref(false)
 const _showNotifications = ref(false)
 const _errorMessage = ref('')
@@ -28,6 +32,8 @@ const _note = ref<string | null>(null)
 const _category = ref<string>('Not categorized')
 const _repetition = ref<Repetition | null>(null)
 const _notifications = ref<Notify[]>([])
+const _guests = ref<User[]>([])
+const _guest = ref('')
 
 if ($props.event) {
   _title.value = $props.event.title
@@ -43,6 +49,9 @@ if ($props.event) {
   }
   if ($props.event.notify) {
     addNotifications($props.event.notify)
+  }
+  if ($props.event.guests.waiting) {
+    _guests.value = $props.event.guests.waiting
   }
 }
 
@@ -93,13 +102,13 @@ function addRepetition(r: Repetition | null) {
     _repetitionSummary.value +=
       r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
   }
-  if (r.end === null) {
-    _repetitionSummary.value += ', forever'
-  } else if (r.end < new Date().getTime() / 2) {
-    _repetitionSummary.value += `, for ${r.end} time`
-    _repetitionSummary.value += r.end == 1 ? '' : 's'
+  if (r.endAfter) {
+    _repetitionSummary.value += `, for ${r.endAfter} time`
+    _repetitionSummary.value += r.endAfter == 1 ? '' : 's'
+  } else if (r.endOn) {
+    _repetitionSummary.value += `, until ${formatDate(new Date(r.endOn).getTime())}`
   } else {
-    _repetitionSummary.value += `, until ${formatDate(new Date(r.end).getTime())}`
+    _repetitionSummary.value += `, forever`
   }
 }
 
@@ -119,7 +128,8 @@ function saveEvent() {
     note: _note.value || null,
     category: _category.value || 'Not categorized',
     repetition: _repetition.value || null,
-    notify: _notifications.value || null
+    notify: _notifications.value,
+    guests: { accepted: [], waiting: _guests.value } as Guest
   }
 
   if (e.title.length == 0 || e.start > e.end) {
@@ -174,6 +184,19 @@ function addNotifications(n: Notify[] | null) {
     period += i.advance > 1 ? 's' : ''
     _notificationsSummary.value += ` ${i.advance} ${period} before\n`
   })
+}
+
+function addGuest(g: string) {
+  if (g.length == 0) return
+  _guest.value = ''
+  if (!_users.value) {
+    $toast.error('No users found')
+    return
+  }
+  const user = _users.value.filter((u) => u.username === g)[0]
+  if (!user) $toast.error('User not found')
+  else _guests.value.push(_users.value.filter((u) => u.username === g)[0])
+  return
 }
 </script>
 
@@ -237,19 +260,76 @@ function addNotifications(n: Notify[] | null) {
 
         <div>
           <CalendarNotification
-            :end="new Date('1900-01-01 ' + _startTime).getTime()"
             :notifications="_notifications"
             @close="_showNotifications = false"
             @save="addNotifications"
           />
           <pre>{{ _notificationsSummary }}</pre>
         </div>
+
+        <div>
+          Guests:
+          <div>
+            <input
+              v-model="_guest"
+              type="text"
+              class="input input-bordered w-full max-w-xs"
+            />
+          </div>
+          <div @click.prevent="">
+            <button
+              class="btn btn-circle btn-info btn-sm"
+              @click="addGuest(_guest)"
+            >
+              <svg
+                class="h-5 w-5 opacity-70"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div v-for="(g, index) in _guests" :key="index">
+          <div class="items flex">
+            <span>{{ g.username }}</span>
+            <button
+              class="btn btn-circle btn-error btn-sm"
+              @click="_guests.splice(_guests.indexOf(g), 1)"
+            >
+              <svg
+                class="h-5 w-5 opacity-70"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="flex justify-evenly">
         <NuxtLink
-          :to="{ name: 'calendar' }"
           v-if="$props.isEventNew && !$props.modal"
+          :to="{ name: 'calendar' }"
           class="btn btn-neutral w-2/5"
           @click="deleteEvent()"
         >
@@ -265,6 +345,7 @@ function addNotifications(n: Notify[] | null) {
         </button>
 
         <NuxtLink
+          v-if="modal"
           :to="{
             path: '/calendar/e/add',
             query: {
@@ -279,7 +360,6 @@ function addNotifications(n: Notify[] | null) {
             }
           }"
           class="btn btn-neutral w-2/5"
-          v-if="modal"
         >
           More options
         </NuxtLink>

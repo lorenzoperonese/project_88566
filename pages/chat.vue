@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useWebSocket } from '@vueuse/core'
+
 definePageMeta({
   layout: 'navbar'
 })
-
-import { useWebSocket } from '@vueuse/core'
 
 const { $toast } = useNuxtApp()
 

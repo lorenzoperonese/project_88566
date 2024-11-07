@@ -100,7 +100,7 @@ function deleteTask() {
       <div>
         <label>Category:</label>
         <input v-model="_category" class="input input-bordered" type="string" />
-        <div class="form-control" v-if="$props.task">
+        <div v-if="$props.task" class="form-control">
           <label class="label flex w-24 cursor-pointer gap-4">
             <span class="label-text">Completed</span>
             <input v-model="_completed" class="checkbox" type="checkbox" />

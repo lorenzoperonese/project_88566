@@ -42,12 +42,18 @@ export declare global {
     every: number
     period: RepetitionPeriod
     repeatOn: number[] | number | null
-    end: number | null
+    endAfter: number | null
+    endOn: number | null
   }
 
   interface Notify {
     advance: number
     period: NotifyPeriod
+  }
+
+  interface Guest {
+    waiting: User[]
+    accepted: User[]
   }
 
   interface EventType {
@@ -60,6 +66,7 @@ export declare global {
     category: string
     repetition: Repetition | null
     notify: Notify[]
+    guests: Guest
   }
 
   interface Task {

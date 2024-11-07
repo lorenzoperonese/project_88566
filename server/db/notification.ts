@@ -1,5 +1,5 @@
+import type { Document, Types } from 'mongoose'
 import { Schema, model } from 'mongoose'
-import { Document, Types } from 'mongoose'
 import User from './user'
 
 export interface INotification extends Document {

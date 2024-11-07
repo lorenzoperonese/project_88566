@@ -26,10 +26,10 @@ async function send() {
     </button>
 
     <input
+      v-model="user"
       type="text"
       class="input input-bordered"
       placeholder="user"
-      v-model="user"
     />
 
     <!-- NotificationsList /-->

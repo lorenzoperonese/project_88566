@@ -60,14 +60,13 @@ function calculateRecurring(e: EventType) {
       result += 'YEARLY'
       break
   }
-  if (r.end !== null) {
-    if (r.end < new Date('1900-01-01 00:00 AM').getTime())
-      result += ';COUNT=' + r.end
-    else
-      result +=
-        ';UNTIL=' +
-        new Date(r.end).toISOString().replace(/[-:]/g, '').slice(0, 15) +
-        ';'
+  if (r.endAfter) {
+    result += ';COUNT=' + r.endAfter
+  } else if (r.endOn) {
+    result +=
+      ';UNTIL=' +
+      new Date(r.endOn).toISOString().replace(/[-:]/g, '').slice(0, 15) +
+      ';'
   }
   if (r.period == 2 && r.repeatOn && Array.isArray(r.repeatOn)) {
     result += ';BYDAY=' + r.repeatOn.map((e) => shortDays[e]).join(',')

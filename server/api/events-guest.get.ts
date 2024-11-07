@@ -4,7 +4,7 @@ import type { Types } from 'mongoose'
 export default defineEventHandler(async (event): Promise<EventType[]> => {
   try {
     const events = await Event.find({
-      user_id: event.context.auth.id
+      'guests.waiting.id': event.context.auth.id // tmp, change to "guests.accepted.id" when implemented
     })
 
     return events.map((n) => ({

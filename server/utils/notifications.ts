@@ -5,7 +5,7 @@ export async function sendNotification(
   body: string,
   receiver: string
 ) {
-  const user = await User.findOne({ username: receiver })
+  const user = await User.findOne({ _id: receiver })
   if (!user) {
     throw new Error('User not found')
   }

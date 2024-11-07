@@ -11,11 +11,11 @@ export default defineEventHandler(async (event): Promise<EventType | null> => {
 
     const n = await Event.findOne({
       _id: id,
-      user_id: event.context.auth.id
+      'guests.waiting.id': event.context.auth.id // tmp, change to "guests.accepted.id" when implemented
     })
 
     if (!n) {
-      throw Error('Event not found. ID: ' + id)
+      throw Error('Guest event not found. ID: ' + id)
     }
 
     return {
