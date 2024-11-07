@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'navbar'
+})
+
 const _route = useRoute()
 const _id = _route.params.id
 const _task = await $fetch(`/api/tasks/${_id}`)

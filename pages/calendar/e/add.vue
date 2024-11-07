@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'navbar'
+})
+
 const route = useRoute()
 
 const _event: EventType = {
