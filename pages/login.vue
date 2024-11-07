@@ -70,6 +70,14 @@ async function login() {
             <button class="btn btn-primary" @click="login">Login</button>
           </div>
         </form>
+
+        <div class="divider">OR</div>
+        <div class="text-center">
+          <p>Don't have an account?</p>
+          <NuxtLink to="/register" class="link link-primary"
+            >Sign up now</NuxtLink
+          >
+        </div>
       </div>
     </div>
   </div>

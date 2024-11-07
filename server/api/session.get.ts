@@ -10,8 +10,10 @@ export default defineEventHandler(async (event): Promise<User | object> => {
 
     return {
       id: u.id.toString(),
-      username: u.username
-    }
+      username: u.username,
+      name: u.name,
+      avatar: u.avatar
+    } as User
   } catch (e) {
     setResponseStatus(event, 500)
     return { err: 'Internal server error' }
