@@ -41,7 +41,8 @@ export declare global {
     every: number
     period: RepetitionPeriod
     repeatOn: number[] | number | null
-    end: number | null
+    endAfter: number | null
+    endOn: number | null
   }
 
   interface Notify {
@@ -50,8 +51,8 @@ export declare global {
   }
 
   interface Guest {
-    waiting: string[]
-    accepted: string[]
+    waiting: User[]
+    accepted: User[]
   }
 
   interface EventType {

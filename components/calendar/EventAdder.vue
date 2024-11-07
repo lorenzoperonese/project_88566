@@ -32,7 +32,7 @@ const _note = ref<string | null>(null)
 const _category = ref<string>('Not categorized')
 const _repetition = ref<Repetition | null>(null)
 const _notifications = ref<Notify[]>([])
-const _guests = ref<string[]>([])
+const _guests = ref<User[]>([])
 const _guest = ref('')
 
 if ($props.event) {
@@ -102,13 +102,15 @@ function addRepetition(r: Repetition | null) {
     _repetitionSummary.value +=
       r.repeatOn == 1 ? ', on the same date' : `, on the same weekday`
   }
-  if (r.end === null) {
-    _repetitionSummary.value += ', forever'
-  } else if (r.end < new Date().getTime() / 2) {
-    _repetitionSummary.value += `, for ${r.end} time`
-    _repetitionSummary.value += r.end == 1 ? '' : 's'
-  } else {
-    _repetitionSummary.value += `, until ${formatDate(new Date(r.end).getTime())}`
+  if (r.endAfter) {
+    _repetitionSummary.value += `, for ${r.endAfter} time`
+    _repetitionSummary.value += r.endAfter == 1 ? '' : 's'
+  }
+  else if (r.endOn) {
+    _repetitionSummary.value += `, until ${formatDate(new Date(r.endOn).getTime())}`
+  }
+  else {
+    _repetitionSummary.value += `, forever`
   }
 }
 
@@ -187,12 +189,17 @@ function addNotifications(n: Notify[] | null) {
 }
 
 function addGuest(g: string) {
-  _guest.value = ''
   if (g.length == 0) return
-  if(_users.value === null || _users.value.filter(u => u.username === g).length === 0)
+  _guest.value = ''
+  if(!_users.value) {
+    $toast.error('No users found')
+    return
+  }
+  const user = _users.value.filter(u => u.username === g)[0]
+  if(!user)
     $toast.error('User not found')
   else
-    _guests.value.push(g)
+    _guests.value.push(_users.value.filter(u => u.username === g)[0])
   return
 }
 
@@ -299,7 +306,7 @@ function addGuest(g: string) {
         </div>
             <div v-for="(g, index) in _guests" :key="index">
               <div class="flex items">
-                <span>{{ g }}</span>
+                <span>{{ g.username }}</span>
                 <button
                   class="btn btn-circle btn-error btn-sm"
                   @click="_guests.splice(_guests.indexOf(g), 1)"

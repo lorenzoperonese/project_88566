@@ -20,8 +20,8 @@ export interface IEvent extends Document {
     period: number
   }[]
   guests: {
-    waiting: string[]
-    accepted: string[]
+    waiting: User[]
+    accepted: User[]
   }
   user_id: Types.ObjectId
 }

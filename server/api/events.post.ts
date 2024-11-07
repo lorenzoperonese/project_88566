@@ -52,8 +52,8 @@ export default defineEventHandler(async (event) => {
     if(!sender) {
       throw new Error('User not found')
     }
-    e.guests.waiting.forEach((u: string) => {
-      sendNotification(`You have been invited to an event by ${sender.username}`, "prova", u)
+    e.guests.waiting.forEach((u: User) => {
+      sendNotification(`You have been invited to an event by ${sender.username}`, "prova", u.id)
     })
     await e.save()
     return { message: 'Event created successfuly' }

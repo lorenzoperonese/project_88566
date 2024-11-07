@@ -1,19 +1,20 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'navbar'
-})
-
 import {
   CalendarViewDay,
   CalendarViewMonth,
   CalendarViewWeek
 } from '#components'
 
+definePageMeta({
+  layout: 'navbar'
+})
+
 const { data: _events } = await useFetch<EventType[]>('/api/events')
+const { data: _eventsGuest } = await useFetch<EventType[]>('/api/events-guest')
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
-// false => add event, true => add task
-const _add_event_task = ref(false)
+// true => add event, false => add task
+const _add_event_task = ref(true)
 const input = useTemplateRef('modal')
 
 const fetchEvents = async () => {
@@ -45,12 +46,12 @@ function showModal() {
 }
 
 function addTask() {
-  _add_event_task.value = true
+  _add_event_task.value = false
   showModal()
 }
 
 function addEvent() {
-  _add_event_task.value = false
+  _add_event_task.value = true
   showModal()
 }
 
@@ -170,6 +171,7 @@ function header(): string {
       :display-date="_displayDate"
       :today="_today"
       :events="_events"
+      :events-guest="_eventsGuest"
       :tasks="_tasks"
       :week-days="_weekDays"
     />

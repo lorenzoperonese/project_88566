@@ -1,22 +1,23 @@
 <script setup lang="ts">
 const $props = defineProps<{
   events: EventType[] | null
+  eventsGuest: EventType[] | null
   tasks: Task[] | null
   displayDate: Date
   today: Date
   weekDays: Date[]
 }>()
 
-function getEventsForDay(day: number): EventType[] {
+function getEventsForDay(day: number, events: EventType[] | null): EventType[] {
   const date = new Date(
     $props.displayDate.getFullYear(),
     $props.displayDate.getMonth(),
     day
   )
-  if (!$props.events) {
+  if (!events) {
     return []
   }
-  return $props.events
+  return events
     .filter((e) => {
       const eventDate = new Date(e.start)
       return eventDate.toDateString() === date.toDateString()
@@ -75,7 +76,7 @@ function isEventInThePast(e: EventType): boolean {
         }"
       >
         <NuxtLink
-          v-for="event in getEventsForDay(day.getDate())"
+          v-for="event in getEventsForDay(day.getDate(), $props.events)"
           :key="event.id"
           :to="`/calendar/e/${event.id}`"
         >
@@ -91,12 +92,28 @@ function isEventInThePast(e: EventType): boolean {
         </NuxtLink>
 
         <NuxtLink
+          v-for="event in getEventsForDay(day.getDate(), $props.eventsGuest)"
+          :key="event.id"
+          :to="`/calendar/e/${event.id}`"
+        >
+          <div
+            class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-secondary hover:bg-blue-200"
+            :class="{ 'opacity-60': isEventInThePast(event) }"
+          >
+            <div class="font-semibold">{{ event.title }}</div>
+            <div>
+              {{ formatTime(event.start) }} - {{ formatTime(event.end) }}
+            </div>
+          </div>
+        </NuxtLink>
+
+        <NuxtLink
           v-for="task in getTasksForDay(day.getDate())"
           :key="task.id"
           :to="`/calendar/t/${task.id}`"
         >
           <div
-            class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
+            class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-accent hover:bg-blue-200"
           >
             <div :class="['font-semibold', { 'line-through': task.completed }]">
               {{ task.title }}
