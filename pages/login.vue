@@ -1,9 +1,31 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+// login page is in dark mode by default
+document.documentElement.setAttribute('data-theme', 'dark')
 const { status, signIn } = useAuth()
 
+function changeTheme() {
+  fetch('/api/session')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('During profile fetch: ' + response.statusText)
+      }
+      return response.json()
+    })
+    .then((data) => {
+      if (data) {
+        const theme = data.theme
+        document.documentElement.setAttribute('data-theme', theme)
+      }
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
 if (status.value == 'authenticated') {
+  changeTheme()
   navigateTo('/')
 }
 
@@ -15,6 +37,7 @@ async function login() {
   const credentials = { username: _username.value, password: _password.value }
   try {
     await signIn(credentials, { callbackUrl: '/' })
+    changeTheme()
   } catch (err: Error) {
     console.error(err)
     _error.value = err.response._data.err

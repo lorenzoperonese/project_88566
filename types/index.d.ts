@@ -11,6 +11,7 @@ export declare global {
     username: string
     name: string
     avatar: string
+    theme: string
   }
 
   interface NoteCategory {

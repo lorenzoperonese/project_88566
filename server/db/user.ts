@@ -7,6 +7,7 @@ export interface IUser extends Document {
   password: string
   name: string
   avatar: string
+  theme: string
   verifyPassword(password: string): Promise<boolean> // Add this for type safety
 }
 
@@ -15,7 +16,8 @@ const schema = new Schema<IUser>(
     username: { type: String, unique: true, required: true },
     password: { type: String, bcrypt: true, required: true },
     name: { type: String, required: true },
-    avatar: { type: String, required: true }
+    avatar: { type: String, required: true },
+    theme: { type: String, required: true, default: 'dracula' }
   },
   {
     timestamps: true // Log when user is added and modified

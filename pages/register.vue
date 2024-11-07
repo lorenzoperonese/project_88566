@@ -15,6 +15,33 @@ const name = ref('')
 
 const err = ref('')
 
+const placeholderIndex = ref(0)
+const usernamePlaceholders = [
+  'cristiano',
+  'therock',
+  'elonmusk',
+  'kingjames',
+  'champagnepapi',
+  'nasa',
+  'billgates',
+  'edsgerdijkstra',
+  'omar',
+  'alanturing'
+]
+
+let placeholderRotationInterval: NodeJS.Timeout
+
+onMounted(() => {
+  placeholderRotationInterval = setInterval(() => {
+    placeholderIndex.value =
+      (placeholderIndex.value + 1) % usernamePlaceholders.length
+  }, 500)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(placeholderRotationInterval)
+})
+
 async function register() {
   if (!validate()) {
     return
@@ -84,7 +111,7 @@ function validate() {
                 v-model="username"
                 type="text"
                 class="X-required grow invalid:text-error"
-                placeholder="Master725"
+                :placeholder="usernamePlaceholders[placeholderIndex]"
               />
             </div>
           </div>

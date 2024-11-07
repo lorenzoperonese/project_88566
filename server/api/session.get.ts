@@ -12,7 +12,8 @@ export default defineEventHandler(async (event): Promise<User | object> => {
       id: u.id.toString(),
       username: u.username,
       name: u.name,
-      avatar: u.avatar
+      avatar: u.avatar,
+      theme: u.theme
     } as User
   } catch (e) {
     setResponseStatus(event, 500)
