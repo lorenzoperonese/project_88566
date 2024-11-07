@@ -7,39 +7,25 @@ const $props = defineProps<{
   today: Date
 }>()
 
-const _daysInMonth = computed(() => {
-  return new Date(
-    $props.displayDate.getFullYear(),
-    $props.displayDate.getMonth() + 1,
-    0
-  ).getDate()
-})
-
-const _firstDayOfMonth = computed(() => {
-  return new Date(
-    $props.displayDate.getFullYear(),
-    $props.displayDate.getMonth(),
-    1
-  ).getDay()
-})
-
 const _days = computed(() => {
   const result = []
-  for (let i = 0; i < _firstDayOfMonth.value; i++) {
+  for (let i = 0; i < _firstDayOfMonth($props.displayDate); i++) {
     result.push(
       new Date(
         $props.displayDate.getFullYear(),
         $props.displayDate.getMonth(),
         0
       ).getDate() -
-        _firstDayOfMonth.value +
+        _firstDayOfMonth($props.displayDate) +
         i +
         1
     )
   }
-  for (let i = 1; i <= _daysInMonth.value; i++) {
+
+  for (let i = 1; i <= _daysInMonth($props.displayDate); i++) {
     result.push(i)
   }
+
   let i = 1
   while (result.length % 7 !== 0) {
     result.push(i)
@@ -48,115 +34,36 @@ const _days = computed(() => {
   return result
 })
 
-function isInPreviousMonth(index: number): boolean {
-  return index < _firstDayOfMonth.value
+interface CalendarCell {
+  index: number
+  day: number
+  events: EventType[]
+  tasks: Task[]
 }
 
-function isInNextMonth(index: number): boolean {
-  return index >= _firstDayOfMonth.value + _daysInMonth.value
-}
+const calendar = computed((): CalendarCell[] => {
+  const result: CalendarCell[] = []
 
-function isInCurrentMonth(index: number): boolean {
-  return !isInPreviousMonth(index) && !isInNextMonth(index)
-}
-
-function getEventsForDay(
-  day: number,
-  index: number,
-  events: EventType[] | null
-): EventType[] {
-  let date: Date | null = null
-  if (isInPreviousMonth(index)) {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth() - 1,
-      day
-    )
-  } else if (isInNextMonth(index)) {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth() + 1,
-      day
-    )
-  } else {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth(),
-      day
-    )
-  }
-  if (!events) {
-    return []
-  }
-  return events
-    .filter((e) => {
-      const eventDate = new Date(e.start)
-      return eventDate.toDateString() === date.toDateString()
+  for (let index = 0; index < _days.value.length; index++) {
+    result.push({
+      index,
+      day: _days.value[index],
+      events: getEventsForDay(
+        $props.events,
+        $props.displayDate,
+        _days.value[index],
+        index
+      ),
+      tasks: getTasksForDay(
+        $props.tasks,
+        $props.displayDate,
+        _days.value[index],
+        index
+      )
     })
-    .sort((a, b) => a.start - b.start)
-}
-
-function getTasksForDay(day: number, index: number): Task[] {
-  let date: Date | null = null
-  if (isInPreviousMonth(index)) {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth() - 1,
-      day
-    )
-    console.log(date)
-  } else if (isInNextMonth(index)) {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth() + 1,
-      day
-    )
-  } else {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth(),
-      day
-    )
   }
-  if (!$props.tasks) {
-    return []
-  }
-  return $props.tasks
-    .filter((e) => {
-      const taskDate = new Date(e.end)
-      console.log('task:', taskDate.toDateString())
-      console.log('date:', date.toDateString())
-      return taskDate.toDateString() === date.toDateString()
-    })
-    .sort((a, b) => a.end - b.end)
-}
-
-function isToday(day: number, index: number): boolean {
-  let date: Date | null = null
-  if (isInPreviousMonth(index)) {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth() - 1,
-      day
-    )
-  } else if (isInNextMonth(index)) {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth() + 1,
-      day
-    )
-  } else {
-    date = new Date(
-      $props.displayDate.getFullYear(),
-      $props.displayDate.getMonth(),
-      day
-    )
-  }
-  return date.toDateString() === $props.today.toDateString()
-}
-function isEventInThePast(e: EventType): boolean {
-  return e.end < $props.today.getTime()
-}
+  return result
+})
 </script>
 
 <template>
@@ -165,31 +72,33 @@ function isEventInThePast(e: EventType): boolean {
       {{ day }}
     </div>
     <div
-      v-for="(day, index) in _days"
-      :key="index"
+      v-for="c in calendar"
+      :key="c.index"
       class="h-32 overflow-y-auto rounded border border-neutral p-2"
     >
       <div
         class="font-semibold"
-        :class="{ 'opacity-20': !isInCurrentMonth(index) }"
+        :class="{
+          'opacity-20': !isInCurrentMonth($props.displayDate, c.index)
+        }"
       >
         <div
           :class="{
             'h-6 w-6 rounded-full bg-primary text-center text-primary-content':
-              isToday(day, index)
+              isToday($props.today, $props.displayDate, c.day, c.index)
           }"
         >
-          {{ day }}
+          {{ c.day }}
         </div>
       </div>
       <NuxtLink
-        v-for="event in getEventsForDay(day, index, $props.events)"
+        v-for="event in c.events"
         :key="event.id"
         :to="`/calendar/e/${event.id}`"
       >
         <div
           class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
-          :class="{ 'opacity-60': isEventInThePast(event) }"
+          :class="{ 'opacity-60': isEventInThePast($props.today, event) }"
         >
           <div class="font-semibold">{{ event.title }}</div>
           <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
@@ -199,23 +108,7 @@ function isEventInThePast(e: EventType): boolean {
       </NuxtLink>
 
       <NuxtLink
-        v-for="event in getEventsForDay(day, index, $props.eventsGuest)"
-        :key="event.id"
-        :to="`/calendar/e/${event.id}`"
-      >
-        <div
-          class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-secondary hover:bg-blue-200"
-          :class="{ 'opacity-60': isEventInThePast(event) }"
-        >
-          <div class="font-semibold">{{ event.title }}</div>
-          <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
-          <div v-if="event.location">📍 {{ event.location }}</div>
-          <div v-if="event.category">🏷️ {{ event.category }}</div>
-        </div>
-      </NuxtLink>
-
-      <NuxtLink
-        v-for="task in getTasksForDay(day, index)"
+        v-for="task in c.tasks"
         :key="task.id"
         :to="`/calendar/t/${task.id}`"
       >

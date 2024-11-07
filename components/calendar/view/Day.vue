@@ -6,53 +6,6 @@ const $props = defineProps<{
   displayDate: Date
   today: Date
 }>()
-
-function getEventsForDay(day: number, events: EventType[] | null): EventType[] {
-  const date = new Date(
-    $props.displayDate.getFullYear(),
-    $props.displayDate.getMonth(),
-    day
-  )
-  if (!events) {
-    return []
-  }
-  return events
-    .filter((e) => {
-      const eventDate = new Date(e.start)
-      return eventDate.toDateString() === date.toDateString()
-    })
-    .sort((a, b) => a.start - b.start)
-}
-
-function getTasksForDay(day: number): Task[] {
-  const date = new Date(
-    $props.displayDate.getFullYear(),
-    $props.displayDate.getMonth(),
-    day
-  )
-  if (!$props.tasks) {
-    return []
-  }
-  return $props.tasks
-    .filter((e) => {
-      const taskDate = new Date(e.end)
-      return taskDate.toDateString() === date.toDateString()
-    })
-    .sort((a, b) => a.end - b.end)
-}
-
-function isToday(day: number): boolean {
-  const date = new Date(
-    $props.displayDate.getFullYear(),
-    $props.displayDate.getMonth(),
-    day
-  )
-  return date.toDateString() === $props.today.toDateString()
-}
-
-function isEventInThePast(e: EventType): boolean {
-  return e.end < $props.today.getTime()
-}
 </script>
 
 <template>
@@ -67,21 +20,18 @@ function isEventInThePast(e: EventType): boolean {
       <div
         class="flex-grow overflow-y-auto p-2"
         :class="{
-          'bg-base-100': !isToday($props.displayDate.getDate()),
-          'bg-base-200': isToday($props.displayDate.getDate())
+          'bg-base-100': !isToday2($props.displayDate, $props.today),
+          'bg-base-200': isToday2($props.displayDate, $props.today)
         }"
       >
         <NuxtLink
-          v-for="event in getEventsForDay(
-            $props.displayDate.getDate(),
-            $props.events
-          )"
+          v-for="event in getEventsForDay2($props.events, $props.displayDate)"
           :key="event.id"
           :to="`/calendar/e/${event.id}`"
         >
           <div
             class="mt-1 w-full cursor-pointer rounded bg-primary-content p-2 text-sm text-primary hover:bg-blue-200"
-            :class="{ 'opacity-60': isEventInThePast(event) }"
+            :class="{ 'opacity-60': isEventInThePast($props.today, event) }"
           >
             <div class="font-semibold">{{ event.title }}</div>
             <div>
@@ -93,28 +43,7 @@ function isEventInThePast(e: EventType): boolean {
         </NuxtLink>
 
         <NuxtLink
-          v-for="event in getEventsForDay(
-            $props.displayDate.getDate(),
-            $props.eventsGuest
-          )"
-          :key="event.id"
-          :to="`/calendar/e/${event.id}`"
-        >
-          <div
-            class="mt-1 w-full cursor-pointer rounded bg-primary-content p-2 text-sm text-secondary hover:bg-blue-200"
-            :class="{ 'opacity-60': isEventInThePast(event) }"
-          >
-            <div class="font-semibold">{{ event.title }}</div>
-            <div>
-              {{ formatTime(event.start) }} - {{ formatTime(event.end) }}
-            </div>
-            <div v-if="event.location">📍 {{ event.location }}</div>
-            <div v-if="event.category">🏷️ {{ event.category }}</div>
-          </div>
-        </NuxtLink>
-
-        <NuxtLink
-          v-for="task in getTasksForDay($props.displayDate.getDate())"
+          v-for="task in getTasksForDay2($props.tasks, $props.displayDate)"
           :key="task.id"
           :to="`/calendar/t/${task.id}`"
         >

@@ -14,7 +14,7 @@ const { data: _eventsGuest } = await useFetch<EventType[]>('/api/events-guest')
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
 // true => add event, false => add task
-const _add_event_task = ref(true)
+const _add_event_task = ref(false)
 const input = useTemplateRef('modal')
 
 const fetchEvents = async () => {
@@ -28,10 +28,13 @@ const fetchTasks = async () => {
 }
 
 function closeModal() {
+  console.log('CLOSED')
   if (_add_event_task.value) {
-    fetchTasks()
-  } else {
     fetchEvents()
+    console.log('fetchedTasks')
+  } else {
+    fetchTasks()
+    console.log('fetchedEvents')
   }
 
   if (input.value) {
