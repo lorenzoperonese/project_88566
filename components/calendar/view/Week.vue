@@ -28,37 +28,19 @@ const $props = defineProps<{
           'bg-base-200': isToday2($props.today, day)
         }"
       >
-        <NuxtLink
+        <CalendarEvent
           v-for="event in getEventsForDay2($props.events, day)"
           :key="event.id"
-          :to="`/calendar/e/${event.id}`"
-        >
-          <div
-            class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
-            :class="{ 'opacity-60': isEventInThePast($props.today, event) }"
-          >
-            <div class="font-semibold">{{ event.title }}</div>
-            <div>
-              {{ formatTime(event.start) }} - {{ formatTime(event.end) }}
-            </div>
-          </div>
-        </NuxtLink>
+          :event="event"
+          :today="$props.today"
+        />
 
-        <NuxtLink
+        <CalendarTask
           v-for="task in getTasksForDay2($props.tasks, day)"
           :key="task.id"
-          :to="`/calendar/t/${task.id}`"
-        >
-          <div
-            class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-accent hover:bg-blue-200"
-          >
-            <div :class="['font-semibold', { 'line-through': task.completed }]">
-              {{ task.title }}
-            </div>
-            <div>{{ formatTime(task.end) }}</div>
-            <div>{{ formatTime(task.end) }}</div>
-          </div>
-        </NuxtLink>
+          :task="task"
+          :today="$props.today"
+        />
       </div>
     </div>
   </div>

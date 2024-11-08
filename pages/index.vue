@@ -8,7 +8,17 @@ definePageMeta({
   <div>
     <h1 class="p-5 text-xl font-bold">Home page</h1>
     <div class="flex flex-col gap-2 p-5 md:flex-row">
-      <RouterLink class="btn" to="/calendar">Calendario</RouterLink>
+      <RouterLink
+        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        to="/calendar"
+      >
+        <div class="text-center text-lg font-bold">Calendar</div>
+
+        <div class="divider"></div>
+
+        <CalendarPreview class="max-h-72 overflow-y-auto" />
+      </RouterLink>
+
       <NuxtLink class="btn" to="/notes">Notes</NuxtLink>
       <NuxtLink class="btn" to="/pomodoro">Pomodoro</NuxtLink>
       <NuxtLink class="btn" to="/chat">Chat</NuxtLink>
