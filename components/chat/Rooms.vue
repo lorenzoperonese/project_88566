@@ -19,6 +19,8 @@ function addRoom() {
 }
 
 const searchRooms = computed(() => {
+  console.log($props.rooms)
+
   return $props.rooms.filter((r) => r.roomName.includes(search.value))
 })
 </script>
@@ -102,10 +104,19 @@ const searchRooms = computed(() => {
             :class="{
               'border-neutral-content bg-base-200': current_room_id == r.id
             }"
-            class="flex items-center justify-center rounded border border-neutral p-2 text-lg font-bold hover:border-neutral-content hover:bg-base-200"
+            class="flex items-center rounded border border-neutral p-2 text-lg font-bold hover:border-neutral-content hover:bg-base-200"
             @click="current_room_id = r.id"
           >
-            {{ r.roomName }}
+            <div class="flex justify-start gap-4">
+              <img
+                :src="getAvatarLink(r.receiver.avatar)"
+                alt="avatar"
+                class="h-10 w-10 rounded-full"
+              />
+              <div class="flex items-center">
+                {{ r.roomName }}
+              </div>
+            </div>
           </div>
         </template>
       </div>

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event): Promise<ChatRoom[]> => {
     const rooms = await Room.find({ senderId: event.context.auth.id })
       .populate<{
         receiverId: User
-      }>({ path: 'receiverId', select: 'username' })
+      }>({ path: 'receiverId' })
       .exec()
 
     console.log(rooms)
@@ -16,7 +16,8 @@ export default defineEventHandler(async (event): Promise<ChatRoom[]> => {
       senderId: room.senderId.toString(),
       receiver: {
         id: (room.receiverId as any)._id.toString(),
-        username: room.receiverId.username
+        username: room.receiverId.username,
+        avatar: room.receiverId.avatar
       }
     })) as ChatRoom[]
   } catch (err) {
