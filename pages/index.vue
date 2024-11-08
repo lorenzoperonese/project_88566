@@ -16,10 +16,19 @@ definePageMeta({
 
         <div class="divider"></div>
 
-        <CalendarPreview class="max-h-72 overflow-y-auto" />
+        <CalendarPreview class="max-h-72 overflow-y-auto py-2" />
       </RouterLink>
 
-      <NuxtLink class="btn" to="/notes">Notes</NuxtLink>
+      <NuxtLink
+        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        to="/notes"
+      >
+        <div class="text-center text-lg font-bold">Notes</div>
+
+        <div class="divider"></div>
+
+        <NotesPreview class="max-h-72 overflow-y-auto py-2" />
+      </NuxtLink>
       <NuxtLink class="btn" to="/pomodoro">Pomodoro</NuxtLink>
       <NuxtLink class="btn" to="/chat">Chat</NuxtLink>
     </div>
