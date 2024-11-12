@@ -76,7 +76,7 @@ export declare global {
     end: number
     note: string | null
     completed: boolean
-    category?: string
+    category: string | null
   }
 
   interface ChatRoom {

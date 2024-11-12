@@ -19,6 +19,7 @@ const deleteCategory = (id: string) => {
 }
 
 const addCategory = () => {
+  if (_newCategory.value.trim() == '') return
   const c: NoteCategory = { id: '0', name: _newCategory.value }
   $emits('add-category', c)
 

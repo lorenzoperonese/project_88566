@@ -18,7 +18,6 @@ const { data: _users } = await useFetch<User[]>('/api/users')
 
 const _showRepetition = ref(false)
 const _showNotifications = ref(false)
-const _errorMessage = ref('')
 const _repetitionSummary = ref('')
 const _notificationsSummary = ref('')
 
@@ -56,7 +55,6 @@ if ($props.event) {
 }
 
 function addRepetition(r: Repetition | null) {
-  _errorMessage.value = ''
   _showRepetition.value = false
   if (!r) {
     _repetition.value = null
@@ -113,7 +111,6 @@ function addRepetition(r: Repetition | null) {
 }
 
 function saveEvent() {
-  _errorMessage.value = ''
   const startDate = new Date(
     _startDate.value + ' ' + _startTime.value
   ).getTime()
@@ -132,9 +129,16 @@ function saveEvent() {
     guests: { accepted: [], waiting: _guests.value } as Guest
   }
 
-  if (e.title.length == 0 || e.start > e.end) {
-    _errorMessage.value = 'Invalid input'
+  if (e.title.trim() === '') {
+    $toast.error('Title is required')
     return
+  }
+  if (e.start > e.end) {
+    $toast.error('Start date must be before end date')
+    return
+  }
+  if (e.category.length == 0) {
+    e.category = 'Not categorized'
   }
 
   if (!$props.isEventNew && $props.event) {
@@ -153,17 +157,13 @@ function saveEvent() {
 }
 
 function deleteEvent() {
-  const router = useRouter()
-
   $fetch(`/api/events/${$props.event?.id}`, {
     method: 'DELETE'
   })
-
-  router.push({ name: 'calendar' })
+  navigateTo('/calendar')
 }
 
 function addNotifications(n: Notify[] | null) {
-  _errorMessage.value = ''
   _notificationsSummary.value = ''
   _showNotifications.value = false
   if (!n) {
@@ -190,7 +190,7 @@ function addGuest(g: string) {
   if (g.length == 0) return
   _guest.value = ''
   if (!_users.value) {
-    $toast.error('No users found')
+    $toast.error('User not found')
     return
   }
   const user = _users.value.filter((u) => u.username === g)[0]
@@ -369,6 +369,5 @@ function addGuest(g: string) {
         </button>
       </div>
     </form>
-    <p class="text-red-500">{{ _errorMessage }}</p>
   </div>
 </template>

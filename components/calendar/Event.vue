@@ -9,7 +9,7 @@ const $props = defineProps({
   <NuxtLink :to="`/calendar/e/${event.id}`">
     <div
       class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
-      :class="{ 'opacity-60': isEventInThePast($props.today, event) }"
+      :class="{ 'opacity-60': isInThePast($props.today, event) }"
     >
       <div class="font-semibold">{{ event.title }}</div>
       <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>

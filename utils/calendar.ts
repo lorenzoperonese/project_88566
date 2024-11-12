@@ -123,6 +123,6 @@ export function isToday2(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }
 
-export function isEventInThePast(today: Date, e: EventType): boolean {
+export function isInThePast(today: Date, e: EventType | Task): boolean {
   return e.end < today.getTime()
 }

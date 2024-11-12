@@ -9,6 +9,8 @@ const $emits = defineEmits<{
   (e: 'close'): void
 }>()
 
+const { $toast } = useNuxtApp()
+
 const _title = ref('')
 const _endDate = ref<string>(formatDate(end.getTime()))
 const _endTime = ref<string>(formatTime(end.getTime()))
@@ -27,10 +29,7 @@ if ($props.task) {
   _completed.value = $props.task.completed
 }
 
-const _errorMessage = ref('')
-
 function saveTask() {
-  _errorMessage.value = ''
   const endDate = new Date(_endDate.value + ' ' + _endTime.value).getTime()
 
   const e: Task = {
@@ -42,9 +41,12 @@ function saveTask() {
     completed: _completed.value
   }
 
-  if (e.title.length == 0) {
-    _errorMessage.value = 'Invalid input'
+  if (e.title.trim() === '') {
+    $toast.error('Title is required')
     return
+  }
+  if (!e.category) {
+    e.category = 'Not categorized'
   }
 
   if ($props.task) {
@@ -122,6 +124,5 @@ function deleteTask() {
         </button>
       </div>
     </form>
-    <p class="text-red-500">{{ _errorMessage }}</p>
   </div>
 </template>

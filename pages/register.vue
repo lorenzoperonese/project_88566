@@ -6,8 +6,6 @@ definePageMeta({
   }
 })
 
-const router = useRouter()
-
 const passwd1 = ref('')
 const passwd2 = ref('')
 const username = ref('')
@@ -57,7 +55,7 @@ async function register() {
       })
     })
 
-    router.push({ name: 'login' })
+    navigateTo('/login')
   } catch (e) {
     console.error(e)
     err.value = 'Error during registration'

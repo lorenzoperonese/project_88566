@@ -2,13 +2,13 @@
 const $props = defineProps({
   timer: { type: Object as PropType<Timer>, required: true }
 })
+const { $toast } = useNuxtApp()
 const _study = ref($props.timer.study)
 const _break = ref($props.timer.break)
 const _cycles = ref($props.timer.cycles)
 const _counting = ref(false)
 const _paused = ref(false)
 const _cycleCounter = ref(1)
-const _errorMessage = ref('')
 
 const _propose = ref(false)
 
@@ -35,10 +35,9 @@ function calculateTime() {
 
 function start() {
   if (_study.value < 1 || _break.value < 1 || _cycles.value < 1) {
-    _errorMessage.value = 'Tutti i campi devono essere interi maggiori di 0'
+    $toast.error('Valori non validi')
     return
   }
-  _errorMessage.value = ''
   emit('start')
   _counting.value = true
 
@@ -142,7 +141,6 @@ function skip() {
         </div>
       </div>
       <button class="btn btn-success" @click="start">Inizia</button>
-      <p class="mt-2 text-red-500">{{ _errorMessage }}</p>
     </div>
 
     <div v-else class="text-center">

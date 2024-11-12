@@ -10,6 +10,10 @@ const _task = await $fetch(`/api/tasks/${_id}`)
 
 <template>
   <div class="flex justify-center">
-    <CalendarTaskAdder v-if="_task" :task="_task" />
+    <CalendarTaskAdder
+      v-if="_task"
+      :task="_task"
+      @close="navigateTo('/calendar')"
+    />
   </div>
 </template>

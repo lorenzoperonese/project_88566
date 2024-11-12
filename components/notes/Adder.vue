@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { $toast } = useNuxtApp()
 const $emits = defineEmits<{
   (e: 'save', note: Note): void
 }>()
@@ -37,6 +38,14 @@ function del() {
 }
 
 function save() {
+  if (_noteTitle.value.trim() == '') {
+    $toast.error('Title is required')
+    return
+  }
+  if (_noteBody.value.trim() == '') {
+    $toast.error('Body is required')
+    return
+  }
   const n: Note = {
     id: '0',
     title: _noteTitle.value,
@@ -77,7 +86,7 @@ function save() {
         v-if="_adding"
         class="flex justify-between rounded-b-lg bg-base-200 p-1"
       >
-        <button class="btn btn-error" @click="del()">Delete</button>
+        <button class="btn btn-error" @click="del()">Cancel</button>
 
         <div class="dropdown dropdown-hover w-52">
           <div

@@ -8,6 +8,8 @@ const $props = defineProps<{
   repetition: Repetition | null
 }>()
 
+const { $toast } = useNuxtApp()
+
 const onoff = ref(false)
 const day = new Date($props.day).getDate()
 
@@ -75,8 +77,6 @@ if ($props.repetition !== null) {
       : 1
 }
 
-const _errorMessage = ref('')
-
 /*
 function reset() {
   _repetition.value = 1
@@ -86,12 +86,10 @@ function reset() {
   _ends.value = 'Never'
   _endDate.value = $props.day
   _endAfter.value = 1
-  _errorMessage.value = ''
 }
 */
 
 function save() {
-  // controls now do not work, if wrong data is entered the modal will save it anyway
   if (!onoff.value) {
     $emits('save', null)
     return
@@ -105,24 +103,23 @@ function save() {
   } as Repetition
 
   if (r.every < 1 || r.every == undefined) {
-    _errorMessage.value = 'Value must be greater than 0'
+    $toast.error('Value must be greater than 0')
     return
   }
   if (_eventPeriod.value == 2) {
     r.repeatOn = _weekDays.value
     if (r.repeatOn.length == 0) {
-      _errorMessage.value = 'Select at least one day'
+      $toast.error('Select at least one day')
       return
-    } else _errorMessage.value = ''
+    }
   } else if (_eventPeriod.value == 3) {
-    _errorMessage.value = ''
     r.repeatOn = _monthRepetition.value
   }
 
   if (_ends.value == 'Day') {
     r.endOn = new Date(_endDate.value).getTime()
     if (r.endOn < new Date().getTime()) {
-      _errorMessage.value = 'End date must be in the future'
+      $toast.error('End date must be in the future')
       return
     }
   } else if (_ends.value == 'After') {
@@ -280,15 +277,15 @@ function close() {
                 </label>
               </div>
             </div>
-            <p class="mt-2 text-center text-red-500">{{ _errorMessage }}</p>
           </main>
         </div>
 
         <div class="modal-action">
           <button class="btn" @click="close">Close</button>
           <form method="dialog" class="flex w-full justify-between">
-            <!-- if there is a button in form, it will close the modal -->
-            <button class="btn btn-primary" @click="save()">Save</button>
+            <button class="btn btn-primary" @click.prevent="" @click="save()">
+              Save
+            </button>
           </form>
         </div>
       </div>

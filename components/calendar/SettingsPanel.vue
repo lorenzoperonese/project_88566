@@ -145,9 +145,9 @@ const parseICSContent = (icsData: string) => {
       })
     })
 
-    $toast.success('File CIS imported')
+    $toast.success('File ICS imported')
   } catch (err) {
-    $toast.error('Error parsing CIS file')
+    $toast.error('Error parsing ICS file')
   }
 }
 

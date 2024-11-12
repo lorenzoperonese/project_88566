@@ -15,7 +15,7 @@ const schema = new Schema<ITask>(
   {
     title: { type: String, required: true },
     end: { type: Number, required: true },
-    note: { type: String, required: true },
+    note: { type: String },
     category: { type: String, required: true },
     completed: { type: Boolean, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: User }
