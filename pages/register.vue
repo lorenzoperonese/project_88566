@@ -5,13 +5,12 @@ definePageMeta({
     navigateAuthenticatedTo: '/'
   }
 })
+const { $toast } = useNuxtApp()
 
 const passwd1 = ref('')
 const passwd2 = ref('')
 const username = ref('')
 const name = ref('')
-
-const err = ref('')
 
 const placeholderIndex = ref(0)
 const usernamePlaceholders = [
@@ -58,7 +57,7 @@ async function register() {
     navigateTo('/login')
   } catch (e) {
     console.error(e)
-    err.value = 'Error during registration'
+    $toast.error('Registration failed')
   }
 }
 
@@ -70,22 +69,18 @@ function validate() {
 
   let ok = true
 
-  let e = ''
-
   //if (passwd1.value.length < 8) {
   //  e = 'Insert a password of at least 8 character'
   //  ok = false
   //} else
 
   if (passwd1.value != passwd2.value) {
-    e = 'Passwords do not match'
+    $toast.error('Passwords do not match')
     ok = false
   } else if (username.value.length < 3) {
-    e = 'Username too short'
+    $toast.error('Username must be at least 3 characters long')
     ok = false
   }
-
-  err.value = e
 
   return ok
 }
@@ -160,10 +155,6 @@ function validate() {
                 />
               </div>
             </div>
-          </div>
-
-          <div class="mt-2 text-error">
-            {{ err }}
           </div>
 
           <div class="form-control mt-6">
