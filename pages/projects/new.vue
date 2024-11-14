@@ -109,6 +109,7 @@ onMounted(async () => {
 
   let error = ''
   function showError(msg) {
+    error = msg
     document.getElementById('error').innerHTML = error
   }
 
