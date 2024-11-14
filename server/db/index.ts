@@ -6,5 +6,10 @@ export { default as Task } from './task'
 export { default as Room } from './chat-rooms'
 export { default as Message } from './chat-message'
 export { default as Notification } from './notification'
+export { default as Project } from './project'
+export { default as ProjectTask } from './project-task'
+
 //export type { INote } from './note'
-//export type { IUser } from "./user"
+export type { IUser } from './user'
+export type { IProject } from './project'
+export type { IProjectTask } from './project-task'
