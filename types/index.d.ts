@@ -100,6 +100,27 @@ export declare global {
     read: boolean
     timestamp: number
   }
+
+  interface ProjectTask {
+    id: string
+    title: string
+    description: string
+    phase: string
+    user_id: string
+    start: number
+    end: number
+    dependencies: string[]
+    project_id: string
+  }
+
+  interface Project {
+    id: string
+    title: string
+    description: string
+    tasks: ProjectTask[]
+    guests: Guest
+    user_id: string
+  }
 }
 
 export interface JSONResponse {

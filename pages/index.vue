@@ -31,6 +31,7 @@ definePageMeta({
       </NuxtLink>
       <NuxtLink class="btn" to="/pomodoro">Pomodoro</NuxtLink>
       <NuxtLink class="btn" to="/chat">Chat</NuxtLink>
+      <NuxtLink class="btn" to="/projects">Projects</NuxtLink>
     </div>
 
     <h1 class="mt-5 pl-5 text-xl font-bold">Notifications</h1>

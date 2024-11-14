@@ -97,6 +97,9 @@ async function updatePending() {
           <li>
             <NuxtLink :to="{ name: 'chat' }">Chat</NuxtLink>
           </li>
+          <li>
+            <NuxtLink :to="{ name: 'projects' }">Projects</NuxtLink>
+          </li>
         </ul>
       </div>
     </div>

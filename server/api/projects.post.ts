@@ -26,18 +26,12 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (!body.tasks || !Array.isArray(body.tasks) || body.tasks.length === 0) {
-      throw createError({
-        statusCode: 400,
-        message: 'Project tasks are required'
-      })
-    }
-
     // Create new project
     const project = new Project({
       title: body.title,
       description: body.description,
       user_id: event.context.auth.id,
+      tasks: [],
       guests: {
         waiting: body.guests.waiting,
         accepted: body.guests.accepted
@@ -45,20 +39,7 @@ export default defineEventHandler(async (event) => {
     })
 
     // Save project first to get its ID
-    const savedProject = await project.save()
-
-    // Create and save all tasks
-    const taskPromises = body.tasks.map((task) => {
-      const newTask = new ProjectTask({
-        ...task,
-        user_id: event.context.auth.id,
-        project_id: savedProject._id
-      })
-      return newTask.save()
-    })
-
-    // Wait for all tasks to be saved
-    await Promise.all(taskPromises)
+    await project.save()
 
     return
   } catch (err) {
