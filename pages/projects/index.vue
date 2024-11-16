@@ -68,7 +68,7 @@ onMounted(async () => {
             <div class="card-title">${project.title}</div>
             <div class="">${project.description}</div>
             <div class="card-actions justify-center">
-              <button id="detail-${project.id}" class="btn btn-outline btn-primary">
+              <button id="detail-${project.id}" class="btn btn-outline btn-secondary">
                 Details
               </button>
               <button id="delete-${project.id}" class="btn btn-outline btn-error">

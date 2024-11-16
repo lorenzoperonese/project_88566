@@ -1,9 +1,16 @@
-import { Project, ProjectTask } from '@/server/db'
+import { Project, ProjectTask, User } from '@/server/db'
+import { Types } from 'mongoose'
+
+interface InputProject {
+  title: string
+  description: string
+  guests: string[]
+}
 
 export default defineEventHandler(async (event) => {
   try {
     // Get request body
-    const body = await readBody<Project>(event)
+    const body = await readBody<InputProject>(event)
 
     if (!body) {
       throw createError({
@@ -26,6 +33,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    const guests_ids: Types.ObjectId[] = []
+
+    for (const g in body.guests) {
+      const u = await User.findOne({ username: body.guests[g] })
+      if (!u) {
+        throw createError({
+          statusCode: 404,
+          message: `User ${body.guests[g]} not found`
+        })
+      }
+
+      guests_ids.push(u.id)
+    }
+
     // Create new project
     const project = new Project({
       title: body.title,
@@ -33,8 +54,8 @@ export default defineEventHandler(async (event) => {
       user_id: event.context.auth.id,
       tasks: [],
       guests: {
-        waiting: body.guests.waiting,
-        accepted: body.guests.accepted
+        waiting: guests_ids,
+        accepted: []
       }
     })
 

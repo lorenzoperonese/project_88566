@@ -75,12 +75,60 @@ onMounted(async () => {
   await fetchTasks()
   diplayTasks()
   console.log('project: ', project)
+
+  // ------ Task modal ------
+
+  async function allUsers() {
+    let users = []
+
+    let me = await getME()
+    users.push(me)
+
+    project.guests.waiting.forEach((user) => {
+      users.push(user)
+    })
+    project.guests.accepted.forEach((user) => {
+      users.push(user)
+    })
+
+    return users
+  }
+
+  async function inserUsersIntoSelect() {
+    let select = document.getElementById('select-user')
+    let users = await allUsers()
+    console.log(users)
+    select.innerHTML = users
+      .map((user) => {
+        return `<option value="${user.id}">${user.name}</option>`
+      })
+      .join('')
+  }
+
+  function insertTasksIntoSelect() {
+    let select = document.getElementById('select-depends')
+
+    if (tasks.length === 0) {
+      select.innerHTML = '<option value="">No tasks yet</option>'
+      select.disabled = true
+      return
+    }
+
+    select.innerHTML = tasks
+      .map((task) => {
+        return `<option value="${task.id}">${task.title}</option>`
+      })
+      .join('')
+  }
+
+  insertTasksIntoSelect()
+  inserUsersIntoSelect()
 })
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <h1 id="project-title" class="text-xl font-bold"></h1>
+  <div class="flex flex-col gap-2 p-2">
+    <h1 id="project-title" class="text-2xl font-bold"></h1>
     <p id="project-description" class=""></p>
     <div>
       <div id="tasks-list"></div>
@@ -138,15 +186,21 @@ onMounted(async () => {
             </div>
 
             <div class="form-control bordered">
-              <label id="select-depends" for="status">Depends</label>
-              <select class="select select-bordered w-full max-w-xs">
+              <label for="select-depends">Depends</label>
+              <select
+                class="select select-bordered w-full max-w-xs"
+                id="select-depends"
+              >
                 <!-- NEED TO FILL -->
               </select>
             </div>
 
             <div class="form-control bordered">
-              <label id="select-status" for="status">User</label>
-              <select class="select select-bordered w-full max-w-xs">
+              <label for="select-user">User</label>
+              <select
+                class="select select-bordered w-full max-w-xs"
+                id="select-user"
+              >
                 <!-- NEED TO FILL -->
               </select>
             </div>
