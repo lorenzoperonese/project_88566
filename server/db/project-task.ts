@@ -9,7 +9,7 @@ export interface IProjectTask extends Document {
   state: string
   start: number
   end: number
-  dependencies: Types.ObjectId[]
+  dependency: Types.ObjectId
   project_id: Types.ObjectId
 }
 
@@ -22,7 +22,7 @@ const schema = new Schema<IProjectTask>(
     state: { type: String, required: true, default: 'pending' },
     start: { type: Number, required: true },
     end: { type: Number, required: true },
-    dependencies: [{ type: Schema.Types.ObjectId, ref: 'ProjectTask' }],
+    dependency: { type: Schema.Types.ObjectId, ref: 'ProjectTask' },
     project_id: { type: Schema.Types.ObjectId, required: true }
   },
   {
@@ -30,4 +30,4 @@ const schema = new Schema<IProjectTask>(
   }
 )
 
-export default model<IProjectTask>('ProjectTask', schema, 'project-tasks')
+export default model<IProjectTask>('ProjectTask', schema, 'projectTasks')

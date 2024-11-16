@@ -1,4 +1,4 @@
-import { Project } from '@/server/db'
+import { Project, ProjectTask } from '@/server/db'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,6 +10,8 @@ export default defineEventHandler(async (event) => {
       _id: id,
       user_id: event.context.auth.id
     })
+
+    await ProjectTask.deleteMany({ project_id: id })
 
     return { message: 'Project deleted' }
   } catch (err) {

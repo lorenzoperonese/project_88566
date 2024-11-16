@@ -11,9 +11,13 @@ export default defineEventHandler(async (event): Promise<ProjectTask[]> => {
       throw Error('Project not found')
     }
 
+    console.log(event.context.auth.id)
+    console.log(project.user_id.toString())
+
     if (
       project.user_id.toString() !== event.context.auth.id ||
-      !project.guests.accepted.includes(event.context.auth.id)
+      (project.guests.accepted.length > 0 &&
+        !project.guests.accepted.includes(event.context.auth.id))
     ) {
       throw createError({
         statusCode: 403,
@@ -29,9 +33,10 @@ export default defineEventHandler(async (event): Promise<ProjectTask[]> => {
       description: task.description,
       phase: task.phase,
       user_id: task.user_id.toString(),
+      state: task.state,
       start: task.start,
       end: task.end,
-      dependencies: task.dependencies.map((d) => d.toString()),
+      dependency: task.dependency ? task.dependency.toString() : null,
       project_id: task.project_id.toString()
     })) as ProjectTask[]
   } catch (err) {

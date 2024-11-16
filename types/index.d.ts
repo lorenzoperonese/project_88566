@@ -109,7 +109,7 @@ export declare global {
     user_id: string
     start: number
     end: number
-    dependencies: string[]
+    dependency: string | null
     project_id: string
   }
 
