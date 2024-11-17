@@ -56,54 +56,75 @@ onMounted(async () => {
   }
 
   function displayTasks() {
-    const tasksEl = document.getElementById('tasks-list')
+    const tasksGrid = document.getElementById('tasks-grid')
 
     // Clean up content
-    while (tasksEl.firstChild) {
-      tasksEl.removeChild(tasksEl.firstChild)
+    while (tasksGrid.firstChild) {
+      tasksGrid.removeChild(tasksGrid.firstChild)
     }
 
-    if (tasks.length === 0) {
-      const noTasksText = document.createTextNode('No tasks')
-      tasksEl.appendChild(noTasksText)
-      return
-    }
-
-    tasks.forEach((task) => {
-      const taskDiv = document.createElement('div')
-      taskDiv.textContent = task.title
-      tasksEl.appendChild(taskDiv)
-    })
+    //if (tasks.length === 0) {
+    //  const noTasksText = document.createTextNode('No tasks')
+    //  tasksGrid.appendChild(noTasksText)
+    //}
 
     // Header
 
     let min = new Date(Math.min(...tasks.map((task) => task.start)))
     let max = new Date(Math.max(...tasks.map((task) => task.end)))
 
-    const header = document.getElementById('tasks-header')
+    const nYears = max.getFullYear() - min.getFullYear() + 1
+    const nMonths = (max.getMonth() - min.getMonth() + 13) % 12
+    const nDays = (max - min) / (1000 * 60 * 60 * 24) + 1
 
-    while (header.firstChild) {
-      header.removeChild(header.firstChild)
-    }
+    tasksGrid.style.gridTemplateColumns = `auto repeat(${nDays}, 1fr)`
+    tasksGrid.style.gridTemplateRows = `repeat(${tasks.length + 1}, 1fr)`
+
+    const empty = document.createElement('div')
+    empty.classList.add('text-center')
+    empty.textContent = 'Tasks/Days'
+    empty.classList.add('text-gray-500')
+    empty.style.gridRow = '1 / 1'
+    empty.style.gridColumn = '1 / 1'
+    tasksGrid.appendChild(empty)
+
+    //for (let i = 0; i < nMonths; i++) {
+    //  const month = document.createElement('div')
+    //  month.classList.add('text-center')
+    //  month.textContent = `${min.getMonth() + i}`
+    //  month.style.gridRow = '1 / 1'
+    //  month.style.gridColumn = `${(nDays / nMonths) * i + 2} / ${nDays / nMonths}`
+    //  tasksGrid.appendChild(month)
+    //}
+
+    //const years = document.createElement('div')
+    //years.classList.add('text-center')
+    //years.style.gridRow = '1 / 1'
+    //years.style.gridColumn = `2 / ${nDays + 2}`
+    //years.textContent = '2024'
+    //tasksGrid.appendChild(years)
 
     for (let i = new Date(min); i <= max; i.setDate(i.getDate() + 1)) {
       const day = document.createElement('div')
       day.classList.add('text-center')
-      day.textContent = `${i.getDate()}-${i.getMonth()}-${i.getFullYear()}`
-      header.appendChild(day)
+      day.classList.add('flex')
+      day.classList.add('items-center')
+      day.textContent = `${i.getDate()}-${i.getMonth() + 1}-${i.getFullYear()}`
+      tasksGrid.appendChild(day)
     }
 
     // Grid
-    const tasksGrid = document.getElementById('tasks-grid')
 
-    // Clean up grid
-    while (tasksGrid.firstChild) {
-      tasksGrid.removeChild(tasksGrid.firstChild)
-    }
-
-    const createTaskGrid = (task) => {
+    tasks.forEach((task) => {
       const taskDiv = document.createElement('div')
+      taskDiv.textContent = task.title
+      taskDiv.classList.add('text-center')
       taskDiv.classList.add('flex')
+      taskDiv.classList.add('items-center')
+      taskDiv.classList.add('hover:bg-base-100')
+      taskDiv.classList.add('p-2')
+      taskDiv.addEventListener('click', () => editTask(task.id))
+      tasksGrid.appendChild(taskDiv)
 
       const start = new Date(task.start)
       const end = new Date(task.end)
@@ -111,8 +132,9 @@ onMounted(async () => {
       for (let i = new Date(min); i <= max; i.setDate(i.getDate() + 1)) {
         const day = document.createElement('div')
         day.classList.add('text-center')
-        day.classList.add('w-96')
-        day.classList.add('h-4')
+        //day.classList.add('w-96')
+        //day.classList.add('h-4')
+        day.classList.add('grid-item')
 
         if (i >= start && i <= end) {
           day.classList.add('bg-primary')
@@ -120,16 +142,8 @@ onMounted(async () => {
           day.classList.add('bg-base-300')
         }
 
-        taskDiv.appendChild(day)
+        tasksGrid.appendChild(day)
       }
-
-      console.log('taskDiv: ', taskDiv)
-
-      return taskDiv
-    }
-
-    tasks.forEach((task) => {
-      tasksGrid.appendChild(createTaskGrid(task))
     })
   }
 
@@ -260,6 +274,27 @@ onMounted(async () => {
 
   document.getElementById('task-modal-save').addEventListener('click', addTask)
 
+  // ------ Edit Task modal ------
+  function editTask(id) {
+    let t = tasks.find((task) => task.id === id)
+    console.log('Want to edit', t)
+
+    document.getElementById('task-modal-title').value = t.title
+    document.getElementById('task-modal-description').value = t.description
+    document.getElementById('task-modal-phase').value = t.phase
+    document.getElementById('task-modal-state').value = t.state
+    document.getElementById('task-modal-start').value = new Date(t.start)
+      .toISOString()
+      .split('T')[0]
+    document.getElementById('task-modal-end').value = new Date(t.end)
+      .toISOString()
+      .split('T')[0]
+    document.getElementById('task-modal-select-depends').value = t.depends
+    document.getElementById('task-modal-select-user').value = t.user_id
+
+    document.getElementById('task_modal').showModal()
+  }
+
   // ------ Utils ------
   async function updateTasks() {
     await fetchTasks()
@@ -274,33 +309,14 @@ onMounted(async () => {
     <h1 id="project-title" class="text-2xl font-bold"></h1>
     <p id="project-description" class=""></p>
     <div class="rounded bg-base-200 p-2">
-      <div class="flex gap-2">
-        <div class="flex flex-col">
-          <h2 class="text-center text-lg font-bold">Tasks</h2>
-          <div class="divider"></div>
+      <div class="grid gap-1 overflow-x-auto" id="tasks-grid"></div>
 
-          <div class="flex h-full flex-col justify-between">
-            <div id="tasks-list" class="flex flex-col gap-2"></div>
-
-            <button
-              class="btn btn-outline btn-primary"
-              onclick="task_modal.showModal()"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-
-        <div class="divider divider-horizontal h-96"></div>
-
-        <div class="flex w-full flex-col overflow-x-auto">
-          <div id="tasks-header" class="flex gap-4"></div>
-
-          <div class="divider"></div>
-
-          <div id="tasks-grid"></div>
-        </div>
-      </div>
+      <button
+        class="btn btn-outline btn-primary"
+        onclick="task_modal.showModal()"
+      >
+        Add task
+      </button>
     </div>
 
     <!--- Task modal --->
