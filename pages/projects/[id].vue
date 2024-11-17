@@ -55,7 +55,7 @@ onMounted(async () => {
       project.description
   }
 
-  function displayTasks() {
+  async function displayTasks() {
     const tasksGrid = document.getElementById('tasks-grid')
 
     // Clean up content
@@ -104,11 +104,18 @@ onMounted(async () => {
     //years.textContent = '2024'
     //tasksGrid.appendChild(years)
 
+    const today = await getToday()
+
     for (let i = new Date(min); i <= max; i.setDate(i.getDate() + 1)) {
       const day = document.createElement('div')
       day.classList.add('justify-center')
       day.classList.add('flex')
       day.classList.add('items-center')
+
+      if (isToday2(today, i)) {
+        day.classList.add('bg-base-100')
+      }
+
       day.textContent = `${i.getDate()}-${i.getMonth() + 1}-${i.getFullYear()}`
       tasksGrid.appendChild(day)
     }
@@ -350,7 +357,17 @@ onMounted(async () => {
     displayTasks()
     insertTasksIntoSelect()
   }
+
+  document.getElementById('projects-tm-btn').addEventListener('update', () => {
+    updateTasks()
+  })
 })
+
+// This is an ugly trick to only use JS in projects and to avoid reinventing the
+// wheel with the TimeMachine
+function dispatchEvent() {
+  document.getElementById('projects-tm-btn').dispatchEvent(new Event('update'))
+}
 </script>
 
 <template>
@@ -403,9 +420,12 @@ onMounted(async () => {
               class="select select-bordered w-full max-w-xs"
               id="task-modal-state"
             >
+              <option value="unavailable">Unavailable</option>
               <option value="todo">Pending</option>
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
+              <option value="reactivated">Reactivated</option>
+              <option value="late">Late</option>
               <option value="abbandoned">Abbandoned</option>
             </select>
           </div>
@@ -465,5 +485,11 @@ onMounted(async () => {
         </div>
       </div>
     </dialog>
+
+    <TmButton
+      class="fixed bottom-4 left-4"
+      @update="dispatchEvent()"
+      id="projects-tm-btn"
+    />
   </div>
 </template>
