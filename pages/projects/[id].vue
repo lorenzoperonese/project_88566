@@ -306,9 +306,11 @@ onMounted(async () => {
     document.getElementById('task_modal').showModal()
     addingTask = false
     taskID = id
+    document.getElementById('task-modal-delete').classList.remove('hidden')
   }
 
   function addTask() {
+    document.getElementById('task-modal-delete').classList.add('hidden')
     document.getElementById('task-modal-title').value = ''
     document.getElementById('task-modal-description').value = ''
     document.getElementById('task-modal-phase').value = ''
@@ -319,6 +321,28 @@ onMounted(async () => {
     document.getElementById('task_modal').showModal()
   }
   document.getElementById('btn-add-task').addEventListener('click', addTask)
+
+  async function deleteTask() {
+    try {
+      $fetch(`/api/projects-tasks/${$route.params.id}`, {
+        method: 'DELETE',
+        body: JSON.stringify({
+          id: taskID
+        })
+      })
+
+      await updateTasks()
+      document.getElementById('task_modal').close()
+      addingTask = true
+    } catch (error) {
+      console.error(error)
+      showError('Could not delete task')
+    }
+  }
+
+  document
+    .getElementById('task-modal-delete')
+    .addEventListener('click', deleteTask)
 
   // ------ Utils ------
   async function updateTasks() {
@@ -434,6 +458,9 @@ onMounted(async () => {
             <!-- if there is a button in form, it will close the modal -->
             <button class="btn">Close</button>
           </form>
+          <button class="btn btn-error hidden" id="task-modal-delete">
+            Delete
+          </button>
           <button class="btn btn-success" id="task-modal-save">Save</button>
         </div>
       </div>
