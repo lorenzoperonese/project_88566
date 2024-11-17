@@ -415,7 +415,9 @@ function dispatchEvent() {
         <h3 class="text-center text-lg font-bold">Add Task</h3>
         <form class="flex flex-col gap-2">
           <div class="form-control">
-            <label for="task-modal-title">Title</label>
+            <div class="label">
+              <label for="task-modal-title" class="label-text">Title</label>
+            </div>
             <input
               id="task-modal-title"
               type="text"
@@ -424,7 +426,11 @@ function dispatchEvent() {
           </div>
 
           <div class="form-control">
-            <label for="task-modal-description">Description</label>
+            <div class="label">
+              <label for="task-modal-description" class="label-text"
+                >Description</label
+              >
+            </div>
             <textarea
               id="task-modal-description"
               type="text"
@@ -433,7 +439,9 @@ function dispatchEvent() {
           </div>
 
           <div class="form-control">
-            <label for="task-modal-phase">Phase</label>
+            <div class="label">
+              <label for="task-modal-phase" class="label-text">Phase</label>
+            </div>
             <input
               id="task-modal-phase"
               type="text"
@@ -442,7 +450,9 @@ function dispatchEvent() {
           </div>
 
           <div class="form-control bordered">
-            <label for="task-modal-state">State</label>
+            <div class="label">
+              <label for="task-modal-state" class="label-text">State</label>
+            </div>
             <select
               class="select select-bordered w-full max-w-xs"
               id="task-modal-state"
@@ -459,9 +469,13 @@ function dispatchEvent() {
 
           <div class="flex justify-between">
             <div class="flex gap-2">
-              <label for="task-modal-start" class="flex items-center"
-                >Start</label
-              >
+              <div class="label">
+                <label
+                  for="task-modal-start"
+                  class="label-text flex items-center"
+                  >Start</label
+                >
+              </div>
               <input
                 id="task-modal-start"
                 type="date"
@@ -470,7 +484,11 @@ function dispatchEvent() {
             </div>
 
             <div class="flex gap-2">
-              <label for="task-modal-end" class="flex items-center">End</label>
+              <div class="label">
+                <label for="task-modal-end" class="label-text flex items-center"
+                  >End</label
+                >
+              </div>
               <input
                 id="task-modal-end"
                 type="date"
@@ -480,7 +498,11 @@ function dispatchEvent() {
           </div>
 
           <div class="form-control bordered">
-            <label for="task-modal-select-depends">Depends</label>
+            <div class="label">
+              <label for="task-modal-select-depends" class="label-text"
+                >Depends</label
+              >
+            </div>
             <select
               class="select select-bordered w-full max-w-xs"
               id="task-modal-select-depends"
@@ -490,7 +512,11 @@ function dispatchEvent() {
           </div>
 
           <div class="form-control bordered">
-            <label for="task-modal-select-user">User</label>
+            <div class="label">
+              <label for="task-modal-select-user" class="label-text"
+                >User</label
+              >
+            </div>
             <select
               class="select select-bordered w-full max-w-xs"
               id="task-modal-select-user"
