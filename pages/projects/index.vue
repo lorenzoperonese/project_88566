@@ -160,6 +160,12 @@ onMounted(async () => {
   document
     .getElementById('save-project-btn')
     .addEventListener('click', saveEdit)
+
+  document
+    .getElementById('more-options-project-btn')
+    .addEventListener('click', () => {
+      $router.push(`/projects/new?edit&id=${projectID}`)
+    })
 })
 </script>
 
@@ -205,6 +211,9 @@ onMounted(async () => {
             <!-- if there is a button in form, it will close the modal -->
             <button class="btn">Close</button>
           </form>
+          <button class="btn btn-info" id="more-options-project-btn">
+            More Options
+          </button>
           <button class="btn btn-success" id="save-project-btn">Save</button>
         </div>
       </div>

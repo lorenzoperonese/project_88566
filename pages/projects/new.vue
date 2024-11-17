@@ -1,6 +1,6 @@
 <template>
   <div class="p-2">
-    <h1 class="text-xl font-bold">Add Project</h1>
+    <h1 class="text-xl font-bold" id="main-title">Add Project</h1>
     <form class="mt-4 flex flex-col gap-4" onsubmit="event.preventDefault()">
       <div>
         <label for="title" class="label">Title</label>
@@ -40,7 +40,10 @@
 
       <div id="error" class="text-error"></div>
 
-      <button id="addProject" class="btn btn-primary">Save</button>
+      <div class="flex justify-evenly">
+        <NuxtLink to="/projects" class="btn btn-neutral w-1/2">Close</NuxtLink>
+        <button id="btn-save" class="btn btn-primary w-1/2">Save</button>
+      </div>
     </form>
   </div>
 </template>
@@ -51,14 +54,51 @@ definePageMeta({
 })
 
 const { $toast } = useNuxtApp()
+const query = useRoute().query
+let editing = false
+if (query.edit !== undefined) {
+  editing = true
+}
 
 // In order to simulate a real script, we need to write everything inside the
 // `onMounted` hook. Outside the onMounted everything is executed before the
 // template is loaded.
 onMounted(async () => {
-  // ------ Add guest ------
-
   let guests = []
+
+  if (editing) {
+    document.getElementById('main-title').innerHTML = 'Edit Project'
+
+    try {
+      const res = await fetch(`/api/projects/${query.id}`)
+
+      if (!res.ok) {
+        throw new Error('Failed to load project')
+      }
+
+      const project = await res.json()
+
+      document.getElementById('title').value = project.title
+      document.getElementById('description').value = project.description
+
+      for (const g in project.guests.waiting) {
+        guests.push(project.guests.waiting[g].username)
+      }
+
+      for (const g in project.guests.accepted) {
+        guests.push(project.guests.accepted[g].username)
+      }
+
+      console.log('project: ', project)
+    } catch (error) {
+      console.error(error)
+      $toast.error('Could not load project')
+    }
+  } else {
+    document.getElementById('main-title').innerHTML = 'Add Project'
+  }
+
+  // ------ Add guest ------
 
   function addGuest() {
     let guest = document.getElementById('guest').value
@@ -135,8 +175,8 @@ onMounted(async () => {
     }
 
     try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
+      const res = await fetch(`/api/projects${editing ? `/${query.id}` : ''}`, {
+        method: editing ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -160,6 +200,6 @@ onMounted(async () => {
     }
   }
 
-  document.getElementById('addProject').addEventListener('click', save)
+  document.getElementById('btn-save').addEventListener('click', save)
 })
 </script>
