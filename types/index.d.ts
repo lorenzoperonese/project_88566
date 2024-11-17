@@ -107,6 +107,7 @@ export declare global {
     description: string
     phase: string
     user_id: string
+    state: string
     start: number
     end: number
     dependency: string | null

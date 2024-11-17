@@ -33,6 +33,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    if (!body.id) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task ID is required'
+      })
+    }
+
     if (!body.title) {
       throw createError({
         statusCode: 400,
@@ -47,8 +54,8 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (!body.phase) {
-      body.phase = 'pending'
+    if (!body.state) {
+      body.state = 'pending'
     }
 
     body.user_id = event.context.auth.id
@@ -67,15 +74,32 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (!body.dependency) {
-      body.dependency = null
+    if (!body.dependency === undefined) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task dependency is required'
+      })
     }
 
     body.project_id = project_id
 
-    const task = new ProjectTask(body)
+    console.log('Updating task:', body)
 
-    await task.save()
+    await ProjectTask.findOneAndUpdate(
+      {
+        _id: body.id,
+        user_id: event.context.auth.id
+      },
+      {
+        title: body.title,
+        description: body.description,
+        phase: body.phase,
+        state: body.state,
+        start: body.start,
+        end: body.end,
+        dependency: body.dependency
+      }
+    )
   } catch (err) {
     console.error(err)
     setResponseStatus(event, 500)

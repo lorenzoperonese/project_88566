@@ -9,7 +9,7 @@ export interface IProjectTask extends Document {
   state: string
   start: number
   end: number
-  dependency: Types.ObjectId
+  dependency: Types.ObjectId | null
   project_id: Types.ObjectId
 }
 

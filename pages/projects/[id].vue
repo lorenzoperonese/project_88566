@@ -106,7 +106,7 @@ onMounted(async () => {
 
     for (let i = new Date(min); i <= max; i.setDate(i.getDate() + 1)) {
       const day = document.createElement('div')
-      day.classList.add('text-center')
+      day.classList.add('justify-center')
       day.classList.add('flex')
       day.classList.add('items-center')
       day.textContent = `${i.getDate()}-${i.getMonth() + 1}-${i.getFullYear()}`
@@ -214,14 +214,21 @@ onMounted(async () => {
   insertTasksIntoSelect()
   inserUsersIntoSelect()
 
-  async function addTask() {
+  // This variable is used to remember if the modal is adding a new task
+  // or changing an existing one
+  let addingTask = true
+  let taskID = null
+
+  async function saveTask() {
     const title = document.getElementById('task-modal-title').value
     const description = document.getElementById('task-modal-description').value
     const phase = document.getElementById('task-modal-phase').value
     const state = document.getElementById('task-modal-state').value
     const start = document.getElementById('task-modal-start').value
     const end = document.getElementById('task-modal-end').value
-    const depends = document.getElementById('task-modal-select-depends').value
+    const dependency = document.getElementById(
+      'task-modal-select-depends'
+    ).value
     const user = document.getElementById('task-modal-select-user').value
 
     if (!title) {
@@ -251,28 +258,30 @@ onMounted(async () => {
 
     try {
       $fetch(`/api/projects-tasks/${$route.params.id}`, {
-        method: 'POST',
+        method: addingTask ? 'POST' : 'PUT',
         body: JSON.stringify({
+          id: taskID,
           title,
           description,
           phase,
           state,
           start: new Date(start).getTime(),
           end: new Date(end).getTime(),
-          depends,
+          dependency,
           user
         })
       })
 
       updateTasks()
       document.getElementById('task_modal').close()
+      addingTask = true
     } catch (error) {
       console.error(error)
       showError('Could not add task')
     }
   }
 
-  document.getElementById('task-modal-save').addEventListener('click', addTask)
+  document.getElementById('task-modal-save').addEventListener('click', saveTask)
 
   // ------ Edit Task modal ------
   function editTask(id) {
@@ -289,11 +298,27 @@ onMounted(async () => {
     document.getElementById('task-modal-end').value = new Date(t.end)
       .toISOString()
       .split('T')[0]
-    document.getElementById('task-modal-select-depends').value = t.depends
+    document.getElementById('task-modal-select-depends').value = t.dependency
+      ? t.dependency
+      : ''
     document.getElementById('task-modal-select-user').value = t.user_id
 
     document.getElementById('task_modal').showModal()
+    addingTask = false
+    taskID = id
   }
+
+  function addTask() {
+    document.getElementById('task-modal-title').value = ''
+    document.getElementById('task-modal-description').value = ''
+    document.getElementById('task-modal-phase').value = ''
+    document.getElementById('task-modal-state').value = 'pending'
+    document.getElementById('task-modal-start').value = ''
+    document.getElementById('task-modal-end').value = ''
+    document.getElementById('task-modal-select-depends').value = ''
+    document.getElementById('task_modal').showModal()
+  }
+  document.getElementById('btn-add-task').addEventListener('click', addTask)
 
   // ------ Utils ------
   async function updateTasks() {
@@ -311,10 +336,7 @@ onMounted(async () => {
     <div class="rounded bg-base-200 p-2">
       <div class="grid gap-1 overflow-x-auto" id="tasks-grid"></div>
 
-      <button
-        class="btn btn-outline btn-primary"
-        onclick="task_modal.showModal()"
-      >
+      <button class="btn btn-outline btn-primary" id="btn-add-task">
         Add task
       </button>
     </div>
