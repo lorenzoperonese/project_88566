@@ -97,6 +97,8 @@ export declare global {
     id: string
     title: string
     body: string
+    type: string
+    identifier?: string
     read: boolean
     timestamp: number
   }

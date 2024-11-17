@@ -14,6 +14,8 @@ export default defineEventHandler(
           title: notification.title,
           body: notification.body,
           read: notification.read,
+          type: notification.type,
+          identifier: notification.identifier,
           timestamp: notification.createdAt.getTime()
         }
       }) as Notification[]

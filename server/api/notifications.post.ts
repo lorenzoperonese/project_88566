@@ -6,6 +6,8 @@ export default defineEventHandler(async (event): Promise<JSONResponse> => {
     title: string
     body: string
     receiver: string
+    type: string
+    identifier?: string
   }>(event)
 
   if (!body.title) {
@@ -49,6 +51,8 @@ export default defineEventHandler(async (event): Promise<JSONResponse> => {
       title: body.title,
       body: body.body,
       read: false,
+      type: body.type,
+      identifier: body.identifier,
       user_id: receiver_id
     })
 

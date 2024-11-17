@@ -22,6 +22,12 @@ async function fetchNotifications() {
   }
 }
 
+function notificationLink(type: string, identifier: string | undefined) {
+  if (type === 'event-invite') {
+    navigateTo(`/calendar/e/guest/${identifier}/accept`)
+  }
+}
+
 async function readNotification(id: string) {
   const res = await setNotificationAsRead(id)
 
@@ -39,7 +45,7 @@ async function readNotification(id: string) {
   <div>
     <ul class="flex flex-col gap-2">
       <div v-for="n in _notifications_unread" :key="n.id" class="flex">
-        <li>
+        <li @click="notificationLink(n.type, n.identifier)">
           <a class="flex flex-col" :class="{ 'opacity-70': n.read }">
             <div class="w-full text-left font-bold">
               {{ n.title }}

@@ -1,4 +1,5 @@
 import { Event, User } from '@/server/db'
+import { sendNotification } from '@/server/utils/notifications'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<EventType>(event)
@@ -55,8 +56,10 @@ export default defineEventHandler(async (event) => {
     e.guests.waiting.forEach((u: User) => {
       sendNotification(
         `You have been invited to an event by ${sender.username}`,
-        'prova',
-        u.id
+        `${e.title}, ${new Date(e.start).toLocaleDateString()}`,
+        u.id,
+        'event-invite',
+        e.id
       )
     })
     await e.save()

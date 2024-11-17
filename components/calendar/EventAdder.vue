@@ -31,7 +31,8 @@ const _note = ref<string | null>(null)
 const _category = ref<string>('Not categorized')
 const _repetition = ref<Repetition | null>(null)
 const _notifications = ref<Notify[]>([])
-const _guests = ref<User[]>([])
+const _guestsWaiting = ref<User[]>([])
+const _guestsAccepted = ref<User[]>([])
 const _guest = ref('')
 
 if ($props.event) {
@@ -50,7 +51,10 @@ if ($props.event) {
     addNotifications($props.event.notify)
   }
   if ($props.event.guests.waiting) {
-    _guests.value = $props.event.guests.waiting
+    _guestsWaiting.value = $props.event.guests.waiting
+  }
+  if ($props.event.guests.accepted) {
+    _guestsAccepted.value = $props.event.guests.accepted
   }
 }
 
@@ -126,7 +130,10 @@ function saveEvent() {
     category: _category.value || 'Not categorized',
     repetition: _repetition.value || null,
     notify: _notifications.value,
-    guests: { accepted: [], waiting: _guests.value } as Guest
+    guests: {
+      accepted: _guestsAccepted.value,
+      waiting: _guestsWaiting.value
+    } as Guest
   }
 
   if (e.title.trim() === '') {
@@ -195,7 +202,8 @@ function addGuest(g: string) {
   }
   const user = _users.value.filter((u) => u.username === g)[0]
   if (!user) $toast.error('User not found')
-  else _guests.value.push(_users.value.filter((u) => u.username === g)[0])
+  else
+    _guestsWaiting.value.push(_users.value.filter((u) => u.username === g)[0])
   return
 }
 </script>
@@ -299,12 +307,37 @@ function addGuest(g: string) {
             </button>
           </div>
         </div>
-        <div v-for="(g, index) in _guests" :key="index">
+        <div v-for="(g, index) in _guestsAccepted" :key="index">
           <div class="items flex">
             <span>{{ g.username }}</span>
             <button
               class="btn btn-circle btn-error btn-sm"
-              @click="_guests.splice(_guests.indexOf(g), 1)"
+              @click="_guestsAccepted.splice(_guestsAccepted.indexOf(g), 1)"
+            >
+              <svg
+                class="h-5 w-5 opacity-70"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div v-for="(g, index) in _guestsWaiting" :key="index">
+          <div class="items flex">
+            <span class="text-yellow-400">{{ g.username }}</span>
+            <button
+              class="btn btn-circle btn-error btn-sm"
+              @click="_guestsWaiting.splice(_guestsWaiting.indexOf(g), 1)"
             >
               <svg
                 class="h-5 w-5 opacity-70"

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 const $props = defineProps({
   event: { type: Object as PropType<EventType>, required: true },
-  today: { type: Date, required: true }
+  today: { type: Date, required: true },
+  guest: { type: Boolean, default: false }
 })
 </script>
 
 <template>
-  <NuxtLink :to="`/calendar/e/${event.id}`">
+  <NuxtLink
+    :to="guest ? `/calendar/e/guest/${event.id}` : `/calendar/e/${event.id}`"
+  >
     <div
       class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
       :class="{ 'opacity-60': isInThePast($props.today, event) }"

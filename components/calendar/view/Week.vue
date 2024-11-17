@@ -34,6 +34,13 @@ const $props = defineProps<{
           :event="event"
           :today="$props.today"
         />
+        <CalendarEvent
+          v-for="event in getEventsForDay2($props.eventsGuest, day)"
+          :key="event.id"
+          :event="event"
+          :today="$props.today"
+          :guest="true"
+        />
 
         <CalendarTask
           v-for="task in getTasksForDay2($props.tasks, day)"
