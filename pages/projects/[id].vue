@@ -111,6 +111,7 @@ onMounted(async () => {
       day.classList.add('justify-center')
       day.classList.add('flex')
       day.classList.add('items-center')
+      day.classList.add('mx-2')
 
       if (isToday2(today, i)) {
         day.classList.add('bg-base-100')
@@ -130,6 +131,7 @@ onMounted(async () => {
       taskDiv.classList.add('items-center')
       taskDiv.classList.add('hover:bg-base-100')
       taskDiv.classList.add('p-2')
+      taskDiv.classList.add('min-w-40')
       taskDiv.addEventListener('click', () => editTask(task.id))
       tasksGrid.appendChild(taskDiv)
 
@@ -143,8 +145,33 @@ onMounted(async () => {
         //day.classList.add('h-4')
         day.classList.add('grid-item')
 
+        if (i.getTime() < today.getTime()) {
+          day.classList.add('opacity-50')
+        }
+
         if (i >= start && i <= end) {
-          day.classList.add('bg-primary')
+          switch (task.state) {
+            case 'todo':
+              day.classList.add('bg-warning')
+              break
+            case 'in_progress':
+              day.classList.add('bg-info')
+              break
+            case 'done':
+              day.classList.add('bg-success')
+              break
+            case 'reactivated':
+              day.classList.add('bg-orange-500')
+              break
+            case 'late':
+              day.classList.add('bg-error')
+              break
+            case 'abbandoned':
+              day.classList.add('bg-red-800')
+              break
+            default:
+              day.classList.add('bg-base-300')
+          }
         } else {
           day.classList.add('bg-base-300')
         }
@@ -321,7 +348,7 @@ onMounted(async () => {
     document.getElementById('task-modal-title').value = ''
     document.getElementById('task-modal-description').value = ''
     document.getElementById('task-modal-phase').value = ''
-    document.getElementById('task-modal-state').value = 'pending'
+    document.getElementById('task-modal-state').value = 'todo'
     document.getElementById('task-modal-start').value = ''
     document.getElementById('task-modal-end').value = ''
     document.getElementById('task-modal-select-depends').value = ''
