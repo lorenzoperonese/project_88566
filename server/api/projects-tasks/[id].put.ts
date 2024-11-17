@@ -74,11 +74,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (!body.dependency === undefined) {
+    if (body.dependency === undefined) {
       throw createError({
         statusCode: 400,
         message: 'Task dependency is required'
       })
+    } else if (body.dependency === '') {
+      body.dependency = null
     }
 
     body.project_id = project_id
