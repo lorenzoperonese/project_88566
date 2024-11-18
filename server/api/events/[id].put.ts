@@ -1,4 +1,6 @@
+import type { User } from '@/server/db'
 import { Event } from '@/server/db'
+import { sendNotification } from '@/server/utils/notifications'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
@@ -6,41 +8,80 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (!id) {
-      throw new Error('ID is not defined')
+      setResponseStatus(event, 400)
+      return {
+        code: 'ID_REQUIRED',
+        error: 'Event ID is required'
+      }
     }
 
     const body = await readBody<EventType>(event)
-    console.log(body)
+    console.log('Update request body:', body)
 
-    if (!body) {
-      setResponseStatus(event, 400)
-      return {
-        code: 'REQ_BODY_REQUIRED',
-        err: 'Body is required.'
-      }
-    }
-
-    if (!body.title) {
-      setResponseStatus(event, 400)
-      return {
-        code: 'TITLE_REQUIRED',
-        err: 'Body malformed: title is required.'
-      }
-    }
-
-    if (!body.start) {
-      setResponseStatus(event, 400)
-      return {
+    const requiredFields = [
+      { field: 'title', code: 'TITLE_REQUIRED', message: 'Title is required' },
+      {
+        field: 'start',
         code: 'START_REQUIRED',
-        err: 'Body malformed: start date is required.'
+        message: 'Start date is required'
+      },
+      { field: 'end', code: 'END_REQUIRED', message: 'End date is required' },
+      {
+        field: 'guests',
+        code: 'GUESTS_REQUIRED',
+        message: 'Guests object is required'
+      }
+    ]
+
+    for (const { field, code, message } of requiredFields) {
+      if (!body?.[field as keyof EventType]) {
+        setResponseStatus(event, 400)
+        return {
+          code,
+          error: `Body malformed: ${message}`
+        }
       }
     }
 
-    if (!body.end) {
+    if (
+      !Array.isArray(body.guests.waiting) ||
+      !Array.isArray(body.guests.accepted)
+    ) {
       setResponseStatus(event, 400)
       return {
-        code: 'END_REQUIRED',
-        err: 'Body malformed: end date is required.'
+        code: 'INVALID_GUESTS_FORMAT',
+        error: 'Guests must have valid waiting and accepted arrays'
+      }
+    }
+
+    const currentEvent = await Event.findOne({
+      _id: id,
+      user_id: event.context.auth.id
+    })
+      .select('guests title')
+      .lean()
+      .exec()
+
+    if (!currentEvent) {
+      setResponseStatus(event, 404)
+      return {
+        code: 'EVENT_NOT_FOUND',
+        error: 'Event not found'
+      }
+    }
+
+    const invalidNewAcceptedGuests = body.guests.accepted.filter(
+      (newGuest: User) =>
+        !currentEvent.guests.accepted.some(
+          (currentGuest: User) => currentGuest.id === newGuest.id
+        )
+    )
+
+    if (invalidNewAcceptedGuests.length > 0) {
+      setResponseStatus(event, 400)
+      return {
+        code: 'INVALID_GUESTS',
+        error: 'Accepted guests must be a subset of the current accepted guests'
       }
     }
 
@@ -50,21 +91,78 @@ export default defineEventHandler(async (event) => {
         user_id: event.context.auth.id
       },
       {
-        title: body.title,
-        start: body.start,
-        end: body.end,
-        location: body.location,
-        note: body.note,
-        category: body.category,
-        repetition: body.repetition,
-        notify: body.notify,
-        guests: body.guests
+        $set: {
+          title: body.title,
+          start: body.start,
+          end: body.end,
+          location: body.location,
+          note: body.note,
+          category: body.category,
+          repetition: body.repetition,
+          notify: body.notify,
+          guests: body.guests
+        }
       }
-    )
+    ).exec()
 
-    return { mgs: 'Updated event' }
+    const guestChanges = {
+      waiting: {
+        removed: currentEvent.guests.waiting.filter(
+          (x: User) => !body.guests.waiting.some((y: User) => y.id === x.id)
+        ),
+        added: body.guests.waiting.filter(
+          (x: User) =>
+            !currentEvent.guests.waiting.some((y: User) => y.id === x.id)
+        )
+      },
+      accepted: {
+        removed: currentEvent.guests.accepted.filter(
+          (x: User) => !body.guests.accepted.some((y: User) => y.id === x.id)
+        )
+      }
+    }
+
+    guestChanges.waiting.removed.forEach((user: User) => {
+      sendNotification(
+        'You have been removed from a pending event',
+        `${body.title}, ${new Date(body.start).toLocaleDateString()}`,
+        user.id,
+        'event-removed',
+        id
+      )
+    })
+
+    guestChanges.waiting.added.forEach((user: User) => {
+      sendNotification(
+        'You have been invited to an event',
+        `${body.title}, ${new Date(body.start).toLocaleDateString()}`,
+        user.id,
+        'event-invited',
+        id
+      )
+    })
+
+    guestChanges.accepted.removed.forEach((user: User) => {
+      sendNotification(
+        'You have been removed from an event',
+        `${body.title}, ${new Date(body.start).toLocaleDateString()}`,
+        user.id,
+        'event-removed',
+        id
+      )
+    })
+
+    setResponseStatus(event, 200)
+    return {
+      message: 'Event updated successfully',
+      eventId: id
+    }
   } catch (err) {
-    console.error(err)
-    return { err: err }
+    console.error('Error updating event:', err)
+    setResponseStatus(event, 500)
+    return {
+      code: 'INTERNAL_SERVER_ERROR',
+      error: err instanceof Error ? err.message : 'An unknown error occurred'
+    }
   }
 })
