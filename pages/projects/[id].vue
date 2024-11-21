@@ -78,7 +78,7 @@ onMounted(async () => {
     const nDays = (max - min) / (1000 * 60 * 60 * 24) + 1
 
     tasksGrid.style.gridTemplateColumns = `auto repeat(${nDays}, 1fr)`
-    tasksGrid.style.gridTemplateRows = `repeat(${tasks.length + 1}, 1fr)`
+    tasksGrid.style.gridTemplateRows = `auto`
 
     const empty = document.createElement('div')
     empty.classList.add('text-center')
@@ -114,7 +114,7 @@ onMounted(async () => {
       day.classList.add('mx-2')
 
       if (isToday2(today, i)) {
-        day.classList.add('bg-base-100')
+        day.classList.add('text-primary')
       }
 
       day.textContent = `${i.getDate()}-${i.getMonth() + 1}-${i.getFullYear()}`
@@ -123,7 +123,26 @@ onMounted(async () => {
 
     // Grid
 
-    tasks.forEach((task) => {
+    let currentPhase = ''
+
+    const sTasks = tasks.sort((a, b) => {
+      return a.phase < b.phase
+    })
+
+    console.log('sorted tasks', sTasks)
+
+    sTasks.forEach((task) => {
+      if (currentPhase !== task.phase) {
+        currentPhase = task.phase
+
+        const phaseDiv = document.createElement('div')
+        phaseDiv.textContent = task.phase
+        phaseDiv.classList.add('flex')
+        phaseDiv.classList.add('items-center')
+        phaseDiv.classList.add('grid-phase')
+        tasksGrid.appendChild(phaseDiv)
+      }
+
       const taskDiv = document.createElement('div')
       taskDiv.textContent = task.title
       taskDiv.classList.add('text-center')
@@ -132,6 +151,7 @@ onMounted(async () => {
       taskDiv.classList.add('hover:bg-base-100')
       taskDiv.classList.add('p-2')
       taskDiv.classList.add('min-w-40')
+      taskDiv.style.gridColumn = '1 / 1'
       taskDiv.addEventListener('click', () => editTask(task.id))
       tasksGrid.appendChild(taskDiv)
 
@@ -344,6 +364,8 @@ onMounted(async () => {
   }
 
   function addTask() {
+    addingTask = true
+    taskID = null
     document.getElementById('task-modal-delete').classList.add('hidden')
     document.getElementById('task-modal-title').value = ''
     document.getElementById('task-modal-description').value = ''
@@ -546,3 +568,10 @@ function dispatchEvent() {
     />
   </div>
 </template>
+
+<style>
+.grid-phase {
+  grid-column: 1 / span full;
+  text-align: center;
+}
+</style>
