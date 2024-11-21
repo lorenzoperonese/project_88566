@@ -6,6 +6,16 @@ definePageMeta({
 const $route = useRoute()
 const { $toast } = useNuxtApp()
 
+const taskStates = [
+  'unavailable',
+  'todo',
+  'in_progress',
+  'done',
+  'reactivated',
+  'late',
+  'abbandoned'
+]
+
 onMounted(async () => {
   // ------ Error -----
   let error = ''
@@ -170,27 +180,10 @@ onMounted(async () => {
         }
 
         if (i >= start && i <= end) {
-          switch (task.state) {
-            case 'todo':
-              day.classList.add('bg-warning')
-              break
-            case 'in_progress':
-              day.classList.add('bg-info')
-              break
-            case 'done':
-              day.classList.add('bg-success')
-              break
-            case 'reactivated':
-              day.classList.add('bg-orange-500')
-              break
-            case 'late':
-              day.classList.add('bg-error')
-              break
-            case 'abbandoned':
-              day.classList.add('bg-red-800')
-              break
-            default:
-              day.classList.add('bg-base-300')
+          if (taskStates.includes(task.state)) {
+            day.classList.add(`color-${task.state}`)
+          } else {
+            day.classList.add('bg-base-300')
           }
         } else {
           day.classList.add('bg-base-300')
@@ -310,6 +303,22 @@ onMounted(async () => {
       return
     }
 
+    if (new Date(start) > new Date(end)) {
+      showError('Start date must be before end date')
+      return
+    }
+
+    if (dependency !== undefined) {
+      const t = tasks.find((task) => task.id === dependency)
+      if (t.state !== 'done' || t.state !== 'abbandoned') {
+        if (state !== 'unavailable') {
+          //showError('Task state must be unavailable if it depends on another task that is not done or abbandoned')
+          showError('State invalid')
+          return
+        }
+      }
+    }
+
     try {
       $fetch(`/api/projects-tasks/${$route.params.id}`, {
         method: addingTask ? 'POST' : 'PUT',
@@ -410,6 +419,23 @@ onMounted(async () => {
   document.getElementById('projects-tm-btn').addEventListener('update', () => {
     updateTasks()
   })
+
+  function insetColorLegend() {
+    const el = document.getElementById('color-legend')
+    for (let state of taskStates) {
+      const div = document.createElement('div')
+      div.classList.add('flex')
+      div.classList.add('items-center')
+      div.classList.add('justify-center')
+      div.classList.add('p-2')
+      div.classList.add('rounded-lg')
+      div.classList.add(`color-${state}`)
+      div.classList.add('w-40')
+      div.textContent = state
+      el.appendChild(div)
+    }
+  }
+  insetColorLegend()
 })
 
 // This is an ugly trick to only use JS in projects and to avoid reinventing the
@@ -426,9 +452,13 @@ function dispatchEvent() {
     <div class="rounded bg-base-200 p-2">
       <div class="grid gap-1 overflow-x-auto" id="tasks-grid"></div>
 
-      <button class="btn btn-outline btn-primary" id="btn-add-task">
-        Add task
-      </button>
+      <div class="mt-5 flex justify-between">
+        <button class="btn btn-outline btn-primary" id="btn-add-task">
+          Add task
+        </button>
+
+        <div id="color-legend" class="flex gap-2"></div>
+      </div>
     </div>
 
     <!--- Task modal --->
@@ -573,5 +603,40 @@ function dispatchEvent() {
 .grid-phase {
   grid-column: 1 / span full;
   text-align: center;
+}
+
+.color-unavailable {
+  @apply bg-gray-200;
+  @apply text-gray-500;
+}
+
+.color-todo {
+  @apply bg-warning;
+  @apply text-warning-content;
+}
+
+.color-in_progress {
+  @apply bg-info;
+  @apply text-info-content;
+}
+
+.color-done {
+  @apply bg-success;
+  @apply text-success-content;
+}
+
+.color-reactivated {
+  @apply bg-orange-500;
+  @apply text-orange-100;
+}
+
+.color-late {
+  @apply bg-error;
+  @apply text-error-content;
+}
+
+.color-abbandoned {
+  @apply bg-red-800;
+  @apply text-red-100;
 }
 </style>
