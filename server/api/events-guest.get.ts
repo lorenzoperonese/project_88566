@@ -1,14 +1,34 @@
 import { Event } from '@/server/db'
 import type { Types } from 'mongoose'
 
+type StatusFilter = 'waiting' | 'accepted'
+
 export default defineEventHandler(async (event): Promise<EventType[]> => {
   try {
-    const events = await Event.find({
-      'guests.waiting.id': event.context.auth.id // tmp, change to "guests.accepted.id" when implemented
-    })
+    const status = getQuery(event).status as StatusFilter
+    let query = {}
+
+    switch (status) {
+      case 'waiting':
+        query = { 'guests.waiting.id': event.context.auth.id }
+        break
+      case 'accepted':
+        query = { 'guests.accepted.id': event.context.auth.id }
+        break
+      default:
+        query = {
+          $or: [
+            { 'guests.waiting.id': event.context.auth.id },
+            { 'guests.accepted.id': event.context.auth.id }
+          ]
+        }
+        break
+    }
+
+    const events = await Event.find(query)
 
     return events.map((n) => ({
-      id: (n._id as Types.ObjectId).toString() as string,
+      id: (n._id as Types.ObjectId).toString(),
       title: n.title,
       start: n.start,
       end: n.end,

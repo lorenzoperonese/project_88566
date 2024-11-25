@@ -10,7 +10,10 @@ definePageMeta({
 })
 
 const { data: _events } = await useFetch<EventType[]>('/api/events')
-const { data: _eventsGuest } = await useFetch<EventType[]>('/api/events-guest')
+const { data: _eventsGuest } = await useFetch<EventType[]>(
+  '/api/events-guest',
+  { query: { status: 'accepted' } }
+)
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 
 // true => add event, false => add task

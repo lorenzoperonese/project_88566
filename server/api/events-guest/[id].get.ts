@@ -1,6 +1,8 @@
 import type { Types } from 'mongoose'
 import { Event } from '@/server/db'
 
+type StatusFilter = 'waiting' | 'accepted'
+
 export default defineEventHandler(async (event): Promise<EventType | null> => {
   const id = getRouterParam(event, 'id')
 
@@ -8,11 +10,28 @@ export default defineEventHandler(async (event): Promise<EventType | null> => {
     if (!id) {
       throw Error('ID is undefined')
     }
+    const status = getQuery(event).status as StatusFilter
+    let query = {}
 
-    const n = await Event.findOne({
-      _id: id,
-      'guests.waiting.id': event.context.auth.id // tmp, change to "guests.accepted.id" when implemented
-    })
+    switch (status) {
+      case 'waiting':
+        query = { _id: id, 'guests.waiting.id': event.context.auth.id }
+        break
+      case 'accepted':
+        query = { _id: id, 'guests.accepted.id': event.context.auth.id }
+        break
+      default:
+        query = {
+          _id: id,
+          $or: [
+            { 'guests.waiting.id': event.context.auth.id },
+            { 'guests.accepted.id': event.context.auth.id }
+          ]
+        }
+        break
+    }
+
+    const n = await Event.findOne(query)
 
     if (!n) {
       throw Error('Guest event not found. ID: ' + id)
