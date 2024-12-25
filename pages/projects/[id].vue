@@ -310,7 +310,7 @@ onMounted(async () => {
 
     if (dependency !== undefined) {
       const t = tasks.find((task) => task.id === dependency)
-      if (t.state !== 'done' || t.state !== 'abbandoned') {
+      if (t && t.state !== 'done' && t.state !== 'abbandoned') {
         if (state !== 'unavailable') {
           //showError('Task state must be unavailable if it depends on another task that is not done or abbandoned')
           showError('State invalid')
