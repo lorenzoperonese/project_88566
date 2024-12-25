@@ -58,8 +58,6 @@ export default defineEventHandler(async (event) => {
       body.state = 'pending'
     }
 
-    body.user_id = event.context.auth.id
-
     if (!body.start) {
       throw createError({
         statusCode: 400,
@@ -131,7 +129,8 @@ export default defineEventHandler(async (event) => {
         output: body.output,
         dependency: body.dependency,
         translation: body.translation,
-        milestone: body.milestone
+        milestone: body.milestone,
+        user_id: body.user_id
       }
     )
   } catch (err) {

@@ -27,6 +27,9 @@ onMounted(async () => {
   // ------ Project ------
   let project = {}
 
+  let ganntView = true
+  let dateOrder = true
+
   async function fetchProject() {
     try {
       const res = await fetch(`/api/projects/${$route.params.id}`)
@@ -141,12 +144,18 @@ onMounted(async () => {
     let currentPhase = ''
 
     const sTasks = tasks.sort((a, b) => {
-      return a.phase < b.phase
+      if (ganntView) return a.phase < b.phase
+
+      if (dateOrder) {
+        return a.start - b.start
+      } else {
+        return a.user_id - b.user_id
+      }
     })
 
     console.log('sorted tasks', sTasks)
 
-    sTasks.forEach((task) => {
+    sTasks.forEach(async (task) => {
       // --- Grid ---
       if (currentPhase !== task.phase) {
         currentPhase = task.phase
@@ -202,7 +211,7 @@ onMounted(async () => {
       const taskDiv2 = document.createElement('div')
       taskDiv2.classList.add('flex')
       taskDiv2.classList.add('flex-col')
-      taskDiv2.classList.add('gap-4')
+      taskDiv2.classList.add('gap-2')
       taskDiv2.classList.add('min-w-40')
       taskDiv2.classList.add('p-2')
       taskDiv2.classList.add('rounded-lg')
@@ -217,6 +226,12 @@ onMounted(async () => {
       const taksDiv2Description = document.createElement('div')
       taksDiv2Description.textContent = task.description
       taskDiv2.appendChild(taksDiv2Description)
+
+      const taskDiv2Person = document.createElement('div')
+      taskDiv2Person.textContent = (await allUsers()).find(
+        (user) => user.id === task.user_id
+      ).name
+      taskDiv2.appendChild(taskDiv2Person)
 
       const taskDiv2Period = document.createElement('div')
       taskDiv2Period.textContent = `${start.getDate()}-${start.getMonth() + 1}-${start.getFullYear()} to ${end.getDate()}-${end.getMonth() + 1}-${end.getFullYear()}`
@@ -342,7 +357,7 @@ onMounted(async () => {
     const milestone = document.getElementById(
       'task-modal-checkbox-milestone'
     ).checked
-    const user = document.getElementById('task-modal-select-user').value
+    const user_id = document.getElementById('task-modal-select-user').value
 
     if (!title) {
       showError('Title is required')
@@ -374,7 +389,7 @@ onMounted(async () => {
       return
     }
 
-    if (!user) {
+    if (!user_id) {
       showError('User is required')
       return
     }
@@ -411,7 +426,7 @@ onMounted(async () => {
           translation: translation === 'true',
           milestone,
           dependency,
-          user
+          user_id
         })
       })
 
@@ -571,10 +586,32 @@ onMounted(async () => {
       if (mode === 'gannt') {
         document.getElementById('view-linear').classList.add('hidden')
         document.getElementById('view-gannt').classList.remove('hidden')
+        document.getElementById('select-linear-order').classList.add('hidden')
+        ganntView = true
       } else {
         document.getElementById('view-linear').classList.remove('hidden')
         document.getElementById('view-gannt').classList.add('hidden')
+        document
+          .getElementById('select-linear-order')
+          .classList.remove('hidden')
+        ganntView = false
       }
+    })
+
+  // Change order of tasks in Linear view
+  document
+    .getElementById('select-linear-order')
+    .addEventListener('change', (e) => {
+      const order = e.target.value
+      const tasksLinear = document.getElementById('tasks-linear')
+
+      if (order === 'date') {
+        dateOrder = true
+      } else {
+        dateOrder = false
+      }
+
+      displayTasks()
     })
 })
 
@@ -593,14 +630,23 @@ function dispatchEvent() {
         <p id="project-description" class=""></p>
       </div>
 
-      <div class="form-control bordered">
-        <select
-          class="select select-bordered w-full max-w-xs"
-          id="select-gannt-linear"
-        >
-          <option value="gannt">Gannt</option>
-          <option value="linear">Linear</option>
-        </select>
+      <div class="flex gap-2">
+        <div class="form-control bordered hidden" id="select-linear-order">
+          <select class="select select-bordered w-full max-w-xs">
+            <option value="date">Date</option>
+            <option value="person">Person</option>
+          </select>
+        </div>
+
+        <div class="form-control bordered">
+          <select
+            class="select select-bordered w-full max-w-xs"
+            id="select-gannt-linear"
+          >
+            <option value="gannt">Gannt</option>
+            <option value="linear">Linear</option>
+          </select>
+        </div>
       </div>
     </div>
 
