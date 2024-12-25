@@ -84,6 +84,12 @@ export default defineEventHandler(async (event) => {
           og.guests.accepted[i].toString()
         )
         og.guests.accepted.splice(i, 1)
+      } else {
+        sendNotification(
+          'Project modified',
+          `Project ${og.title} has been modified`,
+          og.guests.accepted[i].toString()
+        )
       }
     }
 

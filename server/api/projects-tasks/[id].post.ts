@@ -98,6 +98,14 @@ export default defineEventHandler(async (event) => {
     const task = new ProjectTask(body)
 
     await task.save()
+
+    if (body.user_id !== event.context.auth.id) {
+      sendNotification(
+        'Task created',
+        `Task ${body.title} has been created in project ${p.title}`,
+        body.user_id
+      )
+    }
   } catch (err) {
     console.error(err)
     setResponseStatus(event, 500)
