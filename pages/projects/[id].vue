@@ -67,10 +67,15 @@ onMounted(async () => {
 
   async function displayTasks() {
     const tasksGrid = document.getElementById('tasks-grid')
+    const tasksLinear = document.getElementById('tasks-linear')
 
     // Clean up content
     while (tasksGrid.firstChild) {
       tasksGrid.removeChild(tasksGrid.firstChild)
+    }
+
+    while (tasksLinear.firstChild) {
+      tasksLinear.removeChild(tasksLinear.firstChild)
     }
 
     //if (tasks.length === 0) {
@@ -90,13 +95,13 @@ onMounted(async () => {
     tasksGrid.style.gridTemplateColumns = `auto repeat(${nDays}, 1fr)`
     tasksGrid.style.gridTemplateRows = `auto`
 
-    const empty = document.createElement('div')
-    empty.classList.add('text-center')
-    empty.textContent = 'Tasks/Days'
-    empty.classList.add('text-gray-500')
-    empty.style.gridRow = '1 / 1'
-    empty.style.gridColumn = '1 / 1'
-    tasksGrid.appendChild(empty)
+    const emptyForGrid = document.createElement('div')
+    emptyForGrid.classList.add('text-center')
+    emptyForGrid.textContent = 'Tasks/Days'
+    emptyForGrid.classList.add('text-gray-500')
+    emptyForGrid.style.gridRow = '1 / 1'
+    emptyForGrid.style.gridColumn = '1 / 1'
+    tasksGrid.appendChild(emptyForGrid)
 
     //for (let i = 0; i < nMonths; i++) {
     //  const month = document.createElement('div')
@@ -142,6 +147,7 @@ onMounted(async () => {
     console.log('sorted tasks', sTasks)
 
     sTasks.forEach((task) => {
+      // --- Grid ---
       if (currentPhase !== task.phase) {
         currentPhase = task.phase
 
@@ -191,6 +197,58 @@ onMounted(async () => {
 
         tasksGrid.appendChild(day)
       }
+
+      // --- Linear ---
+      const taskDiv2 = document.createElement('div')
+      taskDiv2.classList.add('flex')
+      taskDiv2.classList.add('flex-col')
+      taskDiv2.classList.add('gap-4')
+      taskDiv2.classList.add('min-w-40')
+      taskDiv2.classList.add('p-2')
+      taskDiv2.classList.add('rounded-lg')
+      taskDiv2.classList.add('hover:opacity-90')
+
+      const taskDiv2Title = document.createElement('div')
+      taskDiv2Title.textContent = task.title
+      taskDiv2Title.classList.add('font-bold')
+      taskDiv2Title.classList.add('text-lg')
+      taskDiv2.appendChild(taskDiv2Title)
+
+      const taksDiv2Description = document.createElement('div')
+      taksDiv2Description.textContent = task.description
+      taskDiv2.appendChild(taksDiv2Description)
+
+      const taskDiv2Period = document.createElement('div')
+      taskDiv2Period.textContent = `${start.getDate()}-${start.getMonth() + 1}-${start.getFullYear()} to ${end.getDate()}-${end.getMonth() + 1}-${end.getFullYear()}`
+      taskDiv2.appendChild(taskDiv2Period)
+
+      switch (task.state) {
+        case 'unavailable':
+          taskDiv2.classList.add('color-unavailable')
+          break
+        case 'todo':
+          taskDiv2.classList.add('color-todo')
+          break
+        case 'in_progress':
+          taskDiv2.classList.add('color-in_progress')
+          break
+        case 'done':
+          taskDiv2.classList.add('color-done')
+          break
+        case 'reactivated':
+          taskDiv2.classList.add('color-reactivated')
+          break
+        case 'late':
+          taskDiv2.classList.add('color-late')
+          break
+        case 'abbandoned':
+          taskDiv2.classList.add('color-abbandoned')
+          break
+      }
+
+      taskDiv2.addEventListener('click', () => editTask(task.id))
+
+      tasksLinear.appendChild(taskDiv2)
     })
   }
 
@@ -502,6 +560,22 @@ onMounted(async () => {
     }
   }
   insetColorLegend()
+
+  // Change view mode between Gannt and Linear
+  document
+    .getElementById('select-gannt-linear')
+    .addEventListener('change', (e) => {
+      const mode = e.target.value
+      const tasksGrid = document.getElementById('tasks-grid')
+
+      if (mode === 'gannt') {
+        document.getElementById('view-linear').classList.add('hidden')
+        document.getElementById('view-gannt').classList.remove('hidden')
+      } else {
+        document.getElementById('view-linear').classList.remove('hidden')
+        document.getElementById('view-gannt').classList.add('hidden')
+      }
+    })
 })
 
 // This is an ugly trick to only use JS in projects and to avoid reinventing the
@@ -513,10 +587,31 @@ function dispatchEvent() {
 
 <template>
   <div class="flex flex-col gap-2 p-2">
-    <h1 id="project-title" class="text-2xl font-bold"></h1>
-    <p id="project-description" class=""></p>
+    <div class="flex justify-between">
+      <div>
+        <h1 id="project-title" class="text-2xl font-bold"></h1>
+        <p id="project-description" class=""></p>
+      </div>
+
+      <div class="form-control bordered">
+        <select
+          class="select select-bordered w-full max-w-xs"
+          id="select-gannt-linear"
+        >
+          <option value="gannt">Gannt</option>
+          <option value="linear">Linear</option>
+        </select>
+      </div>
+    </div>
+
     <div class="rounded bg-base-200 p-2">
-      <div class="grid gap-1 overflow-x-auto" id="tasks-grid"></div>
+      <div id="view-gannt">
+        <div class="grid gap-1 overflow-x-auto" id="tasks-grid"></div>
+      </div>
+
+      <div id="view-linear" class="hidden">
+        <div class="flex gap-4" id="tasks-linear"></div>
+      </div>
 
       <div class="mt-5 flex justify-between">
         <button class="btn btn-outline btn-primary" id="btn-add-task">
