@@ -65,17 +65,42 @@ export default defineEventHandler(async (event) => {
 
     for (let i = 0; i < og.guests.waiting.length; i++) {
       if (!users_ids.includes(og.guests.waiting[i])) {
+        // Remove user from waiting list
+        sendNotification(
+          'Project modified',
+          `You have been removed from project ${og.title}`,
+          og.guests.waiting[i].toString()
+        )
         og.guests.waiting.splice(i, 1)
       }
     }
 
     for (let i = 0; i < og.guests.accepted.length; i++) {
       if (!users_ids.includes(og.guests.accepted[i])) {
+        // Remove user from accepted list
+        sendNotification(
+          'Project modified',
+          `You have been removed from project ${og.title}`,
+          og.guests.accepted[i].toString()
+        )
         og.guests.accepted.splice(i, 1)
       }
     }
 
-    og.guests.waiting = users_ids
+    for (let i = 0; i < users_ids.length; i++) {
+      if (
+        !og.guests.waiting.includes(users_ids[i]) &&
+        !og.guests.accepted.includes(users_ids[i])
+      ) {
+        // Add user to waiting list
+        og.guests.waiting.push(users_ids[i])
+        sendNotification(
+          'Project invitation',
+          `You have been invited to project ${og.title}`,
+          users_ids[i].toString()
+        )
+      }
+    }
 
     console.log(og)
 

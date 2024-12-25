@@ -5,17 +5,22 @@ export async function sendNotification(
   body: string,
   receiver: string
 ) {
+  console.log('Sending notification to: ', receiver)
   const user = await User.findOne({ _id: receiver })
   if (!user) {
     throw new Error('User not found')
   }
 
-  const notification = new Notification({
-    title: title,
-    body: body,
-    read: false,
-    user_id: user._id
-  })
+  try {
+    const notification = new Notification({
+      title: title,
+      body: body,
+      read: false,
+      user_id: user._id
+    })
 
-  await notification.save()
+    await notification.save()
+  } catch (e) {
+    console.error('Saving notification: ', e)
+  }
 }
