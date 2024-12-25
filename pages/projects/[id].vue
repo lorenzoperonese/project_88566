@@ -268,14 +268,22 @@ onMounted(async () => {
 
   async function saveTask() {
     const title = document.getElementById('task-modal-title').value
-    const description = document.getElementById('task-modal-description').value
+    let description = document.getElementById('task-modal-description').value
     const phase = document.getElementById('task-modal-phase').value
     const state = document.getElementById('task-modal-state').value
     const start = document.getElementById('task-modal-start').value
     const end = document.getElementById('task-modal-end').value
+    let input = document.getElementById('task-modal-input').value
+    let output = document.getElementById('task-modal-output').value
     const dependency = document.getElementById(
       'task-modal-select-depends'
     ).value
+    const translation = document.getElementById(
+      'task-modal-select-translation'
+    ).value
+    const milestone = document.getElementById(
+      'task-modal-checkbox-milestone'
+    ).checked
     const user = document.getElementById('task-modal-select-user').value
 
     if (!title) {
@@ -284,7 +292,7 @@ onMounted(async () => {
     }
 
     if (!description) {
-      showError('Description is required')
+      description = ''
       return
     }
 
@@ -295,6 +303,16 @@ onMounted(async () => {
 
     if (!end) {
       showError('End date is required')
+      return
+    }
+
+    if (!input) {
+      input = ''
+      return
+    }
+
+    if (!output) {
+      output = ''
       return
     }
 
@@ -330,6 +348,10 @@ onMounted(async () => {
           state,
           start: new Date(start).getTime(),
           end: new Date(end).getTime(),
+          input,
+          output,
+          translation: translation === 'true',
+          milestone,
           dependency,
           user
         })
@@ -361,9 +383,18 @@ onMounted(async () => {
     document.getElementById('task-modal-end').value = new Date(t.end)
       .toISOString()
       .split('T')[0]
+    document.getElementById('task-modal-input').value = t.input
+    document.getElementById('task-modal-output').value = t.output
     document.getElementById('task-modal-select-depends').value = t.dependency
       ? t.dependency
       : ''
+    document.getElementById('task-modal-select-translation').value =
+      t.translation ? 'true' : 'false'
+
+    document.getElementById('task-modal-select-translation').disabled =
+      t.milestone
+    document.getElementById('task-modal-checkbox-milestone').checked =
+      t.milestone
     document.getElementById('task-modal-select-user').value = t.user_id
 
     document.getElementById('task_modal').showModal()
@@ -382,7 +413,12 @@ onMounted(async () => {
     document.getElementById('task-modal-state').value = 'todo'
     document.getElementById('task-modal-start').value = ''
     document.getElementById('task-modal-end').value = ''
+    document.getElementById('task-modal-input').value = ''
+    document.getElementById('task-modal-output').value = ''
     document.getElementById('task-modal-select-depends').value = ''
+    document.getElementById('task-modal-select-translation').value = 'false'
+    document.getElementById('task-modal-select-translation').disabled = false
+    document.getElementById('task-modal-checkbox-milestone').checked = false
     document.getElementById('task_modal').showModal()
   }
   document.getElementById('btn-add-task').addEventListener('click', addTask)
@@ -408,6 +444,36 @@ onMounted(async () => {
   document
     .getElementById('task-modal-delete')
     .addEventListener('click', deleteTask)
+
+  // Force task to have input equal to output of dependency
+  document
+    .getElementById('task-modal-select-depends')
+    .addEventListener('change', async (e) => {
+      const dependency = e.target.value
+      const task = tasks.find((task) => task.id === dependency)
+
+      if (task) {
+        document.getElementById('task-modal-input').value = task.output
+        document.getElementById('task-modal-input').disabled = true
+      } else {
+        document.getElementById('task-modal-input').disabled = false
+        document.getElementById('task-modal-input').value = ''
+      }
+    })
+
+  // Force milestones to be contracted
+  document
+    .getElementById('task-modal-checkbox-milestone')
+    .addEventListener('change', async (e) => {
+      const milestone = e.target.checked
+      if (milestone) {
+        document.getElementById('task-modal-select-translation').value = 'false'
+        document.getElementById('task-modal-select-translation').disabled = true
+      } else {
+        document.getElementById('task-modal-select-translation').disabled =
+          false
+      }
+    })
 
   // ------ Utils ------
   async function updateTasks() {
@@ -549,6 +615,28 @@ function dispatchEvent() {
             </div>
           </div>
 
+          <div class="form-control">
+            <div class="label">
+              <label for="task-modal-input" class="label-text">Input</label>
+            </div>
+            <input
+              id="task-modal-input"
+              type="text"
+              class="input input-bordered"
+            />
+          </div>
+
+          <div class="form-control">
+            <div class="label">
+              <label for="task-modal-output" class="label-text">Output</label>
+            </div>
+            <input
+              id="task-modal-output"
+              type="text"
+              class="input input-bordered"
+            />
+          </div>
+
           <div class="form-control bordered">
             <div class="label">
               <label for="task-modal-select-depends" class="label-text"
@@ -561,6 +649,32 @@ function dispatchEvent() {
             >
               <!-- NEED TO FILL -->
             </select>
+          </div>
+
+          <div class="form-control bordered">
+            <div class="label">
+              <label for="" class="label-text">Settings</label>
+            </div>
+            <div class="flex justify-between">
+              <select
+                class="select select-bordered w-full max-w-xs"
+                id="task-modal-select-translation"
+              >
+                <option value="true">Translation</option>
+                <option value="false">Contractions</option>
+              </select>
+
+              <div class="form-control">
+                <label class="label cursor-pointer">
+                  <span class="label-text mr-4">Milestone</span>
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    id="task-modal-checkbox-milestone"
+                  />
+                </label>
+              </div>
+            </div>
           </div>
 
           <div class="form-control bordered">

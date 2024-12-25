@@ -110,6 +110,10 @@ export declare global {
     state: string
     start: number
     end: number
+    input: string
+    output: string
+    translation: boolean
+    milestone: boolean
     dependency: string | null
     project_id: string
   }

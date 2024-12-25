@@ -67,6 +67,28 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    if (!body.input) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task input is required'
+      })
+    }
+
+    if (!body.output) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task output is required'
+      })
+    }
+
+    if (!body.translation) {
+      body.translation = false
+    }
+
+    if (!body.milestone) {
+      body.milestone = false
+    }
+
     if (!body.dependency) {
       body.dependency = null
     }

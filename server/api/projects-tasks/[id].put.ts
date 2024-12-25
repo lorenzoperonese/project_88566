@@ -74,6 +74,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    if (!body.input) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task input is required'
+      })
+    }
+
+    if (!body.output) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task output is required'
+      })
+    }
+
     if (body.dependency === undefined) {
       throw createError({
         statusCode: 400,
@@ -81,6 +95,20 @@ export default defineEventHandler(async (event) => {
       })
     } else if (body.dependency === '') {
       body.dependency = null
+    }
+
+    if (body.translation === undefined) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task translation is required'
+      })
+    }
+
+    if (body.milestone === undefined) {
+      throw createError({
+        statusCode: 400,
+        message: 'Task milestone is required'
+      })
     }
 
     body.project_id = project_id
@@ -99,7 +127,11 @@ export default defineEventHandler(async (event) => {
         state: body.state,
         start: body.start,
         end: body.end,
-        dependency: body.dependency
+        input: body.input,
+        output: body.output,
+        dependency: body.dependency,
+        translation: body.translation,
+        milestone: body.milestone
       }
     )
   } catch (err) {
