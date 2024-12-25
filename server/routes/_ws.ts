@@ -6,13 +6,13 @@ import { createRooms } from '../utils/chat'
 export default defineWebSocketHandler({
   open: async (peer: Peer) => {
     try {
-      const index = (peer.headers as any).cookie.indexOf('auth:token')
+      const index = ((peer as any).headers as any).cookie.indexOf('auth:token')
       if (index == -1) {
         console.error('Invalid auth')
         return
       }
 
-      const token = (peer.headers as any).cookie.substring(index + 11)
+      const token = ((peer as any).headers as any).cookie.substring(index + 11)
       const s = await getAuthSession(token)
       if (!s) {
         console.error('Invalid auth for ws')
