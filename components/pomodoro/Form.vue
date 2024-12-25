@@ -33,14 +33,14 @@ function calculateTime() {
   _seconds.value = 0
 }
 
-function start() {
+function start(toast: boolean = true) {
   if (_study.value < 1 || _break.value < 1 || _cycles.value < 1) {
     $toast.error('Valori non validi')
     return
   }
+  if (toast) $toast.success('Pomodoro iniziato')
   emit('start')
   _counting.value = true
-
   if (!_paused.value) calculateTime()
   else _paused.value = false
 
@@ -55,17 +55,15 @@ function start() {
       _minutes.value = 59
       _seconds.value = 59
     } else {
-      if (!isStudying.value) {
-        if (_cycles.value > _cycleCounter.value) {
-          _cycleCounter.value++
-          isStudying.value = true
-          calculateTime()
-        } else {
-          stop()
-        }
+      if (isStudying.value && _cycles.value <= _cycleCounter.value) {
+        stop()
       } else {
-        emit('stop')
-        isStudying.value = false
+        const msg = isStudying.value
+          ? 'Complimenti, ora puoi riposarti!'
+          : 'Pausa terminata, rimettiti al lavoro!'
+        $toast.success(msg)
+        if (!isStudying.value) _cycleCounter.value++
+        isStudying.value = !isStudying.value
         calculateTime()
       }
     }
@@ -80,27 +78,41 @@ function stop() {
   _counting.value = false
   _paused.value = false
   isStudying.value = true
+  $toast.success('Pomodoro terminato, a domani!')
   if (_timer) clearInterval(_timer)
 }
 function pause() {
   _paused.value = true
+  $toast.success('Pomodoro in pausa, prenditi il tuo tempo!')
   if (_timer) clearInterval(_timer)
 }
 function restart() {
   _paused.value = false
+  const msg = isStudying.value
+    ? 'Ciclo di studio ricominciato, resta concentrato'
+    : 'Ciclo di pausa ricominciato, non esagerare!'
+  $toast.success(msg)
   if (_timer) clearInterval(_timer)
   calculateTime()
-  start()
+  start(false)
 }
 function skip() {
   _paused.value = false
   if (_timer) clearInterval(_timer)
-  if (isStudying.value && _cycles.value === _cycleCounter.value) stop()
+  if (isStudying.value && _cycles.value <= _cycleCounter.value) stop()
   else {
+    const msg = isStudying.value
+      ? 'Ciclo di studio saltato, ora rilassati!'
+      : 'Ciclo di pausa saltato, rimettiti al lavoro!'
+    $toast.success(msg)
     if (!isStudying.value) _cycleCounter.value++
     isStudying.value = !isStudying.value
-    start()
+    start(false)
   }
+}
+function resume() {
+  $toast.success('Pomodoro ripreso, concentrati!')
+  start(false)
 }
 </script>
 
@@ -140,7 +152,7 @@ function skip() {
           />
         </div>
       </div>
-      <button class="btn btn-success" @click="start">Inizia</button>
+      <button class="btn btn-success" @click="start()">Inizia</button>
     </div>
 
     <div v-else class="text-center">
@@ -152,10 +164,10 @@ function skip() {
         <button v-if="!_paused" class="btn btn-warning" @click="pause">
           Pausa
         </button>
-        <button v-else class="btn btn-info" @click="start">Riprendi</button>
-        <button class="btn btn-secondary" @click="skip">Salta</button>
-        <button class="btn btn-error" @click="stop">Ferma</button>
-        <button class="btn btn-success" @click="restart">Ricomincia</button>
+        <button v-else class="btn btn-info" @click="resume()">Riprendi</button>
+        <button class="btn btn-secondary" @click="skip()">Salta</button>
+        <button class="btn btn-error" @click="stop()">Ferma</button>
+        <button class="btn btn-success" @click="restart()">Ricomincia</button>
       </div>
     </div>
   </div>

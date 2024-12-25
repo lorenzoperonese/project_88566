@@ -107,6 +107,20 @@ function notifyMessage(n: Notify[]) {
               : 'No'
           }}
         </div>
+        <div>
+          Guests: waiting:
+          {{
+            $props.event.guests.waiting.length > 0
+              ? $props.event.guests.waiting.map((g) => g.username).join(', ')
+              : 'None'
+          }}
+          accepted:
+          {{
+            $props.event.guests.accepted.length > 0
+              ? $props.event.guests.accepted.map((g) => g.username).join(', ')
+              : 'No'
+          }}
+        </div>
       </div>
     </div>
     <CalendarAddToCalendar :event="event" />

@@ -25,6 +25,6 @@ const _event: EventType = {
   <CalendarEventAdder
     :event="_event"
     :is-event-new="true"
-    @close="useRouter().push({ name: 'calendar' })"
+    @close="navigateTo({ name: 'calendar' })"
   />
 </template>

@@ -6,6 +6,8 @@ export interface INotification extends Document {
   title: string
   body: string
   read: boolean
+  type?: string
+  identifier?: string
   user_id: Types.ObjectId
   createdAt: Date
 }
@@ -15,6 +17,8 @@ const schema = new Schema<INotification>(
     title: { type: String, required: true },
     body: { type: String, required: true },
     read: { type: Boolean, required: true },
+    type: { type: String, required: true },
+    identifier: { type: String },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: User }
   },
   {

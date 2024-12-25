@@ -38,6 +38,7 @@ interface CalendarCell {
   index: number
   day: number
   events: EventType[]
+  eventsGuest: EventType[]
   tasks: Task[]
 }
 
@@ -50,6 +51,12 @@ const calendar = computed((): CalendarCell[] => {
       day: _days.value[index],
       events: getEventsForDay(
         $props.events,
+        $props.displayDate,
+        _days.value[index],
+        index
+      ),
+      eventsGuest: getEventsForDay(
+        $props.eventsGuest,
         $props.displayDate,
         _days.value[index],
         index
@@ -97,6 +104,13 @@ const calendar = computed((): CalendarCell[] => {
         :key="event.id"
         :event="event"
         :today="$props.today"
+      />
+      <CalendarEvent
+        v-for="event in c.eventsGuest"
+        :key="event.id"
+        :event="event"
+        :today="$props.today"
+        :guest="true"
       />
 
       <CalendarTask
