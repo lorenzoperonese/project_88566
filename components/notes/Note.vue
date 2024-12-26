@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { $toast } = useNuxtApp()
+
 const $props = defineProps({
   note: { type: Object as PropType<Note>, required: true }
 })
@@ -20,6 +22,16 @@ const _categoryName = computed(() => {
 const $emits = defineEmits<{
   (e: 'delete' | 'duplicate'): void
 }>()
+
+const copyToClipboard = async () => {
+  try {
+    const content = $props.note.body
+    await navigator.clipboard.writeText(content)
+    $toast.success('Copied to clipboard')
+  } catch (err) {
+    $toast.error('Failed to copy to clipboard')
+  }
+}
 </script>
 
 <template>
@@ -41,6 +53,9 @@ const $emits = defineEmits<{
           </NuxtLink>
         </div>
         <div class="flex flex-col gap-2">
+          <button class="btn btn-neutral" @click="copyToClipboard">
+            Copy to clipboard
+          </button>
           <NuxtLink
             class="btn btn-info"
             :to="`/notes/editor/${$props.note.id}`"
