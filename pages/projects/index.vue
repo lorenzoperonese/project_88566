@@ -7,8 +7,9 @@ const { $toast } = useNuxtApp()
 const $router = useRouter()
 
 onMounted(async () => {
-  // ---- Error ----
+  const me = await getME()
 
+  // ---- Error ----
   function showError(err) {
     $toast.error(err)
   }
@@ -70,7 +71,7 @@ onMounted(async () => {
               <button id="detail-${project.id}" class="btn btn-outline btn-secondary">
                 Details
               </button>
-              <button id="edit-${project.id}" class="btn btn-outline btn-info">
+              <button id="edit-${project.id}" class="btn btn-outline btn-info ${me.id != project.user_id ? 'invisible' : 'visible'}">
                 Edit
               </button>
               <button id="delete-${project.id}" class="btn btn-outline btn-error">

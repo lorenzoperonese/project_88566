@@ -11,14 +11,16 @@ export default defineEventHandler(async (event): Promise<ProjectTask[]> => {
       throw Error('Project not found')
     }
 
-    console.log(event.context.auth.id)
-    console.log(project.user_id.toString())
+    console.log('project:', project)
+    console.log('auth.id:', event.context.auth.id)
+    console.log('project.user_id:', project.user_id.toString())
 
     if (
-      project.user_id.toString() !== event.context.auth.id ||
-      (project.guests.accepted.length > 0 &&
-        !project.guests.accepted.includes(event.context.auth.id))
+      project.user_id.toString() !== event.context.auth.id &&
+      project.guests.accepted.length > 0 &&
+      !project.guests.accepted.includes(event.context.auth.id)
     ) {
+      setResponseStatus(event, 403)
       throw createError({
         statusCode: 403,
         message: 'Unauthorized'

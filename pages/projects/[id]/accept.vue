@@ -47,7 +47,7 @@ onMounted(async () => {
     } catch (error) {
       console.error(error)
     }
-    //navigateTo(`/projects/${$route.params.id}`)
+    navigateTo(`/projects/${$route.params.id}`)
   }
 
   async function rejectProject() {

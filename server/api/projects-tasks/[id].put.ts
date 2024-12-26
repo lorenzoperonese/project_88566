@@ -16,7 +16,11 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (p.user_id.toString() !== event.context.auth.id) {
+    if (
+      p.user_id.toString() !== event.context.auth.id &&
+      p.guests.accepted.length > 0 &&
+      !p.guests.accepted.includes(event.context.auth.id)
+    ) {
       throw createError({
         statusCode: 403,
         message: 'Unauthorized'
@@ -38,6 +42,23 @@ export default defineEventHandler(async (event) => {
         statusCode: 400,
         message: 'Task ID is required'
       })
+    }
+
+    // Update only the state of the task if not the owner of the project
+    if (p.user_id.toString() !== event.context.auth.id) {
+      if (!body.state) {
+        body.state = 'pending'
+      }
+
+      await ProjectTask.findOneAndUpdate(
+        {
+          _id: body.id,
+          user_id: event.context.auth.id
+        },
+        {
+          state: body.state
+        }
+      )
     }
 
     if (!body.title) {

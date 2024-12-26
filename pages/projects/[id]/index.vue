@@ -17,6 +17,8 @@ const taskStates = [
 ]
 
 onMounted(async () => {
+  const me = await getME()
+
   // ------ Error -----
   let error = ''
   function showError(msg) {
@@ -449,6 +451,11 @@ onMounted(async () => {
     document.getElementById('task-modal-title').value = t.title
     document.getElementById('task-modal-description').value = t.description
     document.getElementById('task-modal-phase').value = t.phase
+    if (t.user_id === me.id || me.id == project.user_id) {
+      document.getElementById('task-modal-state').disabled = false
+    } else {
+      document.getElementById('task-modal-state').disabled = true
+    }
     document.getElementById('task-modal-state').value = t.state
     document.getElementById('task-modal-start').value = new Date(t.start)
       .toISOString()
@@ -464,8 +471,12 @@ onMounted(async () => {
     document.getElementById('task-modal-select-translation').value =
       t.translation ? 'true' : 'false'
 
-    document.getElementById('task-modal-select-translation').disabled =
-      t.milestone
+    if (me.id !== project.user_id) {
+      document.getElementById('task-modal-select-translation').disabled = true
+    } else {
+      document.getElementById('task-modal-select-translation').disabled =
+        t.milestone
+    }
     document.getElementById('task-modal-checkbox-milestone').checked =
       t.milestone
     document.getElementById('task-modal-select-user').value = t.user_id
@@ -473,13 +484,20 @@ onMounted(async () => {
     document.getElementById('task_modal').showModal()
     addingTask = false
     taskID = id
-    document.getElementById('task-modal-delete').classList.remove('hidden')
+
+    if (me.id === project.user_id) {
+      document.getElementById('task-modal-delete').classList.remove('invisible')
+    }
+
+    if (me.id === project.user_id || me.id === t.user_id) {
+      document.getElementById('task-modal-save').classList.remove('invisible')
+    }
   }
 
   function addTask() {
     addingTask = true
     taskID = null
-    document.getElementById('task-modal-delete').classList.add('hidden')
+    document.getElementById('task-modal-delete').classList.add('invisible')
     document.getElementById('task-modal-title').value = ''
     document.getElementById('task-modal-description').value = ''
     document.getElementById('task-modal-phase').value = ''
@@ -490,7 +508,11 @@ onMounted(async () => {
     document.getElementById('task-modal-output').value = ''
     document.getElementById('task-modal-select-depends').value = ''
     document.getElementById('task-modal-select-translation').value = 'false'
-    document.getElementById('task-modal-select-translation').disabled = false
+    if (me.id !== project.user_id) {
+      document.getElementById('task-modal-select-translation').disabled = true
+    } else {
+      document.getElementById('task-modal-select-translation').disabled = false
+    }
     document.getElementById('task-modal-checkbox-milestone').checked = false
     document.getElementById('task_modal').showModal()
   }
@@ -543,8 +565,10 @@ onMounted(async () => {
         document.getElementById('task-modal-select-translation').value = 'false'
         document.getElementById('task-modal-select-translation').disabled = true
       } else {
-        document.getElementById('task-modal-select-translation').disabled =
-          false
+        if (me.id === project.user_id) {
+          document.getElementById('task-modal-select-translation').disabled =
+            false
+        }
       }
     })
 
@@ -613,6 +637,26 @@ onMounted(async () => {
 
       displayTasks()
     })
+
+  // If not the project owner
+  if (me.id !== project.user_id) {
+    // Hide add task button
+    document.getElementById('btn-add-task').classList.add('invisible')
+
+    document.getElementById('task-modal-title').disabled = true
+    document.getElementById('task-modal-description').disabled = true
+    document.getElementById('task-modal-phase').disabled = true
+    document.getElementById('task-modal-start').disabled = true
+    document.getElementById('task-modal-end').disabled = true
+    document.getElementById('task-modal-input').disabled = true
+    document.getElementById('task-modal-output').disabled = true
+    document.getElementById('task-modal-select-depends').disabled = true
+    document.getElementById('task-modal-select-translation').disabled = true
+    document.getElementById('task-modal-checkbox-milestone').disabled = true
+    document.getElementById('task-modal-select-user').disabled = true
+
+    document.getElementById('task-modal-delete').classList.add('invisible')
+  }
 })
 
 // This is an ugly trick to only use JS in projects and to avoid reinventing the
@@ -631,7 +675,7 @@ function dispatchEvent() {
       </div>
 
       <div class="flex gap-2">
-        <div class="form-control bordered hidden" id="select-linear-order">
+        <div class="form-control bordered invisible" id="select-linear-order">
           <select class="select select-bordered w-full max-w-xs">
             <option value="date">Date</option>
             <option value="person">Person</option>
@@ -838,10 +882,12 @@ function dispatchEvent() {
             <!-- if there is a button in form, it will close the modal -->
             <button class="btn">Close</button>
           </form>
-          <button class="btn btn-error hidden" id="task-modal-delete">
+          <button class="btn btn-error invisible" id="task-modal-delete">
             Delete
           </button>
-          <button class="btn btn-success" id="task-modal-save">Save</button>
+          <button class="btn btn-success invisible" id="task-modal-save">
+            Save
+          </button>
         </div>
       </div>
     </dialog>
