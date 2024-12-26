@@ -2,7 +2,8 @@
 import {
   CalendarViewDay,
   CalendarViewMonth,
-  CalendarViewWeek
+  CalendarViewWeek,
+  CalendarViewTasks
 } from '#components'
 
 definePageMeta({
@@ -67,11 +68,16 @@ const _displayDate = ref(new Date(_today.value))
 const _currentView = ref('month')
 
 const showComponent = computed(() => {
-  return _currentView.value === 'month'
-    ? CalendarViewMonth
-    : _currentView.value === 'week'
-      ? CalendarViewWeek
-      : CalendarViewDay
+  switch (_currentView.value) {
+    case 'month':
+      return CalendarViewMonth
+    case 'week':
+      return CalendarViewWeek
+    case 'day':
+      return CalendarViewDay
+    case 'tasks':
+      return CalendarViewTasks
+  }
 })
 
 const _weekDays = computed(() => {
@@ -122,6 +128,9 @@ async function updateToday() {
   const today = new Date(await getToday())
   _today.value = today
   _displayDate.value = new Date(today)
+
+  fetchEvents()
+  fetchTasks()
 }
 
 function changeView(view: string) {
@@ -159,7 +168,7 @@ function header(): string {
 
     <div class="flex justify-center space-x-2 bg-base-100 p-2">
       <button
-        v-for="view in ['month', 'week', 'day']"
+        v-for="view in ['month', 'week', 'day', 'tasks']"
         :key="view"
         class="btn"
         :class="{

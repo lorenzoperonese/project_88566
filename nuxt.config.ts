@@ -58,6 +58,9 @@ export default defineNuxtConfig({
   nitro: {
     experimental: {
       websocket: true
+    },
+    alias: {
+      '#imports': './server/utils'
     }
   }
 })

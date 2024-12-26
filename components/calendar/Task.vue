@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const $props = defineProps({
   task: { type: Object as PropType<Task>, required: true },
-  today: { type: Date, required: true }
+  today: { type: Date, required: true },
+  fullDate: { type: Boolean, default: false }
 })
 </script>
 
@@ -16,7 +17,12 @@ const $props = defineProps({
       >
         {{ $props.task.title }}
       </div>
-      <div>{{ formatTime(task.end) }}</div>
+      <div>
+        <div v-if="$props.fullDate">
+          {{ formatDate(task.end) }} - {{ formatTime(task.end) }}
+        </div>
+        <div v-else>{{ formatTime(task.end) }}</div>
+      </div>
       <div v-if="$props.task.category">🏷️ {{ $props.task.category }}</div>
     </div>
   </NuxtLink>

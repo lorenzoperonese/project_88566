@@ -1,4 +1,4 @@
-import { ProjectTask } from '@/server/db'
+import { updateTasks, updateProjectTasks } from '../utils/background'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<number>(event)
@@ -8,16 +8,6 @@ export default defineEventHandler(async (event) => {
 
   await useStorage().setItem<number>(`tm:delta`, delta)
 
-  const now = await getNowTime()
-
-  // For project tasks that are in_progress, update their status to 'late'
-  await ProjectTask.updateMany(
-    {
-      end: { $lt: now },
-      state: 'in_progress'
-    },
-    {
-      state: 'late'
-    }
-  )
+  await updateTasks()
+  await updateProjectTasks()
 })
