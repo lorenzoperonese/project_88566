@@ -64,18 +64,22 @@ export default defineEventHandler(async (event) => {
 
     for (const g in guests_ids) {
       try {
-        // TODO: Make this notification acceptable
         sendNotification(
           'Project invitation',
           `You have been invited to project ${project.title}`,
-          guests_ids[g].toString()
+          guests_ids[g].toString(),
+          'project-invited',
+          project.id
         )
       } catch (e) {
         console.error('Error sending notification: ', e)
       }
     }
 
-    return
+    return {
+      message: 'Project created successfully',
+      eventId: project.id
+    }
   } catch (err) {
     console.error(err)
     throw createError({

@@ -81,6 +81,10 @@ onMounted(async () => {
       document.getElementById('title').value = project.title
       document.getElementById('description').value = project.description
 
+      if (!project.guests) {
+        project.guests = { waiting: [], accepted: [] }
+      }
+
       for (const g in project.guests.waiting) {
         guests.push(project.guests.waiting[g].username)
       }

@@ -27,9 +27,14 @@ function notificationLink(
   type: string,
   identifier: string | undefined
 ) {
-  if (type === 'event-invited') {
-    readNotification(id)
-    navigateTo(`/calendar/e/guest/${identifier}/accept`)
+  switch (type) {
+    case 'event-invited':
+      navigateTo(`/calendar/e/guest/${identifier}/accept`)
+      break
+    case 'project-invited':
+      navigateTo(`/projects/${identifier}/accept`)
+    default:
+      break
   }
 }
 

@@ -1,5 +1,7 @@
 import { User, Notification } from '@/server/db'
 
+// Type can be 'basic', 'project-invited', 'event-invited'.
+// indetifier is the id of the project or event for the invitation.
 export async function sendNotification(
   title: string,
   body: string,
@@ -7,6 +9,9 @@ export async function sendNotification(
   type: string,
   identifier: string | undefined
 ) {
+  type = type || 'basic'
+  identifier = identifier || undefined
+
   console.log('Sending notification to: ', receiver)
   const user = await User.findOne({ _id: receiver })
   if (!user) {

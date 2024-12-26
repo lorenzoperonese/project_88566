@@ -69,7 +69,9 @@ export default defineEventHandler(async (event) => {
         sendNotification(
           'Project modified',
           `You have been removed from project ${og.title}`,
-          og.guests.waiting[i].toString()
+          og.guests.waiting[i].toString(),
+          'basic',
+          undefined
         )
         og.guests.waiting.splice(i, 1)
       }
@@ -81,14 +83,18 @@ export default defineEventHandler(async (event) => {
         sendNotification(
           'Project modified',
           `You have been removed from project ${og.title}`,
-          og.guests.accepted[i].toString()
+          og.guests.accepted[i].toString(),
+          'basic',
+          undefined
         )
         og.guests.accepted.splice(i, 1)
       } else {
         sendNotification(
           'Project modified',
           `Project ${og.title} has been modified`,
-          og.guests.accepted[i].toString()
+          og.guests.accepted[i].toString(),
+          'basic',
+          undefined
         )
       }
     }
@@ -103,7 +109,9 @@ export default defineEventHandler(async (event) => {
         sendNotification(
           'Project invitation',
           `You have been invited to project ${og.title}`,
-          users_ids[i].toString()
+          users_ids[i].toString(),
+          'project-invited',
+          project_id
         )
       }
     }

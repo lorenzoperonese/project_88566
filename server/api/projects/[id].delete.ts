@@ -19,7 +19,9 @@ export default defineEventHandler(async (event) => {
         sendNotification(
           'Project deleted',
           `Project ${p.title} has been deleted`,
-          g.toString()
+          g.toString(),
+          'basic',
+          undefined
         )
       }
 
@@ -27,7 +29,9 @@ export default defineEventHandler(async (event) => {
         sendNotification(
           'Project deleted',
           `Project ${p.title} has been deleted`,
-          g.toString()
+          g.toString(),
+          'basic',
+          undefined
         )
       }
     }

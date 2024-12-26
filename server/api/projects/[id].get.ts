@@ -1,4 +1,4 @@
-import { Project } from '@/server/db'
+import { Project, User } from '@/server/db'
 import type { IProject, IUser } from '@/server/db'
 import type { Types, FlattenMaps } from 'mongoose'
 
@@ -18,16 +18,34 @@ export default defineEventHandler(async (event): Promise<Project | Object> => {
       throw Error('ID is undefined')
     }
 
+    const user = await User.findById(event.context.auth.id)
+    if (!user) {
+      setResponseStatus(event, 404)
+      return {}
+    }
+
     const project = await Project.findOne({
-      _id: id,
-      user_id: event.context.auth.id
+      _id: id
     })
       .populate<{ 'guests.waiting': IUser[] }>('guests.waiting')
       .populate<{ 'guests.accepted': IUser[] }>('guests.accepted')
       .lean<PopulatedProject>()
 
-    if (!project) {
-      throw Error('Project not found')
+    console.log(project)
+
+    console.log(project?.user_id)
+    console.log(event.context.auth.id)
+    console.log(project?.guests.waiting)
+    console.log(project?.guests.accepted)
+
+    if (
+      !project ||
+      (project.user_id.toString() !== event.context.auth.id &&
+        !project.guests.accepted.some((g) => g.username === user.username) &&
+        !project.guests.waiting.some((g) => g.username === user.username))
+    ) {
+      setResponseStatus(event, 404)
+      return {}
     }
 
     console.log(project)

@@ -14,7 +14,11 @@ type PopulatedProject = FlattenMaps<
 export default defineEventHandler(async (event): Promise<Project[]> => {
   try {
     const projects = await Project.find({
-      user_id: event.context.auth.id
+      $or: [
+        { user_id: event.context.auth.id },
+        { 'guests.waiting': event.context.auth.id },
+        { 'guests.accepted': event.context.auth.id }
+      ]
     })
       .populate<{ 'guests.waiting': IUser[] }>('guests.waiting')
       .populate<{ 'guests.accepted': IUser[] }>('guests.accepted')
