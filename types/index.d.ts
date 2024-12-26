@@ -4,6 +4,7 @@ export declare global {
     title: string
     body: string
     category_id?: string
+    updated_at?: number
   }
 
   interface User {

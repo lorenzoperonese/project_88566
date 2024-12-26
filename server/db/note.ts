@@ -8,6 +8,7 @@ export interface INote extends Document {
   body: string
   category_id?: Types.ObjectId
   user_id: Types.ObjectId
+  updatedAt: Date
 }
 
 const schema = new Schema<INote>(
