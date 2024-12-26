@@ -9,6 +9,7 @@ export interface ITask extends Document {
   category?: string
   completed: boolean
   user_id: Types.ObjectId
+  users: Types.ObjectId[]
 }
 
 const schema = new Schema<ITask>(
@@ -18,7 +19,8 @@ const schema = new Schema<ITask>(
     note: { type: String },
     category: { type: String, required: true },
     completed: { type: Boolean, required: true },
-    user_id: { type: Schema.Types.ObjectId, required: true, ref: User }
+    user_id: { type: Schema.Types.ObjectId, required: true, ref: User },
+    users: [{ type: Schema.Types.ObjectId, ref: User }]
   },
   {
     timestamps: true // Log when user is added and modified

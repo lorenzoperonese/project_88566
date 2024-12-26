@@ -36,6 +36,60 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    if (!body.users) {
+      body.users = []
+    }
+
+    const t = await Task.findById(id)
+    if (!t) {
+      setResponseStatus(event, 404)
+      return { err: 'Task not found' }
+    }
+
+    if (t.user_id.toString() !== event.context.auth.id) {
+      let oldT = await Task.findOneAndUpdate(
+        {
+          _id: id,
+          users: { $in: [event.context.auth.id] }
+        },
+        {
+          completed: body.completed
+        }
+      )
+
+      if (!oldT) {
+        setResponseStatus(event, 404)
+        return { err: 'Task not found' }
+      }
+      console.log(oldT)
+      console.log(body)
+
+      if (body.completed !== oldT.completed) {
+        for (const user of body.users) {
+          if (user === event.context.auth.id) {
+            continue
+          }
+          sendNotification(
+            'Task updated',
+            `Task "${body.title}" has been updated`,
+            user,
+            'basic',
+            undefined
+          )
+        }
+
+        sendNotification(
+          'Task updated',
+          `Task "${body.title}" has been updated`,
+          oldT.user_id.toString(),
+          'basic',
+          undefined
+        )
+      }
+
+      return { mgs: 'Updated task' }
+    }
+
     await Task.findOneAndUpdate(
       {
         _id: id,
@@ -46,9 +100,20 @@ export default defineEventHandler(async (event) => {
         end: body.end,
         note: body.note,
         category: body.category,
-        completed: body.completed
+        completed: body.completed,
+        users: body.users
       }
     )
+
+    for (const user of body.users) {
+      sendNotification(
+        'Task updated',
+        `Task "${body.title}" has been updated`,
+        user,
+        'basic',
+        undefined
+      )
+    }
 
     return { mgs: 'Updated task' }
   } catch (err) {

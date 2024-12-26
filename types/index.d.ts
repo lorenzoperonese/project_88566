@@ -81,6 +81,8 @@ export declare global {
     note: string | null
     completed: boolean
     category: string | null
+    user_id: string
+    users: string[]
   }
 
   interface ChatRoom {

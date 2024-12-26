@@ -27,6 +27,10 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  if (!body.users) {
+    body.users = []
+  }
+
   try {
     const e = new Task({
       title: body.title,
@@ -34,10 +38,22 @@ export default defineEventHandler(async (event) => {
       note: body.note,
       category: body.category,
       completed: false,
-      user_id: event.context.auth.id
+      user_id: event.context.auth.id,
+      users: body.users
     })
 
     await e.save()
+
+    for (const user of body.users) {
+      sendNotification(
+        'Task created',
+        `Task "${body.title}" has been created`,
+        user,
+        'basic',
+        undefined
+      )
+    }
+
     return { message: 'Task created successfuly' }
   } catch (err) {
     console.error(err)
