@@ -22,13 +22,13 @@ export async function newAuthSession(
     username: username,
     expiration: new Date(now.getTime() + EXPIRATION_TIME)
   }
-  await useStorage().setItem<Session>(`session:${uuid}`, session)
+  await useStorage().setItem(`session:${uuid}`, session)
 
   return uuid
 }
 
 export async function getAuthSession(id: string): Promise<Session | null> {
-  return await useStorage().getItem<Session>(`session:${id}`)
+  return (await useStorage().getItem(`session:${id}`)) as Session | null
 }
 
 export function isAuthSessionExpired(s: Session): boolean {

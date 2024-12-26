@@ -5,7 +5,7 @@ const user = ref('')
 
 async function send() {
   console.log('Sending notification')
-  const res = await sendNotification(
+  const res = await sendNotificationFront(
     'Hello world',
     'This is the body of the hello world',
     user.value

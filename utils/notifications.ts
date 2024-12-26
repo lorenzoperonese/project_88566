@@ -1,7 +1,7 @@
 import type { JSONResponse } from '~/types'
 
 // Send a notification to a user. Receiver is the username of the user.
-export async function sendNotification(
+export async function sendNotificationFront(
   title: string,
   body: string,
   receiver: string
