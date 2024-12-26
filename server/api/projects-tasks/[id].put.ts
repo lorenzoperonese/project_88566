@@ -138,7 +138,9 @@ export default defineEventHandler(async (event) => {
       sendNotification(
         'Task modified',
         `Task ${body.title} has been modified in project ${p.title}`,
-        body.user_id
+        body.user_id,
+        'basic',
+        undefined
       )
     }
   } catch (err) {

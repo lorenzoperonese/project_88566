@@ -103,7 +103,9 @@ export default defineEventHandler(async (event) => {
       sendNotification(
         'Task created',
         `Task ${body.title} has been created in project ${p.title}`,
-        body.user_id
+        body.user_id,
+        'basic',
+        undefined
       )
     }
   } catch (err) {

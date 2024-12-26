@@ -1,5 +1,4 @@
 import { Event } from '@/server/db'
-import { sendNotification } from '~/server/utils/notifications'
 
 // reject the group event invitation
 export default defineEventHandler(async (event) => {

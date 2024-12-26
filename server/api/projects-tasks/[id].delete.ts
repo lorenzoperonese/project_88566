@@ -29,7 +29,9 @@ export default defineEventHandler(async (event) => {
       sendNotification(
         'Task deleted',
         `Task ${t.title} has been deleted in project ${p.title}`,
-        t.user_id.toString()
+        t.user_id.toString(),
+        'basic',
+        undefined
       )
     }
   } catch (err) {
