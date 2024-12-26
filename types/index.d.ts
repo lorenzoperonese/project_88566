@@ -5,6 +5,9 @@ export declare global {
     body: string
     category_id?: string
     updated_at?: number
+    user_id: string
+    state: string
+    shared_with: string[]
   }
 
   interface User {

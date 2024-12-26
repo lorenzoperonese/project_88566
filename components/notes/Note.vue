@@ -23,6 +23,12 @@ const $emits = defineEmits<{
   (e: 'delete' | 'duplicate'): void
 }>()
 
+const me = await getME()
+
+const isMine = computed(() => {
+  return $props.note.user_id === me.id
+})
+
 const copyToClipboard = async () => {
   try {
     const content = $props.note.body
@@ -43,8 +49,13 @@ const copyToClipboard = async () => {
             <!-- div>ID: {{ $props.note.id }}</div -->
             <div class="flex justify-between">
               <div class="text-2xl font-extrabold">{{ $props.note.title }}</div>
-              <div class="h-full text-gray-600">
-                {{ _categoryName }}
+              <div class="flex h-full gap-6 text-gray-300">
+                <div class="h-full">
+                  {{ _categoryName }}
+                </div>
+                <div>
+                  {{ $props.note.state }}
+                </div>
               </div>
             </div>
             <div class="prose prose-sm">
@@ -57,6 +68,7 @@ const copyToClipboard = async () => {
             Copy to clipboard
           </button>
           <NuxtLink
+            v-if="isMine"
             class="btn btn-info"
             :to="`/notes/editor/${$props.note.id}`"
           >
@@ -65,7 +77,7 @@ const copyToClipboard = async () => {
           <button class="btn btn-accent" @click="$emits('duplicate')">
             Duplicate
           </button>
-          <button class="btn btn-error" @click="$emits('delete')">
+          <button v-if="isMine" class="btn btn-error" @click="$emits('delete')">
             Delete
           </button>
         </div>

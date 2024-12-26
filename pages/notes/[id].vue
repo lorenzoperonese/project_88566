@@ -23,13 +23,16 @@ const _categoryName = computed(() => {
 
 <template>
   <div class="p-2">
-    <NuxtLink to="/notes" class="p-2 hover:bg-gray-100"> Go Back </NuxtLink>
+    <NuxtLink to="/notes" class="btn btn-neutral"> Go Back </NuxtLink>
     <div v-if="_note">
       <h1 class="text-4xl font-extrabold">
         {{ _note.title }}
       </h1>
-      <h3 class="text-xl font-extrabold text-gray-600">
+      <h2 class="text-xl font-extrabold text-gray-400">
         {{ _categoryName }}
+      </h2>
+      <h3 class="text-lg font-bold text-gray-300">
+        {{ _note.state }}
       </h3>
       <div class="prose">
         <MDC :value="_note.body" />

@@ -90,13 +90,23 @@ async function deleteCategory(id: string) {
   fetchCategories()
 }
 
+const me = await getME()
+
 function duplicate(id: string) {
   const n = _notes.value.find((x) => x.id == id)
-  if (n) {
-    addNote(n)
-  } else {
-    console.error("Can't find not for duplication")
+
+  if (!n) {
+    console.error("Can't find note for duplication")
+    return
   }
+
+  if (n.user_id != me.id) {
+    n.user_id = '0'
+    n.state = 'private'
+    n.shared_with = []
+  }
+
+  addNote(n)
 }
 
 onMounted(async () => {

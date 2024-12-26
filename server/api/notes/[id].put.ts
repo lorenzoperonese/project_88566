@@ -36,6 +36,18 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    if (!body.state) {
+      body.state = 'private'
+    }
+
+    if (body.state === 'private') {
+      body.shared_with = []
+    }
+
+    if (!body.shared_with) {
+      body.shared_with = []
+    }
+
     await Note.findOneAndUpdate(
       {
         _id: id,
@@ -44,7 +56,9 @@ export default defineEventHandler(async (event) => {
       {
         title: body.title,
         body: body.body,
-        category_id: body.category_id
+        category_id: body.category_id,
+        state: body.state,
+        shared_with: body.shared_with
       }
     )
 

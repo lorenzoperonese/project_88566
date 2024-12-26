@@ -1,5 +1,6 @@
 import type { Types } from 'mongoose'
 import { Note } from '@/server/db'
+import type { IUser } from '@/server/db'
 
 export default defineEventHandler(async (event): Promise<Note | null> => {
   const id = getRouterParam(event, 'id')
@@ -11,8 +12,12 @@ export default defineEventHandler(async (event): Promise<Note | null> => {
 
     const n = await Note.findOne({
       _id: id,
-      user_id: event.context.auth.id
-    })
+      $or: [
+        { user_id: event.context.auth.id },
+        { state: 'public' },
+        { shared_with: event.context.auth.id }
+      ]
+    }).populate<{ shared_with: IUser[] }>('shared_with')
 
     if (!n) {
       throw Error('Note not found. ID: ' + id)
@@ -22,7 +27,10 @@ export default defineEventHandler(async (event): Promise<Note | null> => {
       id: (n._id as Types.ObjectId).toString() as string,
       title: n.title,
       body: n.body,
-      category_id: n.category_id
+      category_id: n.category_id,
+      updated_at: n.updatedAt.getTime(),
+      state: n.state,
+      shared_with: n.shared_with.map((user) => user.username)
     } as Note
   } catch (err) {
     console.error(err)

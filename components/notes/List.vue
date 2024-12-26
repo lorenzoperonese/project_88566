@@ -8,35 +8,60 @@ const $emits = defineEmits<{
 }>()
 
 const sorting = ref('0')
+const state = ref('all')
 
 const sortedNotes = computed(() => {
+  let notes
+  if (state.value === 'all') {
+    notes = $props.notes
+  } else {
+    notes = $props.notes.filter((note) => {
+      return note.state === state.value
+    })
+  }
+
   if (sorting.value === '0') {
-    return $props.notes.sort((a, b) => a.title.localeCompare(b.title))
+    return notes.sort((a, b) => a.title.localeCompare(b.title))
   } else if (sorting.value === '1') {
-    return $props.notes.sort((a, b) => {
+    return notes.sort((a, b) => {
       if (!a.updated_at || !b.updated_at) return 0
       return b.updated_at - a.updated_at
     })
   } else if (sorting.value === '2') {
-    return $props.notes.sort((a, b) => b.body.length - a.body.length)
+    return notes.sort((a, b) => b.body.length - a.body.length)
   } else {
-    return $props.notes
+    return notes
   }
 })
 </script>
 
 <template>
   <div class="mt-10 flex flex-col gap-4">
-    <div class="flex gap-2">
-      <div class="label">
-        <span class="label-text">Sorting: </span>
+    <div class="flex justify-between">
+      <div class="flex gap-2">
+        <div class="label">
+          <span class="label-text">Sorting: </span>
+        </div>
+        <select class="select select-bordered" v-model="sorting">
+          <option value="0">Alphabetical</option>
+          <option value="1">Modification date</option>
+          <option value="2">Length</option>
+        </select>
       </div>
-      <select class="select select-bordered" v-model="sorting">
-        <option value="0">Alphabetical</option>
-        <option value="1">Modification date</option>
-        <option value="2">Length</option>
-      </select>
+
+      <div class="flex gap-2">
+        <div class="label">
+          <span class="label-text">State: </span>
+        </div>
+        <select class="select select-bordered" v-model="state">
+          <option value="all">All</option>
+          <option value="private">Private</option>
+          <option value="public">Public</option>
+          <option value="shared">Shared</option>
+        </select>
+      </div>
     </div>
+
     <div v-if="$props.notes.length > 0" class="flex flex-col gap-4">
       <template v-for="note in sortedNotes" :key="note.id">
         <NotesNote

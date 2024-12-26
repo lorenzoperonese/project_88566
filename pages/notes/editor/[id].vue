@@ -7,6 +7,9 @@ const _route = useRoute()
 const _id = _route.params.id
 const { data } = await useFetch(`/api/notes/${_id}`)
 
+const state = ref('private')
+const guestsIDs = ref<string[]>([])
+
 const _selected = ref(data.value?.category_id)
 
 const __textarea_height = computed(() => {
@@ -45,7 +48,9 @@ async function save() {
           body: {
             title: data.value.title,
             body: data.value.body,
-            category_id: _selected.value == '' ? undefined : _selected.value
+            category_id: _selected.value == '' ? undefined : _selected.value,
+            state: state.value,
+            shared_with: state.value == 'shared' ? guestsIDs.value : []
           }
         })
         navigateTo(`/notes/${_id}`)
@@ -54,6 +59,11 @@ async function save() {
       }
     }
   }
+}
+
+const updateGuests = (g: string[], s: string) => {
+  guestsIDs.value = g
+  state.value = s
 }
 </script>
 
@@ -73,31 +83,32 @@ async function save() {
             class="w-full rounded-t-lg bg-transparent text-2xl font-bold outline-none focus:underline"
           />
 
-          <div class="dropdown dropdown-hover">
-            <div
-              tabindex="0"
-              role="button"
-              class="btn m-1 border border-neutral"
-            >
-              <div class="w-60 rounded-t-lg p-2 group-hover:bg-white">
-                Category: {{ _categoryName }}
+          <div class="flex gap-2">
+            <div class="dropdown dropdown-hover">
+              <div tabindex="0" role="button" class="btn border border-neutral">
+                <div class="w-60 rounded-t-lg p-2 group-hover:bg-white">
+                  Category: {{ _categoryName }}
+                </div>
               </div>
-            </div>
-            <ul
-              tabindex="0"
-              class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
-            >
-              <li @click="_selected = ''">
-                <a> Not categorized </a>
-              </li>
-              <li
-                v-for="c in _categories"
-                :key="c.id"
-                @click="_selected = c.id"
+              <ul
+                tabindex="0"
+                class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
               >
-                <a> {{ c.name }} </a>
-              </li>
-            </ul>
+                <li @click="_selected = ''">
+                  <a> Not categorized </a>
+                </li>
+                <li
+                  v-for="c in _categories"
+                  :key="c.id"
+                  @click="_selected = c.id"
+                >
+                  <a> {{ c.name }} </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <NotesState @save="updateGuests" :state="data.state" />
+            </div>
           </div>
         </div>
         <div class="w-full">

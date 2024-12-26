@@ -18,6 +18,8 @@ const _categoryName = computed(() => {
   }
 })
 
+const state = ref('private')
+
 const _adding = ref(false)
 const _noteTitle = ref('')
 const _noteBody = ref('')
@@ -37,6 +39,8 @@ function del() {
   _noteBody.value = ''
 }
 
+const guestsIDs = ref<string[]>([])
+
 function save() {
   if (_noteTitle.value.trim() == '') {
     $toast.error('Title is required')
@@ -46,15 +50,24 @@ function save() {
     $toast.error('Body is required')
     return
   }
+
   const n: Note = {
     id: '0',
     title: _noteTitle.value,
     body: _noteBody.value,
-    category_id: _selected.value == '' ? undefined : _selected.value
+    category_id: _selected.value == '' ? undefined : _selected.value,
+    state: state.value,
+    shared_with: state.value == 'shared' ? guestsIDs.value : [],
+    user_id: '0'
   }
 
   $emits('save', n)
   del()
+}
+
+const updateGuests = (g: string[], s: string) => {
+  guestsIDs.value = g
+  state.value = s
 }
 </script>
 
@@ -88,36 +101,40 @@ function save() {
       >
         <button class="btn btn-error" @click="del()">Cancel</button>
 
-        <div class="dropdown dropdown-hover w-52">
-          <div
-            tabindex="0"
-            role="button"
-            class="btn m-1 w-full bg-neutral-content text-neutral hover:bg-neutral-300"
-          >
-            <span
-              class="block w-full"
-              :class="{ 'text-gray-600': _selected.length == 0 }"
+        <div class="flex gap-4">
+          <div class="dropdown dropdown-hover w-52">
+            <div
+              tabindex="0"
+              role="button"
+              class="btn w-full bg-neutral-content text-neutral hover:bg-neutral-300"
             >
-              {{ _categoryName }}
-            </span>
+              <span
+                class="block w-full"
+                :class="{ 'text-gray-600': _selected.length == 0 }"
+              >
+                {{ _categoryName }}
+              </span>
+            </div>
+            <ul
+              tabindex="0"
+              class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
+            >
+              <li @click="_selected = ''">
+                <a> Not categorized </a>
+              </li>
+              <li
+                v-for="c in $props.categories"
+                :key="c.id"
+                @click="_selected = c.id"
+              >
+                <a>
+                  {{ c.name }}
+                </a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabindex="0"
-            class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
-          >
-            <li @click="_selected = ''">
-              <a> Not categorized </a>
-            </li>
-            <li
-              v-for="c in $props.categories"
-              :key="c.id"
-              @click="_selected = c.id"
-            >
-              <a>
-                {{ c.name }}
-              </a>
-            </li>
-          </ul>
+
+          <NotesState @save="updateGuests" />
         </div>
 
         <button class="btn btn-success" @click="save()">Save</button>
