@@ -74,6 +74,31 @@ export function getTasksForDay(
     .sort((a, b) => a.end - b.end)
 }
 
+export function getPomodorosForDay(
+  pomodoro: PomodoroEvent[] | null,
+  displayDate: Date,
+  day: number,
+  index: number
+): PomodoroEvent[] {
+  let date: Date | null = null
+  if (isInPreviousMonth(displayDate, index)) {
+    date = new Date(displayDate.getFullYear(), displayDate.getMonth() - 1, day)
+  } else if (isInNextMonth(displayDate, index)) {
+    date = new Date(displayDate.getFullYear(), displayDate.getMonth() + 1, day)
+  } else {
+    date = new Date(displayDate.getFullYear(), displayDate.getMonth(), day)
+  }
+  if (!pomodoro) {
+    return []
+  }
+  return pomodoro
+    .filter((e) => {
+      const taskDate = new Date(e.date)
+      return taskDate.toDateString() === date.toDateString()
+    })
+    .sort((a, b) => a.date - b.date)
+}
+
 export function getEventsForDay2(
   events: EventType[] | null,
   day: Date
@@ -125,4 +150,16 @@ export function isToday2(today: Date, day: Date): boolean {
 
 export function isInThePast(today: Date, e: EventType | Task): boolean {
   return e.end < today.getTime()
+}
+
+export function isInThePastPomodoro(today: Date, e: PomodoroEvent): boolean {
+  let ne = new Date(e.date)
+  const todayDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  )
+  const eventDate = new Date(ne.getFullYear(), ne.getMonth(), ne.getDate())
+
+  return eventDate < todayDate
 }

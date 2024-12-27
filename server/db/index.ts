@@ -8,6 +8,7 @@ export { default as Message } from './chat-message'
 export { default as Notification } from './notification'
 export { default as Project } from './project'
 export { default as ProjectTask } from './project-task'
+export { default as PomodoroEvent } from './pomodoro-events'
 
 //export type { INote } from './note'
 export type { IUser } from './user'

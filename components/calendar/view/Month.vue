@@ -3,6 +3,7 @@ const $props = defineProps<{
   events: EventType[] | null
   eventsGuest: EventType[] | null
   tasks: Task[] | null
+  pomodoro: PomodoroEvent[] | null
   displayDate: Date
   today: Date
 }>()
@@ -40,6 +41,7 @@ interface CalendarCell {
   events: EventType[]
   eventsGuest: EventType[]
   tasks: Task[]
+  pomodoros: PomodoroEvent[]
 }
 
 const calendar = computed((): CalendarCell[] => {
@@ -63,6 +65,12 @@ const calendar = computed((): CalendarCell[] => {
       ),
       tasks: getTasksForDay(
         $props.tasks,
+        $props.displayDate,
+        _days.value[index],
+        index
+      ),
+      pomodoros: getPomodorosForDay(
+        $props.pomodoro,
         $props.displayDate,
         _days.value[index],
         index
@@ -117,6 +125,13 @@ const calendar = computed((): CalendarCell[] => {
         v-for="task in c.tasks"
         :key="task.id"
         :task="task"
+        :today="$props.today"
+      />
+
+      <CalendarPomodoro
+        v-for="pomodoro in c.pomodoros"
+        :key="pomodoro.id"
+        :pomodoro="pomodoro"
         :today="$props.today"
       />
     </div>

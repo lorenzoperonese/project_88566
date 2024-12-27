@@ -29,6 +29,16 @@ export declare global {
     cycles: number
   }
 
+  interface PomodoroEvent {
+    id: string
+    title: string
+    date: number
+    study: number
+    break: number
+    cycles: number
+    user_id: string
+  }
+
   enum RepetitionPeriod {
     Day = 1,
     Week = 2,

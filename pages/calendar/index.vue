@@ -16,9 +16,13 @@ const { data: _eventsGuest } = await useFetch<EventType[]>(
   { query: { status: 'accepted' } }
 )
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
+const { data: _pomodoro } = await useFetch<PomodoroEvent[]>(
+  '/api/pomodoro-events'
+)
 
 // true => add event, false => add task
 const _add_event_task = ref(false)
+const _add_event_pomodoro = ref(false)
 const input = useTemplateRef('modal')
 
 const fetchEvents = async () => {
@@ -31,10 +35,19 @@ const fetchTasks = async () => {
   _tasks.value = tmp
 }
 
+const fetchPomodoro = async () => {
+  const tmp = await $fetch('/api/pomodoro-events')
+  _pomodoro.value = tmp
+}
+
 function closeModal() {
   console.log('CLOSED')
   if (_add_event_task.value) {
-    fetchEvents()
+    if (_add_event_pomodoro.value) {
+      fetchPomodoro()
+    } else {
+      fetchEvents()
+    }
     console.log('fetchedTasks')
   } else {
     fetchTasks()
@@ -59,6 +72,12 @@ function addTask() {
 
 function addEvent() {
   _add_event_task.value = true
+  showModal()
+}
+
+function addPomodoro() {
+  _add_event_task.value = true
+  _add_event_pomodoro.value = true
   showModal()
 }
 
@@ -131,6 +150,7 @@ async function updateToday() {
 
   fetchEvents()
   fetchTasks()
+  fetchPomodoro()
 }
 
 function changeView(view: string) {
@@ -188,17 +208,19 @@ function header(): string {
       :events="_events"
       :events-guest="_eventsGuest"
       :tasks="_tasks"
+      :pomodoro="_pomodoro"
       :week-days="_weekDays"
     />
 
     <dialog id="modal" ref="modal" class="modal">
       <div class="modal-box">
         <CalendarEventAdder
-          v-if="_add_event_task"
+          v-if="_add_event_task && !_add_event_pomodoro"
           :modal="true"
           @close="closeModal"
         />
-        <CalendarTaskAdder v-else @close="closeModal" />
+        <CalendarTaskAdder v-if="!_add_event_task" @close="closeModal" />
+        <CalendarPomodoroAdder v-if="_add_event_pomodoro" @close="closeModal" />
       </div>
     </dialog>
 
@@ -227,6 +249,7 @@ function header(): string {
         >
           <li><a @click="addEvent"> Event </a></li>
           <li><a @click="addTask"> Task </a></li>
+          <li><a @click="addPomodoro"> Pomodoro </a></li>
         </ul>
       </div>
     </div>

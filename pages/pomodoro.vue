@@ -9,6 +9,8 @@ interface Timer {
   cycles: number
 }
 
+const _route = useRoute()
+
 const showPropose = ref(false)
 const isTimerRunning = ref(false)
 const timer = ref<Timer>({
@@ -16,6 +18,15 @@ const timer = ref<Timer>({
   break: 5,
   cycles: 5
 })
+
+if (_route.query.id) {
+  let tmp = await $fetch(`/api/pomodoro-events/${_route.query.id}`)
+  if (tmp) {
+    timer.value.study = tmp.study
+    timer.value.break = tmp.break
+    timer.value.cycles = tmp.cycles
+  }
+}
 
 function handleProposalAccept(proposal: Timer) {
   timer.value = proposal
