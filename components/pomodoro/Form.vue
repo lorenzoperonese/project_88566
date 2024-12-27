@@ -31,7 +31,25 @@ watch([_study, _break, isStudying], () => {
   }
 })
 
-const $emit = defineEmits(['start', 'stop', 'pause'])
+watch(_cycleCounter, () => {
+  if (_cycleCounter.value > 1) {
+    $emit('cycle')
+  }
+})
+
+import { watch } from 'vue'
+
+watch(
+  () => $props.timer,
+  (newVal) => {
+    _study.value = newVal.study
+    _break.value = newVal.break
+    _cycles.value = newVal.cycles
+  },
+  { deep: true }
+)
+
+const $emit = defineEmits(['start', 'stop', 'pause', 'cycle'])
 
 const timeDisplay = computed(() => {
   const pad = (num: number) => num.toString().padStart(2, '0')
@@ -67,6 +85,7 @@ function start(toast: boolean = true) {
       _seconds.value = 59
     } else {
       if (isStudying.value && _cycles.value <= _cycleCounter.value) {
+        $emit('cycle')
         stop()
       } else {
         const msg = isStudying.value
@@ -112,8 +131,10 @@ function restart() {
 function skip() {
   _paused.value = false
   if (_timer) clearInterval(_timer)
-  if (isStudying.value && _cycles.value <= _cycleCounter.value) stop()
-  else {
+  if (isStudying.value && _cycles.value <= _cycleCounter.value) {
+    $emit('cycle')
+    stop()
+  } else {
     if (!isStudying.value) _cycleCounter.value++
     isStudying.value = !isStudying.value
     start(false)

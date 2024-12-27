@@ -10,6 +10,7 @@ interface Timer {
 }
 
 const _route = useRoute()
+const _id = ref(_route.query.id as string | undefined)
 
 const showPropose = ref(false)
 const isTimerRunning = ref(false)
@@ -19,8 +20,22 @@ const timer = ref<Timer>({
   cycles: 5
 })
 
-if (_route.query.id) {
-  let tmp = await $fetch(`/api/pomodoro-events/${_route.query.id}`)
+async function fetchPomodoro() {
+  if (_id.value) {
+    let tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
+    if (tmp) {
+      timer.value = {
+        study: tmp.study,
+        break: tmp.break,
+        cycles: tmp.cycles
+      } as Timer
+    }
+  }
+}
+await fetchPomodoro()
+
+if (_id.value) {
+  let tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
   if (tmp) {
     timer.value.study = tmp.study
     timer.value.break = tmp.break
@@ -42,6 +57,7 @@ function handleTimerStart() {
 }
 
 function handleTimerStop() {
+  fetchPomodoro()
   isTimerRunning.value = false
   animationState.value = 'stop'
 }
@@ -49,10 +65,19 @@ function handleTimerStop() {
 function handleTimerPause() {
   animationState.value = 'break'
 }
+
+function handleCycle() {
+  if (_id.value) {
+    $fetch(`/api/pomodoro-events/decrement/${_id.value}`, {
+      method: 'PUT'
+    })
+  }
+}
 </script>
 
 <template>
   <div>
+    {{ timer.cycles }}
     <div class="container mx-auto p-4">
       <h1 class="mb-6 text-center text-3xl font-bold">Pomodoro Timer</h1>
 
@@ -73,6 +98,7 @@ function handleTimerPause() {
         @start="handleTimerStart"
         @stop="handleTimerStop"
         @pause="handleTimerPause"
+        @cycle="handleCycle"
       />
     </div>
     <div class="grid">
