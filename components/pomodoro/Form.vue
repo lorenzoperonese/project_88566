@@ -2,6 +2,9 @@
 const $props = defineProps({
   timer: { type: Object as PropType<Timer>, required: true }
 })
+
+const actualTime = defineModel()
+
 const { $toast } = useNuxtApp()
 const _study = ref($props.timer.study)
 const _break = ref($props.timer.break)
@@ -11,7 +14,6 @@ const _paused = ref(false)
 const _cycleCounter = ref(1)
 
 const _propose = ref(false)
-
 const _seconds = ref(0)
 const _minutes = ref(0)
 const _hours = ref(0)
@@ -19,7 +21,17 @@ let _timer: NodeJS.Timeout | null = null
 
 const isStudying = ref(true)
 
-const emit = defineEmits(['start', 'stop'])
+watch([_study, _break, isStudying], () => {
+  if (isStudying.value == true) {
+    if (typeof _study.value === 'number') actualTime.value = _study.value
+    else actualTime.value = 0
+  } else {
+    if (typeof _break.value === 'number') actualTime.value = _break.value
+    else actualTime.value = 0
+  }
+})
+
+const $emit = defineEmits(['start', 'stop', 'pause'])
 
 const timeDisplay = computed(() => {
   const pad = (num: number) => num.toString().padStart(2, '0')
@@ -38,8 +50,7 @@ function start(toast: boolean = true) {
     $toast.error('Valori non validi')
     return
   }
-  if (toast) $toast.success('Pomodoro iniziato')
-  emit('start')
+  $emit('start')
   _counting.value = true
   if (!_paused.value) calculateTime()
   else _paused.value = false
@@ -70,7 +81,7 @@ function start(toast: boolean = true) {
   }, 1000)
 }
 function stop() {
-  emit('stop')
+  $emit('stop')
   _study.value = $props.timer.study
   _break.value = $props.timer.break
   _cycles.value = $props.timer.cycles
@@ -78,41 +89,35 @@ function stop() {
   _counting.value = false
   _paused.value = false
   isStudying.value = true
-  $toast.success('Pomodoro terminato, a domani!')
   if (_timer) clearInterval(_timer)
 }
+
 function pause() {
   _paused.value = true
-  $toast.success('Pomodoro in pausa, prenditi il tuo tempo!')
+  $emit('pause')
   if (_timer) clearInterval(_timer)
 }
+
 function restart() {
   _paused.value = false
   const msg = isStudying.value
-    ? 'Ciclo di studio ricominciato, resta concentrato'
-    : 'Ciclo di pausa ricominciato, non esagerare!'
+    ? 'Resta concentrato stavolta'
+    : 'Non esagerare con la pausa!'
   $toast.success(msg)
   if (_timer) clearInterval(_timer)
   calculateTime()
   start(false)
 }
+
 function skip() {
   _paused.value = false
   if (_timer) clearInterval(_timer)
   if (isStudying.value && _cycles.value <= _cycleCounter.value) stop()
   else {
-    const msg = isStudying.value
-      ? 'Ciclo di studio saltato, ora rilassati!'
-      : 'Ciclo di pausa saltato, rimettiti al lavoro!'
-    $toast.success(msg)
     if (!isStudying.value) _cycleCounter.value++
     isStudying.value = !isStudying.value
     start(false)
   }
-}
-function resume() {
-  $toast.success('Pomodoro ripreso, concentrati!')
-  start(false)
 }
 </script>
 
@@ -164,7 +169,7 @@ function resume() {
         <button v-if="!_paused" class="btn btn-warning" @click="pause">
           Pausa
         </button>
-        <button v-else class="btn btn-info" @click="resume()">Riprendi</button>
+        <button v-else class="btn btn-info" @click="start()">Riprendi</button>
         <button class="btn btn-secondary" @click="skip()">Salta</button>
         <button class="btn btn-error" @click="stop()">Ferma</button>
         <button class="btn btn-success" @click="restart()">Ricomincia</button>

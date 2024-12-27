@@ -22,34 +22,54 @@ function handleProposalAccept(proposal: Timer) {
   showPropose.value = false
 }
 
+const animationState = ref<'study' | 'break' | 'stop'>('break')
+const animationTimer = ref(30)
+
 function handleTimerStart() {
   isTimerRunning.value = true
+  animationState.value = 'study'
 }
 
 function handleTimerStop() {
   isTimerRunning.value = false
+  animationState.value = 'stop'
+}
+
+function handleTimerPause() {
+  animationState.value = 'break'
 }
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="mb-6 text-center text-3xl font-bold">Pomodoro Timer</h1>
+  <div>
+    <div class="container mx-auto p-4">
+      <h1 class="mb-6 text-center text-3xl font-bold">Pomodoro Timer</h1>
 
-    <div v-if="!isTimerRunning" class="mb-4 text-center">
-      <button class="btn btn-info" @click="showPropose = !showPropose">
-        {{ showPropose ? 'Imposta manualmente' : 'Proponi un Pomodoro' }}
-      </button>
+      <div v-if="!isTimerRunning" class="mb-4 text-center">
+        <button class="btn btn-info" @click="showPropose = !showPropose">
+          {{ showPropose ? 'Imposta manualmente' : 'Proponi un Pomodoro' }}
+        </button>
+      </div>
+
+      <PomodoroPropose
+        v-if="showPropose && !isTimerRunning"
+        @accept="handleProposalAccept"
+      />
+      <PomodoroForm
+        v-else
+        v-model="animationTimer"
+        :timer="timer"
+        @start="handleTimerStart"
+        @stop="handleTimerStop"
+        @pause="handleTimerPause"
+      />
     </div>
-
-    <PomodoroPropose
-      v-if="showPropose && !isTimerRunning"
-      @accept="handleProposalAccept"
-    />
-    <PomodoroForm
-      v-else
-      :timer="timer"
-      @start="handleTimerStart"
-      @stop="handleTimerStop"
-    />
+    <div class="grid">
+      <PomodoroAnimation
+        class="place-self-center"
+        :state="animationState"
+        :timer="animationTimer"
+      />
+    </div>
   </div>
 </template>
