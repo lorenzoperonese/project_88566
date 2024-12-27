@@ -178,7 +178,16 @@ function skip() {
           />
         </div>
       </div>
-      <button class="btn btn-success" @click="start()">Inizia</button>
+      <div class="flex justify-center">
+        <div class="flex gap-2">
+          <button class="btn btn-success" @click="start()">Inizia</button>
+          <PomodoroShareModal
+            :study="_study"
+            :break="_break"
+            :cycle="_cycles"
+          />
+        </div>
+      </div>
     </div>
 
     <div v-else class="text-center">

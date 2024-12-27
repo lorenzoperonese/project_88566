@@ -8,7 +8,9 @@ async function send() {
   const res = await sendNotificationFront(
     'Hello world',
     'This is the body of the hello world',
-    user.value
+    user.value,
+    'basic',
+    undefined
   )
 
   if (res.status === 'error') {

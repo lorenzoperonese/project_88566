@@ -4,7 +4,9 @@ import type { JSONResponse } from '~/types'
 export async function sendNotificationFront(
   title: string,
   body: string,
-  receiver: string
+  receiver: string,
+  type: string,
+  indentifier: string | undefined
 ): Promise<JSONResponse> {
   try {
     const res = await $fetch('/api/notifications', {
@@ -12,7 +14,9 @@ export async function sendNotificationFront(
       body: JSON.stringify({
         title: title,
         body: body,
-        receiver: receiver
+        receiver: receiver,
+        type: type,
+        identifier: indentifier
       })
     })
 

@@ -33,6 +33,14 @@ function notificationLink(
       break
     case 'project-invited':
       navigateTo(`/projects/${identifier}/accept`)
+
+    case 'pomodoro-shared':
+      const [study, breakTime, cycles] = identifier ? identifier.split(',') : []
+      navigateTo(
+        `/pomodoro/?study=${study}&break=${breakTime}&cycles=${cycles}`
+      )
+      break
+
     default:
       break
   }

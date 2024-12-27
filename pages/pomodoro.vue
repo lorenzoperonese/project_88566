@@ -20,6 +20,14 @@ const timer = ref<Timer>({
   cycles: 5
 })
 
+if (_route.query.study && _route.query.break && _route.query.cycles) {
+  timer.value = {
+    study: parseInt(_route.query.study as string),
+    break: parseInt(_route.query.break as string),
+    cycles: parseInt(_route.query.cycles as string)
+  }
+}
+
 async function fetchPomodoro() {
   if (_id.value) {
     let tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
@@ -101,7 +109,7 @@ function handleCycle() {
         @cycle="handleCycle"
       />
     </div>
-    <div class="grid">
+    <div class="grid" v-show="!showPropose">
       <PomodoroAnimation
         class="place-self-center"
         :state="animationState"

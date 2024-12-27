@@ -34,12 +34,14 @@ export default defineEventHandler(async (event): Promise<JSONResponse> => {
     }
   }
 
+  if (!body.type) {
+    body.type = 'basic'
+  }
+
   try {
     const receiver_id = await User.findOne({ username: body.receiver }).select(
       '_id'
     )
-
-    console.log(receiver_id)
 
     if (!receiver_id) {
       setResponseStatus(event, 400)
