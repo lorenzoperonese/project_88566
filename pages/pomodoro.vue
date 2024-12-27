@@ -44,6 +44,7 @@ if (_id.value) {
 }
 
 function handleProposalAccept(proposal: Timer) {
+  _id.value = undefined
   timer.value = proposal
   showPropose.value = false
 }
@@ -77,7 +78,6 @@ function handleCycle() {
 
 <template>
   <div>
-    {{ timer.cycles }}
     <div class="container mx-auto p-4">
       <h1 class="mb-6 text-center text-3xl font-bold">Pomodoro Timer</h1>
 
