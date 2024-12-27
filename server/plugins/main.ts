@@ -1,5 +1,5 @@
 // @ts-ignore
-import { updateTasks, updateProjectTasks } from '#imports'
+import { updateTasks, updateProjectTasks, updatePomodoros } from '#imports'
 
 export default defineNitroPlugin(async () => {
   //while (true) {
@@ -13,8 +13,7 @@ export default defineNitroPlugin(async () => {
 async function mainCycle() {
   await new Promise((resolve) => setTimeout(resolve, 4000))
   while (true) {
-    updateTasks()
-    updateProjectTasks()
+    await Promise.all([updateTasks(), updateProjectTasks(), updatePomodoros()])
 
     await new Promise((resolve) => setTimeout(resolve, 5000))
   }
