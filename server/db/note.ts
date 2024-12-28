@@ -11,6 +11,7 @@ export interface INote extends Document {
   state: string // private, shared, public
   shared_with: Types.ObjectId[]
   updatedAt: Date
+  createdAt: Date
 }
 
 const schema = new Schema<INote>(

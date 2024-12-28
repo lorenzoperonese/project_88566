@@ -34,6 +34,14 @@ const _categoryName = computed(() => {
       <h3 class="text-lg font-bold text-gray-300">
         {{ _note.state }}
       </h3>
+      <h4>
+        Created: {{ formatDate(_note.created_at || 0) }} -
+        {{ formatTime(_note.created_at || 0) }}
+      </h4>
+      <h4>
+        Updated: {{ formatDate(_note.updated_at || 0) }} -
+        {{ formatTime(_note.updated_at || 0) }}
+      </h4>
       <div class="prose">
         <MDC :value="_note.body" />
       </div>

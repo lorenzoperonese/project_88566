@@ -29,8 +29,10 @@ export default defineEventHandler(async (event): Promise<Note | null> => {
       body: n.body,
       category_id: n.category_id,
       updated_at: n.updatedAt.getTime(),
+      created_at: n.createdAt.getTime(),
       state: n.state,
-      shared_with: n.shared_with.map((user) => user.username)
+      shared_with: n.shared_with.map((user) => user.username),
+      user_id: n.user_id.toString()
     } as Note
   } catch (err) {
     console.error(err)
