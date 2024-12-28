@@ -4,14 +4,15 @@ const $emits = defineEmits<{
 }>()
 
 const $props = defineProps<{
-  day: string
+  startDay: string
+  endDay: string
   repetition: Repetition | null
 }>()
 
 const { $toast } = useNuxtApp()
 
 const onoff = ref(false)
-const day = new Date($props.day).getDate()
+const day = new Date($props.startDay).getDate()
 
 const weekNumber = (d: string) => {
   const date = new Date(d)
@@ -43,7 +44,7 @@ const _eventPeriod = ref<RepetitionPeriod>(1)
 const _weekDays = ref<number[]>([])
 const _monthRepetition = ref(1)
 const _ends = ref('Never')
-const _endDate = ref($props.day)
+const _endDate = ref($props.startDay)
 const _endAfter = ref(1)
 
 if ($props.repetition !== null) {
@@ -70,7 +71,7 @@ if ($props.repetition !== null) {
   _endDate.value =
     _ends.value == 'On' && $props.repetition.endOn
       ? formatDate($props.repetition.endOn)
-      : $props.day
+      : $props.startDay
   _endAfter.value =
     _ends.value == 'After' && $props.repetition.endAfter
       ? $props.repetition.endAfter
@@ -118,7 +119,7 @@ function save() {
 
   if (_ends.value == 'Day') {
     r.endOn = new Date(_endDate.value).getTime()
-    if (r.endOn < new Date().getTime()) {
+    if (r.endOn < new Date($props.endDay).getTime()) {
       $toast.error('End date must be in the future')
       return
     }
@@ -126,6 +127,7 @@ function save() {
     r.endAfter = _endAfter.value
   }
   $emits('save', r)
+  close()
 }
 
 function close() {
@@ -188,7 +190,7 @@ function close() {
 
             <div v-show="_eventPeriod == 2" class="flex gap-3">
               <template
-                v-for="[i, o] in ['M', 'T', 'W', 'T', 'F', 'S', 'S'].entries()"
+                v-for="[i, o] in ['S', 'M', 'T', 'W', 'T', 'F', 'S'].entries()"
                 :key="i"
               >
                 <input
@@ -210,9 +212,9 @@ function close() {
                     value: 2,
                     name:
                       'Monthly on the' +
-                      weekNumber($props.day) +
+                      weekNumber($props.startDay) +
                       ' ' +
-                      days[new Date($props.day).getDay()]
+                      days[new Date($props.startDay).getDay()]
                   }
                 ]"
               />

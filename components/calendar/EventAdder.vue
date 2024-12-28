@@ -259,7 +259,8 @@ function addGuest(g: string) {
       <div v-if="!modal">
         <div>
           <CalendarRepetition
-            :day="_startDate"
+            :start-day="_startDate"
+            :end-day="_endDate"
             :repetition="_repetition"
             @save="addRepetition"
           />
