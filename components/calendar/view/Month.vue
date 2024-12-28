@@ -48,33 +48,19 @@ const calendar = computed((): CalendarCell[] => {
   const result: CalendarCell[] = []
 
   for (let index = 0; index < _days.value.length; index++) {
+    const normalizedDate = getNormalizedDate(
+      $props.displayDate,
+      _days.value[index],
+      index
+    )
+
     result.push({
       index,
       day: _days.value[index],
-      events: getEventsForDay(
-        $props.events,
-        $props.displayDate,
-        _days.value[index],
-        index
-      ),
-      eventsGuest: getEventsForDay(
-        $props.eventsGuest,
-        $props.displayDate,
-        _days.value[index],
-        index
-      ),
-      tasks: getTasksForDay(
-        $props.tasks,
-        $props.displayDate,
-        _days.value[index],
-        index
-      ),
-      pomodoros: getPomodorosForDay(
-        $props.pomodoro,
-        $props.displayDate,
-        _days.value[index],
-        index
-      )
+      events: getEventsForDay($props.events, normalizedDate),
+      eventsGuest: getEventsForDay($props.eventsGuest, normalizedDate),
+      tasks: getTasksForDay($props.tasks, normalizedDate),
+      pomodoros: getPomodorosForDay($props.pomodoro, normalizedDate)
     })
   }
   return result

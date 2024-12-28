@@ -142,7 +142,7 @@ function getRepetitionOccurrences(
 }
 
 // Helper function to get the normalized date for comparison
-function getNormalizedDate(
+export function getNormalizedDate(
   displayDate: Date,
   day: number,
   index: number
@@ -201,9 +201,7 @@ function doesItemOccurOnDate<T extends BaseItem>(
 // Generic function to get items for a specific day
 function getItemsForDay<T extends BaseItem>(
   items: T[] | null,
-  displayDate: Date,
-  day: number,
-  index: number,
+  day: Date,
   options: {
     startField?: DateField
     endField?: DateField
@@ -218,12 +216,8 @@ function getItemsForDay<T extends BaseItem>(
     sortField = startField
   } = options
 
-  const normalizedDate = getNormalizedDate(displayDate, day, index)
-
   let tmp = items
-    .filter((item) =>
-      doesItemOccurOnDate(item, normalizedDate, startField, endField)
-    )
+    .filter((item) => doesItemOccurOnDate(item, day, startField, endField))
     .sort((a, b) => (a[sortField] as number) - (b[sortField] as number))
 
   return tmp
@@ -232,24 +226,17 @@ function getItemsForDay<T extends BaseItem>(
 // Specific implementations using the generic function
 export function getEventsForDay(
   events: EventType[] | null,
-  displayDate: Date,
-  day: number,
-  index: number
+  day: Date
 ): EventType[] {
-  return getItemsForDay(events, displayDate, day, index, {
+  return getItemsForDay(events, day, {
     startField: 'start',
     endField: 'end',
     sortField: 'start'
   })
 }
 
-export function getTasksForDay(
-  tasks: Task[] | null,
-  displayDate: Date,
-  day: number,
-  index: number
-): Task[] {
-  return getItemsForDay(tasks, displayDate, day, index, {
+export function getTasksForDay(tasks: Task[] | null, day: Date): Task[] {
+  return getItemsForDay(tasks, day, {
     startField: 'end',
     endField: 'end',
     sortField: 'end'
@@ -258,11 +245,9 @@ export function getTasksForDay(
 
 export function getPomodorosForDay(
   pomodoros: PomodoroEvent[] | null,
-  displayDate: Date,
-  day: number,
-  index: number
+  day: Date
 ): PomodoroEvent[] {
-  return getItemsForDay(pomodoros, displayDate, day, index, {
+  return getItemsForDay(pomodoros, day, {
     startField: 'date',
     endField: 'date',
     sortField: 'date'
