@@ -55,8 +55,14 @@ watch(data, (newData) => {
   }
 })
 
+const route = useRoute()
+
 onMounted(async () => {
   await fetchRooms()
+  if (route.query.id) {
+    current_room_id.value = route.query.id as string
+    console.log('Room id:', current_room_id.value)
+  }
 })
 
 async function fetchRooms() {
