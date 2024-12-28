@@ -143,8 +143,9 @@ watch(
         </div>
         <input
           type="number"
+          min="1"
           v-model="localSettings.home.chatLimit"
-          class="input input-bordered w-full max-w-xs"
+          class="input input-bordered w-full max-w-xs invalid:border-error invalid:text-error"
         />
 
         <div class="label">
@@ -152,8 +153,9 @@ watch(
         </div>
         <input
           type="number"
+          min="1"
           v-model="localSettings.home.projectsLimit"
-          class="input input-bordered w-full max-w-xs"
+          class="input input-bordered w-full max-w-xs invalid:border-error invalid:text-error"
         />
       </div>
     </form>

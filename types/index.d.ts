@@ -5,7 +5,7 @@ export declare global {
     body: string
     category_id?: string
     updated_at?: number
-    user_id: string
+    user_id: string // private, public, shared
     state: string
     shared_with: string[]
   }

@@ -3,6 +3,10 @@ const { data: _events } = await useFetch<EventType[]>('/api/events')
 const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
 const today = await getToday()
 
+const $props = defineProps<{
+  settings: HomeSettings
+}>()
+
 const today_events = computed(() => {
   if (!_events.value) return []
 
@@ -30,18 +34,32 @@ const empty = computed(
 
 <template>
   <div class="flex flex-col">
-    <CalendarEvent
-      v-for="e in today_events"
-      :key="e.id"
-      :event="e"
-      :today="today"
-    />
-    <CalendarTask
-      v-for="t in today_tasks"
-      :key="t.id"
-      :task="t"
-      :today="today"
-    />
+    <div
+      v-if="
+        $props.settings.calendarFilter == 'all' ||
+        $props.settings.calendarFilter == 'events'
+      "
+    >
+      <CalendarEvent
+        v-for="e in today_events"
+        :key="e.id"
+        :event="e"
+        :today="today"
+      />
+    </div>
+    <div
+      v-if="
+        $props.settings.calendarFilter == 'all' ||
+        $props.settings.calendarFilter == 'tasks'
+      "
+    >
+      <CalendarTask
+        v-for="t in today_tasks"
+        :key="t.id"
+        :task="t"
+        :today="today"
+      />
+    </div>
     <div v-if="empty" class="text-center">Today is free</div>
   </div>
 </template>

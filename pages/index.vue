@@ -34,6 +34,7 @@ watch(updateSettings as any, () => {
         <div class="divider"></div>
 
         <CalendarPreview
+          :settings="settings.home"
           v-if="settings?.home.showCalendar"
           class="max-h-72 overflow-y-auto py-2"
         />
@@ -48,6 +49,7 @@ watch(updateSettings as any, () => {
         <div class="divider"></div>
 
         <NotesPreview
+          :settings="settings.home"
           v-if="settings?.home.showNotes"
           class="max-h-72 overflow-y-auto py-2"
         />
@@ -61,6 +63,7 @@ watch(updateSettings as any, () => {
         <div class="divider"></div>
 
         <PomodoroPreview
+          :settings="settings.home"
           v-if="settings?.home.showPomodoro"
           class="max-h-72 overflow-y-auto py-2"
         />
@@ -74,6 +77,7 @@ watch(updateSettings as any, () => {
         <div class="divider"></div>
 
         <ChatPreview
+          :settings="settings.home"
           v-if="settings?.home.showChat"
           class="max-h-72 overflow-y-auto py-2"
         />
@@ -88,6 +92,7 @@ watch(updateSettings as any, () => {
         <div class="divider"></div>
 
         <ProjectsPreview
+          :settings="settings.home"
           v-if="settings?.home.showProjects"
           class="max-h-72 overflow-y-auto py-2"
         />

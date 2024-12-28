@@ -1,57 +1,72 @@
 <script setup lang="js">
-// This file is part of the projects and so is made with only js.
+// This file is part of the projects and so is made with only js (except a few lines).
 // This is a component in order to use it in the main page.
 
+const $props = defineProps(['settings'])
+let projects = []
+
+async function fetchProjects() {
+  console.log('Fetching projects')
+  try {
+    const res = await fetch('/api/projects')
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch projects')
+    }
+
+    projects = await res.json()
+  } catch (error) {
+    console.error(error)
+    showError('Could not delete project')
+  }
+}
+
+function listProjects() {
+  console.log('Listing projects')
+  let el_plist = document.getElementById('preview-projects-list')
+  console.log(projects)
+  console.log(projects.length)
+  if (projects.length == 0) {
+    let div = document.createElement('div')
+    div.innerText = 'No projects'
+    div.classList.add('text-center')
+    el_plist.appendChild(div)
+    return
+  }
+
+  el_plist.innerHTML = ''
+  let i = 0
+  for (const p in projects) {
+    if (i >= $props.settings.projectsLimit) {
+      break
+    }
+
+    let project = projects[p]
+    let link = document.createElement('a')
+    link.href = `/projects/${project.id}`
+    link.innerText = project.title
+    link.classList.add(
+      'w-full',
+      'rounded',
+      'border',
+      'border-neutral-700',
+      'p-2',
+      'hover:bg-base-100'
+    )
+    el_plist.appendChild(link)
+    i++
+  }
+}
+
+watch(
+  () => $props.settings,
+  () => {
+    listProjects()
+  },
+  { deep: true }
+)
+
 onMounted(async () => {
-  let projects = []
-
-  async function fetchProjects() {
-    console.log('Fetching projects')
-    try {
-      const res = await fetch('/api/projects')
-
-      if (!res.ok) {
-        throw new Error('Failed to fetch projects')
-      }
-
-      projects = await res.json()
-    } catch (error) {
-      console.error(error)
-      showError('Could not delete project')
-    }
-  }
-
-  function listProjects() {
-    console.log('Listing projects')
-    let el_plist = document.getElementById('preview-projects-list')
-    console.log(projects)
-    console.log(projects.length)
-    if (projects.length == 0) {
-      let div = document.createElement('div')
-      div.innerText = 'No projects'
-      div.classList.add('text-center')
-      el_plist.appendChild(div)
-      return
-    }
-
-    el_plist.innerHTML = ''
-    for (const p in projects) {
-      let project = projects[p]
-      let link = document.createElement('a')
-      link.href = `/projects/${project.id}`
-      link.innerText = project.title
-      link.classList.add(
-        'w-full',
-        'rounded',
-        'border',
-        'border-neutral-700',
-        'p-2',
-        'hover:bg-base-100'
-      )
-      el_plist.appendChild(link)
-    }
-  }
-
   await fetchProjects()
   listProjects()
 })
