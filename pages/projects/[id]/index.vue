@@ -133,7 +133,7 @@ onMounted(async () => {
       day.classList.add('items-center')
       day.classList.add('mx-2')
 
-      if (isToday2(today, i)) {
+      if (isToday(today, i)) {
         day.classList.add('text-primary')
       }
 

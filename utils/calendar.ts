@@ -254,52 +254,7 @@ export function getPomodorosForDay(
   })
 }
 
-export function getEventsForDay2(
-  events: EventType[] | null,
-  day: Date
-): EventType[] {
-  if (!events) {
-    return []
-  }
-  return events
-    .filter((e) => {
-      const eventDate = new Date(e.start)
-      return eventDate.toDateString() === day.toDateString()
-    })
-    .sort((a, b) => a.start - b.start)
-}
-
-export function getTasksForDay2(tasks: Task[] | null, day: Date): Task[] {
-  if (!tasks) {
-    return []
-  }
-
-  return tasks
-    .filter((e) => {
-      const taskDate = new Date(e.end)
-      return taskDate.toDateString() === day.toDateString()
-    })
-    .sort((a, b) => a.end - b.end)
-}
-
-export function isToday(
-  today: Date,
-  displayDate: Date,
-  day: number,
-  index: number
-): boolean {
-  let date: Date | null = null
-  if (isInPreviousMonth(displayDate, index)) {
-    date = new Date(displayDate.getFullYear(), displayDate.getMonth() - 1, day)
-  } else if (isInNextMonth(displayDate, index)) {
-    date = new Date(displayDate.getFullYear(), displayDate.getMonth() + 1, day)
-  } else {
-    date = new Date(displayDate.getFullYear(), displayDate.getMonth(), day)
-  }
-  return date.toDateString() === today.toDateString()
-}
-
-export function isToday2(today: Date, day: Date): boolean {
+export function isToday(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }
 

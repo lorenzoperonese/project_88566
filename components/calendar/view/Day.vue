@@ -3,6 +3,7 @@ const $props = defineProps<{
   events: EventType[] | null
   eventsGuest: EventType[] | null
   tasks: Task[] | null
+  pomodoro: PomodoroEvent[] | null
   displayDate: Date
   today: Date
 }>()
@@ -20,18 +21,18 @@ const $props = defineProps<{
       <div
         class="flex-grow overflow-y-auto p-2"
         :class="{
-          'bg-base-100': !isToday2($props.displayDate, $props.today),
-          'bg-base-200': isToday2($props.displayDate, $props.today)
+          'bg-base-100': !isToday($props.displayDate, $props.today),
+          'bg-base-200': isToday($props.displayDate, $props.today)
         }"
       >
         <CalendarEvent
-          v-for="event in getEventsForDay2($props.events, $props.displayDate)"
+          v-for="event in getEventsForDay($props.events, $props.displayDate)"
           :key="event.id"
           :event="event"
           :today="$props.today"
         />
         <CalendarEvent
-          v-for="event in getEventsForDay2(
+          v-for="event in getEventsForDay(
             $props.eventsGuest,
             $props.displayDate
           )"
@@ -42,9 +43,19 @@ const $props = defineProps<{
         />
 
         <CalendarTask
-          v-for="task in getTasksForDay2($props.tasks, $props.displayDate)"
+          v-for="task in getTasksForDay($props.tasks, $props.displayDate)"
           :key="task.id"
           :task="task"
+          :today="$props.today"
+        />
+
+        <CalendarPomodoro
+          v-for="pomodoro in getPomodorosForDay(
+            $props.pomodoro,
+            $props.displayDate
+          )"
+          :key="pomodoro.id"
+          :pomodoro="pomodoro"
           :today="$props.today"
         />
       </div>

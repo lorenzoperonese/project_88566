@@ -86,7 +86,10 @@ const calendar = computed((): CalendarCell[] => {
         <div
           :class="{
             'h-6 w-6 rounded-full bg-primary text-center text-primary-content':
-              isToday($props.today, $props.displayDate, c.day, c.index)
+              isToday(
+                $props.today,
+                getNormalizedDate($props.displayDate, c.day, c.index)
+              )
           }"
         >
           {{ c.day }}
