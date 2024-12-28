@@ -144,6 +144,24 @@ export declare global {
     guests: Guest
     user_id: string
   }
+
+  interface Settings {
+    home: HomeSettings
+  }
+
+  interface HomeSettings {
+    showCalendar: boolean
+    showNotes: boolean
+    showPomodoro: boolean
+    showChat: boolean
+    showProjects: boolean
+    calendarFilter: string // all, events, tasks
+    notesFilter: string // all, private, shared, public
+    pomodoroShowTimeIfPaused: boolean
+    chatShowHub: boolean
+    chatLimit: number
+    projectsLimit: number
+  }
 }
 
 export interface JSONResponse {

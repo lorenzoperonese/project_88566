@@ -2,6 +2,23 @@
 definePageMeta({
   layout: 'navbar'
 })
+
+const { data: settings } = await useFetch<Settings>('/api/settings')
+
+async function fetchSettings() {
+  const tmp = await $fetch('/api/settings')
+  if (!tmp) {
+    return
+  }
+  settings.value = tmp as Settings
+}
+
+const updateSettings = inject('settings')
+watch(updateSettings as any, () => {
+  if ((updateSettings as any).value) {
+    fetchSettings()
+  }
+})
 </script>
 
 <template>
@@ -16,7 +33,10 @@ definePageMeta({
 
         <div class="divider"></div>
 
-        <CalendarPreview class="max-h-72 overflow-y-auto py-2" />
+        <CalendarPreview
+          v-if="settings?.home.showCalendar"
+          class="max-h-72 overflow-y-auto py-2"
+        />
       </RouterLink>
 
       <NuxtLink
@@ -27,7 +47,10 @@ definePageMeta({
 
         <div class="divider"></div>
 
-        <NotesPreview class="max-h-72 overflow-y-auto py-2" />
+        <NotesPreview
+          v-if="settings?.home.showNotes"
+          class="max-h-72 overflow-y-auto py-2"
+        />
       </NuxtLink>
       <NuxtLink
         class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
@@ -37,7 +60,10 @@ definePageMeta({
 
         <div class="divider"></div>
 
-        <PomodoroPreview class="max-h-72 overflow-y-auto py-2" />
+        <PomodoroPreview
+          v-if="settings?.home.showPomodoro"
+          class="max-h-72 overflow-y-auto py-2"
+        />
       </NuxtLink>
       <NuxtLink
         class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
@@ -47,7 +73,10 @@ definePageMeta({
 
         <div class="divider"></div>
 
-        <ChatPreview class="max-h-72 overflow-y-auto py-2" />
+        <ChatPreview
+          v-if="settings?.home.showChat"
+          class="max-h-72 overflow-y-auto py-2"
+        />
       </NuxtLink>
 
       <NuxtLink
@@ -58,7 +87,10 @@ definePageMeta({
 
         <div class="divider"></div>
 
-        <ProjectsPreview class="max-h-72 overflow-y-auto py-2" />
+        <ProjectsPreview
+          v-if="settings?.home.showProjects"
+          class="max-h-72 overflow-y-auto py-2"
+        />
       </NuxtLink>
     </div>
 

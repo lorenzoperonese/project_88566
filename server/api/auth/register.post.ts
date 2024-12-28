@@ -1,4 +1,4 @@
-import { User } from '@/server/db'
+import { User, Settings } from '@/server/db'
 
 interface RegisterUser {
   username: string
@@ -44,6 +44,26 @@ export default defineEventHandler(async (event) => {
     })
 
     await user.save()
+
+    const s = new Settings({
+      user_id: user._id,
+      home: {
+        showCalendar: true,
+        showNotes: true,
+        showPomodoro: true,
+        showChat: true,
+        showProjects: true,
+        calendarFilter: 'all',
+        notesFilter: 'all',
+        pomodoroShowTimeIfPaused: true,
+        chatShowHub: true,
+        chatLimit: 10,
+        projectsLimit: 10
+      }
+    })
+
+    await s.save()
+
     return { message: 'User created successfuly' }
   } catch (err) {
     console.error(err)
