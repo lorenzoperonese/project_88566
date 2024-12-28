@@ -39,6 +39,8 @@ function closeModal() {
 }
 
 function logout() {
+  localStorage.removeItem('pomodoro-status')
+  localStorage.removeItem('pomodoro-timer')
   const { signOut } = useAuth()
 
   try {

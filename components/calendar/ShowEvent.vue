@@ -75,7 +75,11 @@ function notifyMessage(n: Notify[]) {
       <div>
         <div>Title: {{ $props.event.title.toUpperCase() }}</div>
         <div>
-          When: {{ formatTime($props.event.start, true) }} -
+          Start: {{ formatDate($props.event.start) }}
+          {{ formatTime($props.event.start, true) }}
+        </div>
+        <div>
+          End: {{ formatDate($props.event.end) }}
           {{ formatTime($props.event.end, true) }}
         </div>
         <div>
