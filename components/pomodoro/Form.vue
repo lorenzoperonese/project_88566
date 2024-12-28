@@ -63,14 +63,15 @@ function calculateTime() {
   _seconds.value = 0
 }
 
-function start(toast: boolean = true) {
+function start(recalculate = true) {
+  localStorage.setItem('pomodoro-status', 'running')
   if (_study.value < 1 || _break.value < 1 || _cycles.value < 1) {
     $toast.error('Valori non validi')
     return
   }
   $emit('start')
   _counting.value = true
-  if (!_paused.value) calculateTime()
+  if (!_paused.value && recalculate) calculateTime()
   else _paused.value = false
 
   _timer = setInterval(() => {
@@ -97,9 +98,14 @@ function start(toast: boolean = true) {
         calculateTime()
       }
     }
+    localStorage.setItem(
+      'pomodoro-timer',
+      JSON.stringify({ h: _hours.value, m: _minutes.value, s: _seconds.value })
+    )
   }, 1000)
 }
 function stop() {
+  localStorage.setItem('pomodoro-status', 'stopped')
   $emit('stop')
   _study.value = $props.timer.study
   _break.value = $props.timer.break
@@ -112,6 +118,7 @@ function stop() {
 }
 
 function pause() {
+  localStorage.setItem('pomodoro-status', 'paused')
   _paused.value = true
   $emit('pause')
   if (_timer) clearInterval(_timer)
@@ -125,7 +132,7 @@ function restart() {
   $toast.success(msg)
   if (_timer) clearInterval(_timer)
   calculateTime()
-  start(false)
+  start()
 }
 
 function skip() {
@@ -137,9 +144,30 @@ function skip() {
   } else {
     if (!isStudying.value) _cycleCounter.value++
     isStudying.value = !isStudying.value
-    start(false)
+    start()
   }
 }
+
+onMounted(() => {
+  let status = localStorage.getItem('pomodoro-status')
+  if (status == 'running' || status == 'paused') {
+    _counting.value = true
+    let timer = localStorage.getItem('pomodoro-timer')
+    if (timer) {
+      let timerp = JSON.parse(timer)
+      _hours.value = timerp.h
+      _minutes.value = timerp.m
+      _seconds.value = timerp.s
+    }
+    start(false)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (_counting.value) {
+    pause()
+  }
+})
 </script>
 
 <template>
