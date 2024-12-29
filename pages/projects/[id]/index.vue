@@ -342,6 +342,7 @@ onMounted(async () => {
   let taskID = null
 
   async function saveTask() {
+    console.log('Saving task')
     const title = document.getElementById('task-modal-title').value
     let description = document.getElementById('task-modal-description').value
     const phase = document.getElementById('task-modal-phase').value
@@ -350,6 +351,7 @@ onMounted(async () => {
     const end = document.getElementById('task-modal-end').value
     let input = document.getElementById('task-modal-input').value
     let output = document.getElementById('task-modal-output').value
+    console.log('Saving task 2')
     const dependency = document.getElementById(
       'task-modal-select-depends'
     ).value
@@ -367,7 +369,7 @@ onMounted(async () => {
     }
 
     if (!description) {
-      description = ''
+      showError('Description is required')
       return
     }
 
@@ -382,12 +384,12 @@ onMounted(async () => {
     }
 
     if (!input) {
-      input = ''
+      showError('Input is required')
       return
     }
 
     if (!output) {
-      output = ''
+      showError('Output is required')
       return
     }
 
@@ -517,6 +519,7 @@ onMounted(async () => {
     document.getElementById('task_modal').showModal()
   }
   document.getElementById('btn-add-task').addEventListener('click', addTask)
+  document.getElementById('task-modal-save').classList.remove('invisible')
 
   async function deleteTask() {
     try {
