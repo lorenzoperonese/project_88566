@@ -35,12 +35,19 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  let needAdmin = false
+  const admin = await User.findOne({ admin: true })
+  if (!admin) {
+    needAdmin = true
+  }
+
   try {
     const user = new User({
       username: body.username,
       password: body.password,
       name: body.name,
-      avatar: getRandomAvatar()
+      avatar: getRandomAvatar(),
+      admin: needAdmin
     })
 
     await user.save()

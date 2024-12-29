@@ -17,6 +17,7 @@ export declare global {
     name: string
     avatar: string
     theme: string
+    admin?: boolean
   }
 
   interface NoteCategory {
