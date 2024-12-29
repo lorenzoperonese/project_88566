@@ -81,6 +81,7 @@ export declare global {
     location: string | null
     note: string | null
     category: string
+    resource?: string | null
     repetition: Repetition | null
     notify: Notify[]
     guests: Guest
@@ -171,6 +172,7 @@ export declare global {
     start: number
     end: number
     note?: string
+    event_id?: string
   }
 
   interface ResourceList {

@@ -24,6 +24,16 @@ const { data: _resources } = await useFetch<Resource[]>('/api/resources')
 
 const me = await getME()
 
+const showResources = ref(false)
+
+const fResources = computed(() => {
+  if (showResources.value) {
+    return _resources.value
+  } else {
+    return []
+  }
+})
+
 // true => add event, false => add task
 const _add_element = ref(-1) // -1 => nothing, 0 => event, 1 => task, 2 => pomodoro, 3 => resource
 const input = useTemplateRef('modal')
@@ -52,6 +62,7 @@ function closeModal() {
   console.log('CLOSED')
   if (_add_element.value === 0) {
     fetchEvents()
+    fetchResources()
   } else if (_add_element.value === 1) {
     fetchTasks()
   } else if (_add_element.value === 2) {
@@ -104,7 +115,7 @@ const showComponent = computed(() => {
       return CalendarViewWeek
     case 'day':
       return CalendarViewDay
-    case 'tasks':
+    case 'tasks-list':
       return CalendarViewTasks
   }
 })
@@ -196,19 +207,33 @@ function header(): string {
       <button class="btn btn-info" @click="nextPeriod">Next</button>
     </div>
 
-    <div class="flex justify-center space-x-2 bg-base-100 p-2">
-      <button
-        v-for="view in ['month', 'week', 'day', 'tasks']"
-        :key="view"
-        class="btn"
-        :class="{
-          'btn-info': _currentView === view
-        }"
-        @click="changeView(view)"
-      >
-        {{ view.charAt(0).toUpperCase() + view.slice(1) }}
-        <!-- Capitalize first letter -->
-      </button>
+    <div class="grid grid-cols-3">
+      <div class="col-start-2 flex justify-center space-x-2 bg-base-100 p-2">
+        <button
+          v-for="view in ['month', 'week', 'day', 'tasks-list']"
+          :key="view"
+          class="btn"
+          :class="{
+            'btn-info': _currentView === view
+          }"
+          @click="changeView(view)"
+        >
+          {{ view.charAt(0).toUpperCase() + view.slice(1) }}
+          <!-- Capitalize first letter -->
+        </button>
+      </div>
+      <div class="mr-4 flex items-center justify-end">
+        <div class="form-control w-32">
+          <label class="label cursor-pointer">
+            <span class="label-text">Resources</span>
+            <input
+              type="checkbox"
+              v-model="showResources"
+              class="checkbox-warning checkbox"
+            />
+          </label>
+        </div>
+      </div>
     </div>
 
     <component
@@ -219,7 +244,7 @@ function header(): string {
       :events-guest="_eventsGuest"
       :tasks="_tasks"
       :pomodoro="_pomodoro"
-      :resources="_resources"
+      :resources="fResources"
       :week-days="_weekDays"
     />
 

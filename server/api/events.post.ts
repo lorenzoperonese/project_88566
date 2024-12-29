@@ -1,4 +1,4 @@
-import { Event, User } from '@/server/db'
+import { Event, User, Resource, ResourceList } from '@/server/db'
 import { sendNotification } from '@/server/utils/notifications'
 
 export default defineEventHandler(async (event) => {
@@ -48,6 +48,15 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    const resourceList = await ResourceList.findOne({ name: body.resource })
+    if (!resourceList) {
+      setResponseStatus(event, 404)
+      return {
+        code: 'RESOURCE_LIST_NOT_FOUND',
+        error: 'Resource list not found'
+      }
+    }
+
     const sender = await User.findById(event.context.auth.id)
       .select('username')
       .lean()
@@ -76,6 +85,18 @@ export default defineEventHandler(async (event) => {
       },
       user_id: event.context.auth.id
     })
+
+    // Add resouce event to resources
+    const resource = new Resource({
+      title: body.resource,
+      start: body.start,
+      end: body.end,
+      note: body.note,
+      event_id: newEvent._id
+    })
+    await resource.save()
+
+    // Send notifications to all guests
 
     const notificationPromises = body.guests.waiting.map((user: User) =>
       sendNotification(

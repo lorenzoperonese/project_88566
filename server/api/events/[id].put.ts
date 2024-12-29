@@ -1,5 +1,4 @@
-import type { User } from '@/server/db'
-import { Event } from '@/server/db'
+import { Event, Resource } from '@/server/db'
 import { sendNotification } from '@/server/utils/notifications'
 
 export default defineEventHandler(async (event) => {
@@ -103,6 +102,11 @@ export default defineEventHandler(async (event) => {
           guests: body.guests
         }
       }
+    ).exec()
+
+    await Resource.findOneAndUpdate(
+      { event_id: id },
+      { title: body.resource, start: body.start, end: body.end }
     ).exec()
 
     const guestChanges = {

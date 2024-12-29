@@ -15,6 +15,10 @@ const $emits = defineEmits<{
 const { $toast } = useNuxtApp()
 
 const { data: _users } = await useFetch<User[]>('/api/users')
+const { data: resourceList } = await useFetch<ResourceList[]>(
+  '/api/resources-list'
+)
+const { data: resources } = await useFetch<Resource[]>('/api/resources')
 
 const _showRepetition = ref(false)
 const _showNotifications = ref(false)
@@ -29,11 +33,33 @@ const _endTime = ref<string>(formatTime(end.getTime()))
 const _location = ref<string | null>(null) // string for now, will be changed to Location
 const _note = ref<string | null>(null)
 const _category = ref<string>('Not categorized')
+const _resource = ref<string>('null')
 const _repetition = ref<Repetition | null>(null)
 const _notifications = ref<Notify[]>([])
 const _guestsWaiting = ref<User[]>([])
 const _guestsAccepted = ref<User[]>([])
 const _guest = ref('')
+
+const fResourcesList = computed(() => {
+  if (!resourceList.value) return []
+
+  const startDate = new Date(_startDate.value + ' ' + _startTime.value)
+  const endDate = new Date(_endDate.value + ' ' + _endTime.value)
+
+  console.log('resources: ', resources.value)
+
+  return resourceList.value.filter((r) => {
+    let tmp = isResourceAvailable(
+      resources.value || [],
+      r.name,
+      startDate,
+      endDate
+    )
+    console.log('r: ', r.name)
+    console.log('available: ', tmp)
+    return tmp
+  })
+})
 
 if ($props.event) {
   _title.value = $props.event.title
@@ -44,6 +70,7 @@ if ($props.event) {
   _location.value = $props.event.location || null
   _note.value = $props.event.note || null
   _category.value = $props.event.category || 'Not categorized'
+  _resource.value = $props.event.resource || 'null'
   if ($props.event.repetition) {
     addRepetition($props.event.repetition)
   }
@@ -128,6 +155,7 @@ function saveEvent() {
     location: _location.value || null,
     note: _note.value || null,
     category: _category.value || 'Not categorized',
+    resource: _resource.value || null,
     repetition: _repetition.value || null,
     notify: _notifications.value,
     guests: {
@@ -167,6 +195,10 @@ function deleteEvent() {
   $fetch(`/api/events/${$props.event?.id}`, {
     method: 'DELETE'
   })
+  navigateTo('/calendar')
+}
+
+function close() {
   navigateTo('/calendar')
 }
 
@@ -254,6 +286,16 @@ function addGuest(g: string) {
       <div>
         <label>Category:</label>
         <input v-model="_category" class="input input-bordered" type="string" />
+      </div>
+
+      <div>
+        <label>Resource:</label>
+        <select v-model="_resource" class="select select-bordered">
+          <option value="null">None</option>
+          <option v-for="r in fResourcesList" :value="r.name">
+            {{ r.name }}
+          </option>
+        </select>
       </div>
 
       <div v-if="!modal">
@@ -365,7 +407,7 @@ function addGuest(g: string) {
           v-if="$props.isEventNew && !$props.modal"
           :to="{ name: 'calendar' }"
           class="btn btn-neutral w-2/5"
-          @click="deleteEvent()"
+          @click="close"
         >
           Close
         </NuxtLink>

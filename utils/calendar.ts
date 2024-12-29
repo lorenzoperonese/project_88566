@@ -272,3 +272,24 @@ export function isToday(today: Date, day: Date): boolean {
 export function isInThePast(today: Date, e: Date): boolean {
   return e < today
 }
+
+export function isResourceAvailable(
+  resources: Resource[],
+  resourceName: string,
+  start: Date,
+  end: Date
+): boolean {
+  return !resources.some((r) => {
+    const rStart = new Date(r.start)
+    const rEnd = new Date(r.end)
+    console.log(r.title, resourceName)
+    console.log(rStart, rEnd)
+    console.log(start, end)
+    return (
+      r.title === resourceName &&
+      ((rStart <= start && start < rEnd) ||
+        (rStart >= start && rStart < end) ||
+        (rStart <= start && rEnd >= end))
+    )
+  })
+}

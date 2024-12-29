@@ -1,5 +1,4 @@
-import type { User } from '@/server/db'
-import { Event } from '@/server/db'
+import { Event, Resource } from '@/server/db'
 import { sendNotification } from '@/server/utils/notifications'
 
 export default defineEventHandler(async (event) => {
@@ -28,6 +27,10 @@ export default defineEventHandler(async (event) => {
     await Event.findOneAndDelete({
       _id: id,
       user_id: event.context.auth.id
+    })
+
+    await Resource.findOneAndDelete({
+      event_id: id
     })
 
     if (n.guests?.waiting) {
