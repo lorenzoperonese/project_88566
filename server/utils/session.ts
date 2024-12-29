@@ -5,12 +5,14 @@ const EXPIRATION_TIME = 7 * 24 * 60 * 60 * 10000
 export interface Session {
   user_id: string
   username: string
+  admin?: boolean
   expiration: Date
 }
 
 export async function newAuthSession(
   user_id: string,
-  username: string
+  username: string,
+  admin?: boolean
 ): Promise<string> {
   console.log('Creating new session for user: ', username)
 
@@ -20,6 +22,7 @@ export async function newAuthSession(
   const session: Session = {
     user_id: user_id,
     username: username,
+    admin: admin,
     expiration: new Date(now.getTime() + EXPIRATION_TIME)
   }
   await useStorage().setItem(`session:${uuid}`, session)

@@ -10,6 +10,7 @@ export { default as Project } from './project'
 export { default as ProjectTask } from './project-task'
 export { default as PomodoroEvent } from './pomodoro-events'
 export { default as Settings } from './settings'
+export { default as Resource } from './resource'
 
 //export type { INote } from './note'
 export type { IUser } from './user'

@@ -21,7 +21,8 @@ export default defineEventHandler(async (event) => {
 
     event.context.auth = {
       id: s.user_id,
-      username: s.username
+      username: s.username,
+      admin: s.admin
     }
   }
 })

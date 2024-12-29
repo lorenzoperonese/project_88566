@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         dataType: {
           id: 'number',
           username: 'string',
+          admin: 'boolean',
           expiration: 'date'
         }
       },

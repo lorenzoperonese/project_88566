@@ -6,10 +6,11 @@ definePageMeta({
 const _route = useRoute()
 const _id = _route.params.id
 
-let _event = await $fetch(`/api/events/${_id}`)
+const { data: _event } = await useFetch<EventType>(`/api/events/${_id}`)
 
 async function update() {
-  _event = (await $fetch(`/api/events/${_id}`)) as any
+  const tmp = await $fetch(`/api/events/${_id}`)
+  _event.value = tmp as EventType
   editMode.value = false
 }
 

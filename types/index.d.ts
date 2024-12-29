@@ -164,6 +164,14 @@ export declare global {
     chatLimit: number
     projectsLimit: number
   }
+
+  interface Resource {
+    id: string
+    title: string
+    start: number
+    end: number
+    note?: string
+  }
 }
 
 export interface JSONResponse {

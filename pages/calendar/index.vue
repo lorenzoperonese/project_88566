@@ -20,9 +20,12 @@ const { data: _pomodoro } = await useFetch<PomodoroEvent[]>(
   '/api/pomodoro-events'
 )
 
+const { data: _resources } = await useFetch<Resource[]>('/api/resources')
+
+const me = await getME()
+
 // true => add event, false => add task
-const _add_event_task = ref(false)
-const _add_event_pomodoro = ref(false)
+const _add_element = ref(-1) // -1 => nothing, 0 => event, 1 => task, 2 => pomodoro, 3 => resource
 const input = useTemplateRef('modal')
 
 const fetchEvents = async () => {
@@ -40,18 +43,21 @@ const fetchPomodoro = async () => {
   _pomodoro.value = tmp
 }
 
+const fetchResources = async () => {
+  const tmp = await $fetch('/api/resources')
+  _resources.value = tmp
+}
+
 function closeModal() {
   console.log('CLOSED')
-  if (_add_event_task.value) {
-    if (_add_event_pomodoro.value) {
-      fetchPomodoro()
-    } else {
-      fetchEvents()
-    }
-    console.log('fetchedTasks')
-  } else {
+  if (_add_element.value === 0) {
+    fetchEvents()
+  } else if (_add_element.value === 1) {
     fetchTasks()
-    console.log('fetchedEvents')
+  } else if (_add_element.value === 2) {
+    fetchPomodoro()
+  } else if (_add_element.value === 3) {
+    fetchResources()
   }
 
   if (input.value) {
@@ -66,18 +72,22 @@ function showModal() {
 }
 
 function addTask() {
-  _add_event_task.value = false
+  _add_element.value = 1
   showModal()
 }
 
 function addEvent() {
-  _add_event_task.value = true
+  _add_element.value = 0
   showModal()
 }
 
 function addPomodoro() {
-  _add_event_task.value = true
-  _add_event_pomodoro.value = true
+  _add_element.value = 2
+  showModal()
+}
+
+function addResource() {
+  _add_element.value = 3
   showModal()
 }
 
@@ -209,18 +219,20 @@ function header(): string {
       :events-guest="_eventsGuest"
       :tasks="_tasks"
       :pomodoro="_pomodoro"
+      :resources="_resources"
       :week-days="_weekDays"
     />
 
     <dialog id="modal" ref="modal" class="modal">
       <div class="modal-box">
         <CalendarEventAdder
-          v-if="_add_event_task && !_add_event_pomodoro"
+          v-if="_add_element == 0"
           :modal="true"
           @close="closeModal"
         />
-        <CalendarTaskAdder v-if="!_add_event_task" @close="closeModal" />
-        <CalendarPomodoroAdder v-if="_add_event_pomodoro" @close="closeModal" />
+        <CalendarTaskAdder v-if="_add_element == 1" @close="closeModal" />
+        <CalendarPomodoroAdder v-if="_add_element == 2" @close="closeModal" />
+        <CalendarResourceAdder v-if="_add_element == 3" @close="closeModal" />
       </div>
     </dialog>
 
@@ -250,6 +262,7 @@ function header(): string {
           <li><a @click="addEvent"> Event </a></li>
           <li><a @click="addTask"> Task </a></li>
           <li><a @click="addPomodoro"> Pomodoro </a></li>
+          <li v-if="isAdmin(me)"><a @click="addResource"> Resource </a></li>
         </ul>
       </div>
     </div>

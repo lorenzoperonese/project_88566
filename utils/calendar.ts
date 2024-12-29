@@ -254,6 +254,17 @@ export function getPomodorosForDay(
   })
 }
 
+export function getResourcesForDay(
+  resources: Resource[] | null,
+  day: Date
+): Resource[] {
+  return getItemsForDay(resources, day, {
+    startField: 'start',
+    endField: 'end',
+    sortField: 'start'
+  })
+}
+
 export function isToday(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }
