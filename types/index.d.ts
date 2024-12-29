@@ -172,6 +172,11 @@ export declare global {
     end: number
     note?: string
   }
+
+  interface ResourceList {
+    id: string
+    name: string
+  }
 }
 
 export interface JSONResponse {

@@ -5,6 +5,8 @@ definePageMeta({
 
 const { data: settings } = await useFetch<Settings>('/api/settings')
 
+const me = await getME()
+
 async function fetchSettings() {
   const tmp = await $fetch('/api/settings')
   if (!tmp) {
@@ -96,6 +98,18 @@ watch(updateSettings as any, () => {
           v-if="settings?.home.showProjects"
           class="max-h-72 overflow-y-auto py-2"
         />
+      </NuxtLink>
+
+      <NuxtLink
+        v-if="isAdmin(me)"
+        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        to="/resources"
+      >
+        <div class="text-center text-lg font-bold">Resources</div>
+
+        <div class="divider"></div>
+
+        <div class="text-center">No preview available</div>
       </NuxtLink>
     </div>
 

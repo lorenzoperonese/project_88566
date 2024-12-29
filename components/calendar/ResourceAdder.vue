@@ -11,11 +11,15 @@ const $emits = defineEmits<{
   (e: 'close'): void
 }>()
 
+const { data: resouceList } = await useFetch<ResourceList[]>(
+  '/api/resources-list'
+)
+
 const { $toast } = useNuxtApp()
 
 const { data: _users } = await useFetch<User[]>('/api/users')
 
-const _title = ref('')
+const _resouceName = ref('null')
 const _startDate = ref<string>(formatDate(today.getTime()))
 const _startTime = ref<string>(formatTime(today.getTime()))
 const _endDate = ref<string>(formatDate(end.getTime()))
@@ -23,7 +27,7 @@ const _endTime = ref<string>(formatTime(end.getTime()))
 const _note = ref<string | null>(null)
 
 if ($props.resource) {
-  _title.value = $props.resource.title
+  _resouceName.value = $props.resource.title
   _startDate.value = formatDate($props.resource.start)
   _startTime.value = formatTime($props.resource.start)
   _endDate.value = formatDate($props.resource.end)
@@ -39,7 +43,7 @@ function saveResource() {
 
   const e: Resource = {
     id: '0',
-    title: _title.value,
+    title: _resouceName.value,
     start: startDate,
     end: endDate,
     note: _note.value || undefined
@@ -80,18 +84,15 @@ function deleteResource() {
 <template>
   <div class="">
     <h1 class="text-xl font-bold">
-      {{ $props.resource ? 'Modify resource' : 'Add resource' }}
+      {{ $props.resource ? 'Modify resource time' : 'Add resource time' }}
     </h1>
     <form class="flex flex-col gap-2" @submit.prevent="">
       <div>
-        <label>Title:</label>
-        <input
-          v-model="_title"
-          type="text"
-          placeholder="Type here"
-          class="input input-bordered w-full max-w-xs"
-          required
-        />
+        <label>Resource name:</label>
+        <select v-model="_resouceName" class="select select-bordered">
+          <option value="null">None</option>
+          <option v-for="r in resouceList" :value="r.name">{{ r.name }}</option>
+        </select>
       </div>
 
       <div>
