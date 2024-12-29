@@ -101,6 +101,7 @@ const calendar = computed((): CalendarCell[] => {
         :key="event.id"
         :event="event"
         :today="$props.today"
+        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
       <CalendarEvent
         v-for="event in c.eventsGuest"
@@ -108,6 +109,7 @@ const calendar = computed((): CalendarCell[] => {
         :event="event"
         :today="$props.today"
         :guest="true"
+        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
 
       <CalendarTask

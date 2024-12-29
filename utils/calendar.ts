@@ -258,18 +258,6 @@ export function isToday(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }
 
-export function isInThePast(today: Date, e: EventType | Task): boolean {
-  return e.end < today.getTime()
-}
-
-export function isInThePastPomodoro(today: Date, e: PomodoroEvent): boolean {
-  let ne = new Date(e.date)
-  const todayDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  )
-  const eventDate = new Date(ne.getFullYear(), ne.getMonth(), ne.getDate())
-
-  return eventDate < todayDate
+export function isInThePast(today: Date, e: Date): boolean {
+  return e < today
 }

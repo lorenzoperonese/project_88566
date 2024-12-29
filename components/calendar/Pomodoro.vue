@@ -2,7 +2,16 @@
 const $props = defineProps({
   pomodoro: { type: Object as PropType<PomodoroEvent>, required: true },
   today: { type: Date, required: true },
+  displayDate: { type: Date, required: false },
   fullDate: { type: Boolean, default: false }
+})
+
+const isInPast = computed(() => {
+  if ($props.displayDate) {
+    return isInThePast($props.today, $props.displayDate)
+  } else {
+    return false
+  }
 })
 </script>
 
@@ -10,7 +19,7 @@ const $props = defineProps({
   <NuxtLink :to="`/calendar/p/${$props.pomodoro.id}`">
     <div
       class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-accent hover:bg-blue-200"
-      :class="{ 'opacity-60': isInThePastPomodoro($props.today, pomodoro) }"
+      :class="{ 'opacity-60': isInPast }"
     >
       <div
         :class="[
