@@ -41,6 +41,15 @@ export declare global {
     user_id: string
   }
 
+  interface ProjectEvent {
+    id: string
+    task_name: string
+    project_id: string
+    project_name: string
+    start: number
+    end: number
+  }
+
   enum RepetitionPeriod {
     Day = 1,
     Week = 2,

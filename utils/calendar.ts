@@ -265,6 +265,17 @@ export function getResourcesForDay(
   })
 }
 
+export function getProjectsForDay(
+  events: ProjectEvent[] | null,
+  day: Date
+): ProjectEvent[] {
+  return getItemsForDay(events, day, {
+    startField: 'start',
+    endField: 'end',
+    sortField: 'start'
+  })
+}
+
 export function isToday(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }

@@ -21,6 +21,9 @@ const { data: _pomodoro } = await useFetch<PomodoroEvent[]>(
 )
 
 const { data: _resources } = await useFetch<Resource[]>('/api/resources')
+const { data: _projects } = await useFetch<ProjectEvent[]>(
+  '/api/projects-events'
+)
 
 const me = await getME()
 
@@ -245,6 +248,7 @@ function header(): string {
       :tasks="_tasks"
       :pomodoro="_pomodoro"
       :resources="fResources"
+      :projects="_projects"
       :week-days="_weekDays"
     />
 
