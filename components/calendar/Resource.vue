@@ -12,10 +12,12 @@ const isInPast = computed(() => {
     return false
   }
 })
+
+const me = await getME()
 </script>
 
 <template>
-  <NuxtLink :to="`/calendar/r/${resource.id}`">
+  <NuxtLink :to="isAdmin(me) ? `/calendar/r/${resource.id}` : ''">
     <div
       class="mt-1 w-full cursor-pointer rounded bg-warning-content p-1 text-xs text-warning hover:bg-blue-200"
       :class="{ 'opacity-60': isInPast }"
