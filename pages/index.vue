@@ -121,5 +121,9 @@ watch(updateSettings as any, () => {
     <div class="divider"></div>
 
     <NotificationsMenu />
+
+    <div class="divider"></div>
+
+    <Connection />
   </div>
 </template>
