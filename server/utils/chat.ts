@@ -1,17 +1,15 @@
-import { User, Room } from '@/server/db'
+import { User, Room, Message } from '@/server/db'
 import { Types } from 'mongoose'
 
-export async function createRooms(user_id: string, receiver: string) {
-  const receiver_user = await User.findOne({
-    username: receiver
-  })
+export async function createChatRooms(user_id: string, receiver_id: string) {
+  const receiver_user = await User.findById(receiver_id)
 
   if (!receiver_user) {
     throw new Error('Receiver not found')
   }
 
   const room = await Room.findOne({
-    roomName: receiver,
+    roomName: receiver_user.username,
     senderId: user_id,
     receiverId: receiver_user._id
   })
@@ -29,7 +27,7 @@ export async function createRooms(user_id: string, receiver: string) {
   const conversationId = new Types.ObjectId()
 
   const r = new Room({
-    roomName: receiver,
+    roomName: receiver_user.username,
     senderId: user_id,
     receiverId: receiver_user._id,
     conversationId: conversationId
@@ -44,4 +42,30 @@ export async function createRooms(user_id: string, receiver: string) {
 
   await r.save()
   await r2.save()
+}
+
+export async function sendChatMessage(
+  room_id: string,
+  content: string,
+  sender_id: string
+) {
+  const room = await Room.findById(room_id)
+  if (!room) {
+    throw new Error('Room not found')
+  }
+
+  await Message.create({
+    senderId: sender_id,
+    content: content,
+    conversationId: room.conversationId
+  })
+}
+
+export async function getReceiverFromRoom(room_id: string) {
+  const room = await Room.findById(room_id)
+  if (!room) {
+    throw new Error('Room not found')
+  }
+
+  return room.receiverId.toString()
 }

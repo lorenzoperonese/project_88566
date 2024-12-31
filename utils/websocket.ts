@@ -7,7 +7,9 @@ export const wsState = reactive({
   connected: false,
   transport: 'N/A',
   error: null,
-  notifications: [] as any[]
+  notifications: [] as any[],
+  rooms: [] as any[],
+  chatMessages: [] as any[]
 })
 
 export const socket = io({
@@ -28,6 +30,16 @@ socket.on('disconnect', () => {
 socket.on('notification', (notification) => {
   console.log('Notification:', notification)
   wsState.notifications.push(notification)
+})
+
+socket.on('chat_message', (message) => {
+  console.log('Chat Message:', message)
+  wsState.chatMessages.push(message)
+})
+
+socket.on('room_add', (room) => {
+  console.log('Room:', room)
+  wsState.rooms.push(room)
 })
 
 socket.io.engine.on('upgrade', (rawTransport) => {

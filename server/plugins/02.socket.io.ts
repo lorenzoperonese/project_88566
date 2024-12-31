@@ -2,6 +2,11 @@ import type { NitroApp } from 'nitropack/types'
 import { Server as Engine } from 'engine.io'
 import { Server } from 'socket.io'
 import { defineEventHandler } from 'h3'
+import {
+  createChatRooms,
+  getReceiverFromRoom,
+  sendChatMessage
+} from '@/server/utils/chat'
 
 // Create a global io instance
 let globalIo: Server
@@ -29,8 +34,34 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
       }
     })
 
-    socket.on('message', (message) => {
-      console.log('Message:', message)
+    socket.on('chat_message', async (message, callback) => {
+      console.log('Chat Message:', message)
+
+      try {
+        await sendChatMessage(message.roomId, message.content, message.senderId)
+        callback({ type: 'success', message: 'Message sent' })
+
+        let receiver_id = await getReceiverFromRoom(message.roomId)
+
+        io.to(receiver_id).emit('chat_message', message)
+      } catch (e) {
+        console.error('Sending chat message:', e)
+        callback({ type: 'error', message: 'Cannot send message' })
+      }
+    })
+
+    socket.on('room_add', async (message, callback) => {
+      console.log('Room add:', message)
+
+      try {
+        await createChatRooms(message.senderId, message.receiverId)
+        callback({ type: 'success', message: 'Room added' })
+
+        io.to(message.receiverId).emit('room_add', message)
+      } catch (e) {
+        console.error('Creating room:', e)
+        callback({ type: 'error', message: 'Cannot create room' })
+      }
     })
 
     socket.on('auth', async (token) => {

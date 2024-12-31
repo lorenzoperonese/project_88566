@@ -1,6 +1,5 @@
 <script setup lang="ts">
-//import { useWebSocket } from '@vueuse/core'
-
+import { wsState, socket } from '@/utils/websocket'
 definePageMeta({
   layout: 'navbar'
 })
@@ -22,38 +21,24 @@ watch(current_room_id, async (newRoomId) => {
   }
 })
 
-// TODO: DA CAMBIARE
-//const { status, data, send, open, close } = useWebSocket(
-//  `ws://${window.location.host}/_ws`
-//)
-
 const roomFromReceiver = (senderId: string) => {
   return rooms.value.find((r) => r.receiver.id == senderId)
 }
 
-//watch(data, (newData) => {
-//  console.log('New data:', newData)
-//
-//  const d = JSON.parse(newData)
-//
-//  console.log('here3')
-//
-//  if (d.type == 'chat_message') {
-//    if (
-//      current_room_id.value &&
-//      current_room_id.value == roomFromReceiver(d.senderId)?.id
-//    ) {
-//      fetchMessages(current_room_id.value)
-//    } else {
-//      $toast.info('New message from ' + roomFromReceiver(d.senderId)?.roomName)
-//    }
-//  } else if (d.type == 'room_add') {
-//    console.log('Adding room')
-//    fetchRooms()
-//  } else if (d.type == 'error') {
-//    $toast.error(d.message)
-//  }
-//})
+watch(wsState.chatMessages, (newData) => {
+  console.log('New message received')
+  const d = newData[newData.length - 1] as ChatMessage
+  if (
+    current_room_id.value &&
+    current_room_id.value == roomFromReceiver(d.senderId)?.id
+  ) {
+    fetchMessages(current_room_id.value)
+  } else {
+    $toast.info('New message from ' + roomFromReceiver(d.senderId)?.roomName)
+  }
+})
+
+watch(wsState.rooms, fetchRooms)
 
 const route = useRoute()
 
@@ -84,40 +69,47 @@ async function addRoom(name: string) {
     return
   }
 
-  //const res = send(
-  //  JSON.stringify({
-  //    type: 'room_add',
-  //    person: name,
-  //    senderId: userID
-  //  })
-  //)
-
-  //if (!res) {
-  //  $toast.error('Error adding room')
-  //  return
-  //}
-
-  fetchRooms()
+  socket.emit(
+    'room_add',
+    {
+      receiverId: name,
+      senderId: userID
+    },
+    (value: any) => {
+      if (value.type !== 'success') {
+        $toast.error('Error adding room')
+        console.error(value.message)
+        return
+      }
+      fetchRooms()
+    }
+  )
 }
 
 async function sendMessage(message: string) {
-  //const res = send(
-  //  JSON.stringify({
-  //    type: 'chat_message',
-  //    roomId: current_room_id.value,
-  //    content: message,
-  //    senderId: userID
-  //  })
-  //)
-
-  //if (!res) {
-  //  $toast.error('Error sending message')
-  //  return
-  //}
-
-  if (current_room_id.value) {
-    fetchMessages(current_room_id.value)
+  if (!current_room_id.value) {
+    $toast.error('No room selected')
+    return
   }
+
+  socket.emit(
+    'chat_message',
+    {
+      roomId: current_room_id.value,
+      content: message,
+      senderId: userID
+    },
+    (value: any) => {
+      if (value.type !== 'success') {
+        $toast.error('Error sending message')
+        console.error(value.message)
+        return
+      }
+      if (current_room_id.value) {
+        fetchMessages(current_room_id.value)
+      }
+    }
+  )
 }
 </script>
 

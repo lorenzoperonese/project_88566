@@ -1,4 +1,17 @@
 <script setup lang="ts">
+const { $toast } = useNuxtApp()
+
+const { data: _users } = await useFetch<User[]>('/api/users')
+const modal = useTemplateRef('room_adder_modal')
+
+function showModal() {
+  modal.value?.showModal()
+}
+
+function closeModal() {
+  modal.value?.close()
+}
+
 const current_room_id = defineModel<string | undefined>({
   default: undefined
 })
@@ -15,7 +28,17 @@ const $emits = defineEmits<{
 }>()
 
 function addRoom() {
-  $emits('add-room', add_room_name.value)
+  let receiver_id = _users.value?.find(
+    (u) => u.username == add_room_name.value
+  )?.id
+
+  if (!receiver_id) {
+    $toast.error('User not found')
+    return
+  }
+
+  $emits('add-room', receiver_id)
+  closeModal()
 }
 
 const searchRooms = computed(() => {
@@ -53,7 +76,7 @@ const searchRooms = computed(() => {
         <div class="grid">
           <button
             class="btn btn-circle btn-info btn-sm place-self-center"
-            onclick="room_adder.showModal()"
+            @click="showModal"
           >
             <svg
               class="h-5 w-5 opacity-70"
@@ -74,7 +97,7 @@ const searchRooms = computed(() => {
         </div>
       </div>
 
-      <dialog id="room_adder" class="modal">
+      <dialog ref="room_adder_modal" class="modal">
         <div class="modal-box">
           <h3 class="text-lg font-bold">Add room:</h3>
           <div class="mt-5 flex justify-between gap-2">
@@ -84,9 +107,7 @@ const searchRooms = computed(() => {
               placeholder="Type here"
               class="input input-bordered w-full"
             />
-            <form method="dialog">
-              <button class="btn btn-info" @click="addRoom">Add</button>
-            </form>
+            <button class="btn btn-info" @click="addRoom">Add</button>
           </div>
         </div>
         <form method="dialog" class="modal-backdrop">
