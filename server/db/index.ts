@@ -12,6 +12,7 @@ export { default as PomodoroEvent } from './pomodoro-events'
 export { default as Settings } from './settings'
 export { default as Resource } from './resource'
 export { default as ResourceList } from './resource-list'
+export { default as PushNotification } from './push-notify'
 
 //export type { INote } from './note'
 export type { IUser } from './user'

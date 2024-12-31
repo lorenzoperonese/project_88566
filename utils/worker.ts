@@ -19,25 +19,35 @@ async function registerServiceWorker() {
   return swRegistration
 }
 
-export default defineNuxtPlugin(async (/* nuxtApp */ _) => {
+export async function startServiceWorker() {
   console.log('Hi from the plugin')
 
   let SW: ServiceWorkerRegistration
 
-  try {
-    check()
+  check()
 
-    SW = await registerServiceWorker()
-    await SW.update()
+  SW = await registerServiceWorker()
+  await SW.update()
 
-    if (SW.installing) {
-      console.log('SW installing')
-    } else if (SW.waiting) {
-      console.log('SW waiting')
-    } else if (SW.active) {
-      console.log('SW active')
-    }
-  } catch (e) {
-    console.error(e)
+  if (SW.installing) {
+    console.log('SW installing')
+  } else if (SW.waiting) {
+    console.log('SW waiting')
+  } else if (SW.active) {
+    console.log('SW active')
   }
-})
+}
+
+export async function postMessageToWoker(msg: object) {
+  const SW = await navigator.serviceWorker.getRegistration()
+
+  if (SW === undefined) {
+    throw Error('Service worker is undefined')
+  }
+
+  if (SW.active === null) {
+    throw Error('Service worker is NOT active')
+  }
+
+  SW.active.postMessage(msg)
+}

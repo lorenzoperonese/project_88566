@@ -1,4 +1,15 @@
 <script setup lang="ts">
+const { $registerPushNotifications } = useNuxtApp()
+
+const enableNotifications = async () => {
+  try {
+    const subscription = await $registerPushNotifications()
+    console.log('Registered:', subscription)
+  } catch (err) {
+    console.error('Failed:', err)
+  }
+}
+
 const permission = ref(window.Notification.permission)
 
 async function requestNotificationPermission() {
@@ -8,20 +19,34 @@ async function requestNotificationPermission() {
   // default: user has dismissed the notification permission popup by clicking on x
   // denied: user has denied the request.
   if (permission !== 'granted') {
-    console.error('Permission not granted for Notification')
+    throw new Error('Permission not granted for Notification')
   }
   return permission
 }
 
 async function enable() {
-  permission.value = await requestNotificationPermission()
+  try {
+    permission.value = await requestNotificationPermission()
+    enableNotifications()
+
+    startServiceWorker()
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 async function sendTest() {
-  const SW = await navigator.serviceWorker.getRegistration()
+  let SW = await navigator.serviceWorker.getRegistration()
   if (SW === undefined) {
-    console.error('Service worker is undefined')
-    return
+    await startServiceWorker()
+
+    // Wait a little bit for service worker to start
+    await new Promise((r) => setTimeout(r, 2000))
+    SW = await navigator.serviceWorker.getRegistration()
+    if (SW === undefined) {
+      console.error('Service worker is undefined')
+      return
+    }
   }
 
   if (SW.active === null) {
@@ -29,7 +54,9 @@ async function sendTest() {
     return
   }
 
-  SW.active.postMessage('Provolone')
+  //SW.active.postMessage('Provolone')
+
+  fetch('/api/notify')
 }
 </script>
 

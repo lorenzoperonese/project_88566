@@ -4,7 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@sidebase/nuxt-auth', '@nuxtjs/mdc'],
   runtimeConfig: {
-    DB_URL: process.env.MONGO_URL
+    DB_URL: process.env.MONGO_URL,
+    PUSH_PUBLIC_KEY: process.env.PUSH_PUBLIC_KEY,
+    PUSH_KEY: process.env.PUSH_KEY
   },
   typescript: {
     typeCheck: true

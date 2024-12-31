@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { postMessageToWoker } from '~/utils/worker'
 
 // login page is in dark mode by default
 document.documentElement.setAttribute('data-theme', 'dark')
@@ -39,6 +40,8 @@ async function login() {
     await signIn(credentials, { callbackUrl: '/' })
     changeTheme()
     wsSendAuth()
+
+    postMessageToWoker({ type: 'authenticated' })
   } catch (err: Error) {
     console.error(err)
     _error.value = err.response._data.err

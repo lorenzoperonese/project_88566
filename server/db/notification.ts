@@ -1,3 +1,6 @@
+// This are the notifications inside the app. We can find them in the upper
+// right corner of the navbar.
+
 import type { Document, Types } from 'mongoose'
 import { Schema, model } from 'mongoose'
 import User from './user'
