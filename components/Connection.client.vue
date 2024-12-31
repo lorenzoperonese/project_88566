@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { wsState } from '@/utils/websocket'
-wsConnect()
 
 const connected = computed(() => wsState.connected)
 

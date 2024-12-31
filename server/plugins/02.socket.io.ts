@@ -9,13 +9,11 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
   io.bind(engine)
 
-  io.on('connection', (socket) => {
-    socket.use(([event, ...args], next) => {
-      if (isUnauthorized(event, args)) {
-        return next(new Error('Unauthorized'))
-      }
-      next()
-    })
+  io.on('connection', async (socket) => {
+    let [isAuth, user_id] = await isAuthenticated(socket.handshake.auth.token)
+    if (isAuth) {
+      socket.join(user_id)
+    }
 
     socket.on('error', (err) => {
       if (err && err.message === 'unauthorized event') {
@@ -25,6 +23,13 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
     socket.on('message', (message) => {
       console.log('Message:', message)
+    })
+
+    socket.on('auth', async (token) => {
+      let [isAuth, user_id] = await isAuthenticated(token)
+      if (isAuth) {
+        socket.join(user_id)
+      }
     })
   })
 
@@ -42,7 +47,9 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
           engine.prepare(peer._internal.nodeReq)
           // @ts-expect-error private method and property
           engine.onWebSocket(
+            // @ts-expect-error private method and property
             peer._internal.nodeReq,
+            // @ts-expect-error private method and property
             peer._internal.nodeReq.socket,
             peer.websocket
           )
@@ -52,8 +59,15 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   )
 })
 
-// Non funziona...
-function isUnauthorized(event: any, args: any[]) {
-  console.log('event:', event, 'args:', args)
-  return true
+// Return if the user is authenticated or not. Also return the user_id.
+async function isAuthenticated(s: string): Promise<[boolean, string]> {
+  let token = s.split(' ')[1]
+  console.log('Token:', token)
+
+  const session = await getAuthSession(token)
+  if (!session || isAuthSessionExpired(session)) {
+    return [false, '']
+  }
+
+  return [true, session.user_id]
 }

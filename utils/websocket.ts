@@ -1,6 +1,8 @@
 import { io } from 'socket.io-client'
 import { reactive } from 'vue'
 
+const { token } = useAuth()
+
 export const wsState = reactive({
   connected: false,
   transport: 'N/A',
@@ -9,9 +11,8 @@ export const wsState = reactive({
 
 export const socket = io({
   auth: {
-    token: localStorage.getItem('auth:token')
-  },
-  autoConnect: false
+    token: token.value
+  }
 })
 
 socket.on('connect', () => {
@@ -23,21 +24,14 @@ socket.on('disconnect', () => {
   wsState.transport = 'N/A'
 })
 
-export async function wsConnect() {
-  try {
-    await getME()
-
-    socket.connect()
-
-    socket.io.engine.on('upgrade', (rawTransport) => {
-      wsState.transport = rawTransport.name
-    })
-    console.log('Connected to WS')
-  } catch (e) {
-    console.error(e)
-  }
-}
+socket.io.engine.on('upgrade', (rawTransport) => {
+  wsState.transport = rawTransport.name
+})
 
 export function wsSendMessage(message: any) {
   socket.emit('message', message)
+}
+
+export function wsSendAuth() {
+  socket.emit('auth', token.value)
 }
