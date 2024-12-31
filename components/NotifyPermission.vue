@@ -1,4 +1,15 @@
 <script setup lang="ts">
+const { $registerPushNotifications } = useNuxtApp()
+
+const enableNotifications = async () => {
+  try {
+    const subscription = await $registerPushNotifications()
+    console.log('Registered:', subscription)
+  } catch (err) {
+    console.error('Failed:', err)
+  }
+}
+
 const permission = ref(window.Notification.permission)
 
 async function requestNotificationPermission() {
@@ -16,6 +27,7 @@ async function requestNotificationPermission() {
 async function enable() {
   try {
     permission.value = await requestNotificationPermission()
+    enableNotifications()
 
     startServiceWorker()
   } catch (e) {

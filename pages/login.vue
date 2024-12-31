@@ -59,9 +59,16 @@ async function login() {
             <label for="input-mail" class="label">
               <span class="label-text"> Username or mail </span>
             </label>
-            <div class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error">
-              <input id="input-text" v-model="_username" type="text" class="X-required grow invalid:text-error"
-                placeholder="Enter Username" />
+            <div
+              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
+            >
+              <input
+                id="input-text"
+                v-model="_username"
+                type="text"
+                class="X-required grow invalid:text-error"
+                placeholder="Enter Username"
+              />
             </div>
           </div>
 
@@ -69,9 +76,16 @@ async function login() {
             <label for="input-password" class="label">
               <span class="label-text"> Password </span>
             </label>
-            <div class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error">
-              <input id="input-password" v-model="_password" type="password" class="X-required grow invalid:text-error"
-                placeholder="Enter password" />
+            <div
+              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
+            >
+              <input
+                id="input-password"
+                v-model="_password"
+                type="password"
+                class="X-required grow invalid:text-error"
+                placeholder="Enter password"
+              />
             </div>
           </div>
 
@@ -87,7 +101,9 @@ async function login() {
         <div class="divider">OR</div>
         <div class="text-center">
           <p>Don't have an account?</p>
-          <NuxtLink to="/register" class="link link-primary">Sign up now</NuxtLink>
+          <NuxtLink to="/register" class="link link-primary"
+            >Sign up now</NuxtLink
+          >
         </div>
       </div>
     </div>

@@ -1,16 +1,15 @@
 import webpush from 'web-push'
+import { PushNotification } from '@/server/db'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<webpush.PushSubscription>(event)
-  //console.log('Notify body: ', body)
-  //console.log(event.context.auth.id)
-
-  // This should be saved on the persistend db (mongo). TODO CHANGE
   try {
-    await useStorage().setItem<webpush.PushSubscription>(
-      `notify:${event.context.auth.id}`,
-      body
-    )
+    const body = await readBody<webpush.PushSubscription>(event)
+
+    await PushNotification.create({
+      subscription: body,
+      user_id: event.context.auth.id
+    })
+
     return { msg: 'Notification subscription added' }
   } catch (err) {
     console.error(err)
