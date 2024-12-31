@@ -87,13 +87,16 @@ function notifyMessage(n: Notify[]) {
           {{ $props.event.location ? $props.event.location : 'unknown' }}
         </div>
         <div>
+          Notes: {{ $props.event.note ? $props.event.note : 'No notes' }}
+        </div>
+        <div>
           Category:
           {{
             $props.event.category ? $props.event.category : 'Not categotized'
           }}
         </div>
         <div>
-          Notes: {{ $props.event.note ? $props.event.note : 'No notes' }}
+          Resource: {{ $props.event.resource ? $props.event.resource : 'None' }}
         </div>
         <div>
           Repetition:

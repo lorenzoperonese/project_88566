@@ -49,7 +49,7 @@ if ($props.task) {
   if (guestsIDs) _guestsIDs.value = guestsIDs
 }
 
-function saveTask() {
+async function saveTask() {
   const endDate = new Date(_endDate.value + ' ' + _endTime.value).getTime()
 
   const e: Task = {
@@ -73,12 +73,12 @@ function saveTask() {
 
   if ($props.task) {
     e.id = $props.task.id
-    $fetch(`/api/tasks/${$props.task.id}`, {
+    await $fetch(`/api/tasks/${$props.task.id}`, {
       method: 'PUT',
       body: JSON.stringify(e)
     })
   } else {
-    $fetch('/api/tasks', {
+    await $fetch('/api/tasks', {
       method: 'POST',
       body: JSON.stringify(e)
     })

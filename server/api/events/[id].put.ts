@@ -104,10 +104,14 @@ export default defineEventHandler(async (event) => {
       }
     ).exec()
 
-    await Resource.findOneAndUpdate(
-      { event_id: id },
-      { title: body.resource, start: body.start, end: body.end }
-    ).exec()
+    if (body.resource) {
+      await Resource.findOneAndUpdate(
+        { event_id: id },
+        { title: body.resource, start: body.start, end: body.end }
+      ).exec()
+    } else {
+      await Resource.findOneAndDelete({ event_id: id }).exec()
+    }
 
     const guestChanges = {
       waiting: {
