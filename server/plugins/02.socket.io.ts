@@ -7,6 +7,7 @@ import {
   getReceiverFromRoom,
   sendChatMessage
 } from '@/server/utils/chat'
+import { throws } from 'assert'
 
 // Create a global io instance
 let globalIo: Server
@@ -14,6 +15,8 @@ let globalIo: Server
 export function getIo(): Server {
   return globalIo
 }
+
+let authSockets = new Set<string>()
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine()
@@ -26,15 +29,19 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     let [isAuth, user_id] = await isAuthenticated(socket.handshake.auth.token)
     if (isAuth) {
       socket.join(user_id)
+      authSockets.add(user_id)
     }
 
     socket.on('error', (err) => {
       if (err && err.message === 'unauthorized event') {
         socket.disconnect()
+        authSockets.delete(user_id)
       }
     })
 
     socket.on('chat_message', async (message, callback) => {
+      if (!authSockets.has(socket.id)) throw new Error('Not authorized')
+
       console.log('Chat Message:', message)
 
       try {
@@ -51,6 +58,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     })
 
     socket.on('room_add', async (message, callback) => {
+      if (!authSockets.has(socket.id)) throw new Error('Not authorized')
+
       console.log('Room add:', message)
 
       try {
@@ -68,6 +77,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
       let [isAuth, user_id] = await isAuthenticated(token)
       if (isAuth) {
         socket.join(user_id)
+        authSockets.add(socket.id)
       }
     })
   })
