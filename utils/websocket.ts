@@ -6,7 +6,8 @@ const { token } = useAuth()
 export const wsState = reactive({
   connected: false,
   transport: 'N/A',
-  error: null
+  error: null,
+  notifications: [] as any[]
 })
 
 export const socket = io({
@@ -22,6 +23,11 @@ socket.on('connect', () => {
 socket.on('disconnect', () => {
   wsState.connected = false
   wsState.transport = 'N/A'
+})
+
+socket.on('notification', (notification) => {
+  console.log('Notification:', notification)
+  wsState.notifications.push(notification)
 })
 
 socket.io.engine.on('upgrade', (rawTransport) => {

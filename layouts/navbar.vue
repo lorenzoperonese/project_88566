@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Profile, Settings } from '#components'
+import { wsState } from '@/utils/websocket'
 const modal = useTemplateRef('navbar-modal')
 
 const { data: pending } = await useFetch<number>('/api/notifications/number')
@@ -58,6 +59,8 @@ async function updatePending() {
     console.error(error)
   }
 }
+
+watch(wsState.notifications, updatePending)
 </script>
 
 <template>

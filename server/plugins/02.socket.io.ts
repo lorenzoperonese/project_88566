@@ -3,9 +3,17 @@ import { Server as Engine } from 'engine.io'
 import { Server } from 'socket.io'
 import { defineEventHandler } from 'h3'
 
+// Create a global io instance
+let globalIo: Server
+
+export function getIo(): Server {
+  return globalIo
+}
+
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine()
   const io = new Server()
+  globalIo = io
 
   io.bind(engine)
 
@@ -61,6 +69,10 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
 // Return if the user is authenticated or not. Also return the user_id.
 async function isAuthenticated(s: string): Promise<[boolean, string]> {
+  if (!s) {
+    return [false, '']
+  }
+
   let token = s.split(' ')[1]
   console.log('Token:', token)
 

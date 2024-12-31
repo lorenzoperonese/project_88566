@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
+import { wsState } from '@/utils/websocket'
 
 const $emits = defineEmits<{
   (e: 'update'): void
@@ -45,6 +46,8 @@ function notificationLink(
       break
   }
 }
+
+watch(wsState.notifications, fetchNotifications)
 
 async function readNotification(id: string) {
   const res = await setNotificationAsRead(id)
