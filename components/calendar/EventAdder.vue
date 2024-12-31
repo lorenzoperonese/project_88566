@@ -49,14 +49,9 @@ const fResourcesList = computed(() => {
   console.log('resources: ', resources.value)
 
   return resourceList.value.filter((r) => {
-    let tmp = isResourceAvailable(
-      resources.value || [],
-      r.name,
-      startDate,
-      endDate
-    )
-    console.log('r: ', r.name)
-    console.log('available: ', tmp)
+    let tmp =
+      isResourceAvailable(resources.value || [], r.name, startDate, endDate) ||
+      r.name == _resource.value
     return tmp
   })
 })
@@ -141,7 +136,7 @@ function addRepetition(r: Repetition | null) {
   }
 }
 
-function saveEvent() {
+async function saveEvent() {
   const startDate = new Date(
     _startDate.value + ' ' + _startTime.value
   ).getTime()
@@ -155,7 +150,7 @@ function saveEvent() {
     location: _location.value || null,
     note: _note.value || null,
     category: _category.value || 'Not categorized',
-    resource: _resource.value || null,
+    resource: _resource.value == 'null' ? null : _resource.value || null,
     repetition: _repetition.value || null,
     notify: _notifications.value,
     guests: {
@@ -178,12 +173,12 @@ function saveEvent() {
 
   if (!$props.isEventNew && $props.event) {
     e.id = $props.event.id
-    $fetch(`/api/events/${$props.event.id}`, {
+    await $fetch(`/api/events/${$props.event.id}`, {
       method: 'PUT',
       body: JSON.stringify(e)
     })
   } else {
-    $fetch('/api/events', {
+    await $fetch('/api/events', {
       method: 'POST',
       body: JSON.stringify(e)
     })

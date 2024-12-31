@@ -35,7 +35,7 @@ if ($props.resource) {
   _note.value = $props.resource.note || null
 }
 
-function saveResource() {
+async function saveResource() {
   const startDate = new Date(
     _startDate.value + ' ' + _startTime.value
   ).getTime()
@@ -60,12 +60,12 @@ function saveResource() {
 
   if (!$props.isResourceNew && $props.resource) {
     e.id = $props.resource.id
-    $fetch(`/api/resources/${$props.resource.id}`, {
+    await $fetch(`/api/resources/${$props.resource.id}`, {
       method: 'PUT',
       body: JSON.stringify(e)
     })
   } else {
-    $fetch('/api/resources', {
+    await $fetch('/api/resources', {
       method: 'POST',
       body: JSON.stringify(e)
     })

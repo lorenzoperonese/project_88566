@@ -39,26 +39,22 @@ export default defineEventHandler(async (event): Promise<JSONResponse> => {
   }
 
   try {
-    const receiver_id = await User.findOne({ username: body.receiver }).select(
-      '_id'
-    )
-
-    if (!receiver_id) {
+    const receiver = await User.findOne({ username: body.receiver })
+    if (!receiver) {
       setResponseStatus(event, 400)
       return { status: 'error', err: 'Receiver not found' }
     }
 
-    const notification = new Notification({
-      id: '',
-      title: body.title,
-      body: body.body,
-      read: false,
-      type: body.type,
-      identifier: body.identifier,
-      user_id: receiver_id
-    })
+    const receiver_id = receiver.id.toString()
 
-    await notification.save()
+    sendNotification(
+      body.title,
+      body.body,
+      receiver_id,
+      body.type,
+      body.identifier
+    )
+
     return { message: 'Notification created successfuly', status: 'success' }
   } catch (error) {
     console.error(error)

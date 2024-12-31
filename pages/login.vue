@@ -38,6 +38,7 @@ async function login() {
   try {
     await signIn(credentials, { callbackUrl: '/' })
     changeTheme()
+    wsSendAuth()
   } catch (err: Error) {
     console.error(err)
     _error.value = err.response._data.err

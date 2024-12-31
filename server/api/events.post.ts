@@ -48,12 +48,15 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const resourceList = await ResourceList.findOne({ name: body.resource })
-    if (!resourceList) {
-      setResponseStatus(event, 404)
-      return {
-        code: 'RESOURCE_LIST_NOT_FOUND',
-        error: 'Resource list not found'
+    console.log('body.resource:', body.resource)
+    if (body.resource) {
+      const resourceList = await ResourceList.findOne({ name: body.resource })
+      if (!resourceList) {
+        setResponseStatus(event, 404)
+        return {
+          code: 'RESOURCE_LIST_NOT_FOUND',
+          error: 'Resource list not found'
+        }
       }
     }
 
@@ -86,15 +89,17 @@ export default defineEventHandler(async (event) => {
       user_id: event.context.auth.id
     })
 
-    // Add resouce event to resources
-    const resource = new Resource({
-      title: body.resource,
-      start: body.start,
-      end: body.end,
-      note: body.note,
-      event_id: newEvent._id
-    })
-    await resource.save()
+    if (body.resource) {
+      // Add resouce event to resources
+      const resource = new Resource({
+        title: body.resource,
+        start: body.start,
+        end: body.end,
+        note: body.note,
+        event_id: newEvent._id
+      })
+      await resource.save()
+    }
 
     // Send notifications to all guests
 

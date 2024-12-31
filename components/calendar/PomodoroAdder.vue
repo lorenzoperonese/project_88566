@@ -25,7 +25,7 @@ if ($props.event) {
   _cycles.value = $props.event.cycles
 }
 
-function saveTask() {
+async function saveTask() {
   const date = new Date(_date.value).getTime()
 
   const e: PomodoroEvent = {
@@ -45,12 +45,12 @@ function saveTask() {
 
   if ($props.event) {
     e.id = $props.event.id
-    $fetch(`/api/pomodoro-events/${$props.event.id}`, {
+    await $fetch(`/api/pomodoro-events/${$props.event.id}`, {
       method: 'PUT',
       body: JSON.stringify(e)
     })
   } else {
-    $fetch('/api/pomodoro-events', {
+    await $fetch('/api/pomodoro-events', {
       method: 'POST',
       body: JSON.stringify(e)
     })

@@ -22,10 +22,6 @@ export default defineEventHandler(async (event): Promise<EventType | null> => {
       event_id: id
     })
 
-    if (!res) {
-      throw Error('Resource not found. Event ID: ' + id)
-    }
-
     return {
       id: (n._id as Types.ObjectId).toString() as string,
       title: n.title,
@@ -34,7 +30,7 @@ export default defineEventHandler(async (event): Promise<EventType | null> => {
       location: n.location,
       note: n.note,
       category: n.category,
-      resource: res.title,
+      resource: res ? res.title : null,
       repetition: n.repetition,
       notify: n.notify,
       guests: n.guests

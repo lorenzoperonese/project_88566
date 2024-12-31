@@ -6,7 +6,7 @@ export interface Session {
   user_id: string
   username: string
   admin?: boolean
-  expiration: Date
+  expiration: string
 }
 
 export async function newAuthSession(
@@ -23,7 +23,7 @@ export async function newAuthSession(
     user_id: user_id,
     username: username,
     admin: admin,
-    expiration: new Date(now.getTime() + EXPIRATION_TIME)
+    expiration: new Date(now.getTime() + EXPIRATION_TIME).toISOString()
   }
   await useStorage().setItem(`session:${uuid}`, session)
 
@@ -35,5 +35,5 @@ export async function getAuthSession(id: string): Promise<Session | null> {
 }
 
 export function isAuthSessionExpired(s: Session): boolean {
-  return s.expiration.getTime() <= Date.now()
+  return new Date(s.expiration).getTime() <= Date.now()
 }
