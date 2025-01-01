@@ -196,6 +196,22 @@ export declare global {
     id: string
     name: string
   }
+
+  interface PushNotification {
+    id: string
+    title: string
+    body: string
+    users: string[] // This is used to send the notification to multiple users
+    event_id: string // Event id that generated the notification
+  }
+
+  interface PushNotificationState {
+    event_id: string
+    notification_id: string
+    last_sent: number // Timestamp of last notification
+    sent_count: number // Number of times notification has been sent
+    responded: boolean // For untilResponse notifications
+  }
 }
 
 export interface JSONResponse {

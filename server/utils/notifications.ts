@@ -46,27 +46,32 @@ export async function sendNotification(
   }
 }
 
-export async function sendPushNotification(id: string) {
-  const options = await PushNotification.find({
-    user_id: id
-  })
+export async function sendPushNotification(notification: PushNotification) {
+  for (const user of notification.users) {
+    // The db only stores the options for the notifications endpoint, not the
+    // notifications themselves.
+    const options = await PushNotification.find({
+      user_id: user
+    })
 
-  if (!options) {
-    throw new Error('Options for notify are empty for user: ' + id)
-  }
+    if (!options) {
+      throw new Error('Options for notify are empty for user: ' + user)
+    }
 
-  for (const opt of options) {
-    try {
-      await webpush.sendNotification(
-        opt.subscription,
-        JSON.stringify({
-          title: 'Test notification',
-          body: 'This is a test from the backend'
-        })
-      )
-    } catch (err) {
-      // Avoid errors when notifictions options are old and webpush
-      // returns "Received unexpected response code"
+    for (const opt of options) {
+      try {
+        await webpush.sendNotification(
+          opt.subscription,
+          JSON.stringify({
+            title: notification.title,
+            body: notification.body,
+            event_id: notification.event_id
+          })
+        )
+      } catch (err) {
+        // Avoid errors when notifictions options are old and webpush
+        // returns "Received unexpected response code"
+      }
     }
   }
 }
