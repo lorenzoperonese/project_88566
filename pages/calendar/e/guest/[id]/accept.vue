@@ -11,14 +11,14 @@ const _eventGuest = await $fetch(`/api/events-guest/${_id}`, {
 })
 
 function acceptEvent() {
-  fetch(`/api/events-guest/${_id}`, {
+  $fetch(`/api/events-guest/${_id}`, {
     method: 'POST'
   })
   navigateTo('/calendar')
 }
 
 function rejectEvent() {
-  fetch(`/api/events-guest/${_id}`, {
+  $fetch(`/api/events-guest/${_id}`, {
     method: 'DELETE'
   })
   navigateTo('/calendar')

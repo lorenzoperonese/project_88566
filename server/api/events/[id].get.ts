@@ -32,7 +32,7 @@ export default defineEventHandler(async (event): Promise<EventType | null> => {
       category: n.category,
       resource: res ? res.title : null,
       repetition: n.repetition,
-      notify: n.notify,
+      notify: n.notify as Notify[],
       guests: n.guests
     } as EventType
   } catch (err) {

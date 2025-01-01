@@ -18,6 +18,12 @@ export interface IEvent extends Document {
   notify?: {
     advance: number
     period: number
+    repeat?: {
+      count: number
+      interval: number
+      intervalUnit: number
+      untilResponse: boolean
+    }
   }[]
   guests: {
     waiting: User[]

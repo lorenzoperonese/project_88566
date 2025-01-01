@@ -200,23 +200,37 @@ function close() {
 function addNotifications(n: Notify[] | null) {
   _notificationsSummary.value = ''
   _showNotifications.value = false
+
   if (!n) {
     _notifications.value = []
-    _notificationsSummary.value = ''
     return
   }
+
   _notifications.value = n
-  n.forEach((i) => {
-    let period =
-      i.period == 1
-        ? 'minute'
-        : i.period == 2
-          ? 'hour'
-          : i.period == 3
-            ? 'day'
-            : 'month'
-    period += i.advance > 1 ? 's' : ''
-    _notificationsSummary.value += ` ${i.advance} ${period} before\n`
+  const periods = ['minute', 'hour', 'day', 'week']
+
+  n.forEach((notification) => {
+    // Gestione periodo base
+    let period = periods[notification.period - 1]
+    period += notification.advance > 1 ? 's' : ''
+    let summary = `${notification.advance} ${period} before`
+
+    // Aggiunta informazioni sulla ripetizione
+    if (notification.repeat) {
+      if (notification.repeat.untilResponse) {
+        summary += `, repeating every ${notification.repeat.interval} `
+        let intervalUnit = periods[notification.repeat.intervalUnit - 1]
+        if (notification.repeat.interval > 1) intervalUnit += 's'
+        summary += `${intervalUnit} until response`
+      } else {
+        summary += `, repeating ${notification.repeat.count} times every ${notification.repeat.interval} `
+        let intervalUnit = periods[notification.repeat.intervalUnit - 1]
+        if (notification.repeat.interval > 1) intervalUnit += 's'
+        summary += intervalUnit
+      }
+    }
+
+    _notificationsSummary.value += `${summary}\n`
   })
 }
 

@@ -13,7 +13,7 @@ const $props = defineProps({
   options: { type: Array as PropType<Option[]>, required: true }
 })
 
-const selected = ref(0)
+const selected = ref($props.options.findIndex((o) => o.value === $model.value))
 
 const update = (s: number, v: number) => {
   selected.value = s

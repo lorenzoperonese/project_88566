@@ -72,9 +72,17 @@ export declare global {
     endOn: number | null
   }
 
+  interface NotifyRepeatConfig {
+    count: number // numero di ripetizioni (0 per infinito)
+    interval: number // intervallo tra le ripetizioni
+    intervalUnit: NotifyPeriod
+    untilResponse: boolean
+  }
+
   interface Notify {
     advance: number
-    period: NotifyPeriod
+    period: number
+    repeat?: NotifyRepeatConfig
   }
 
   interface Guest {

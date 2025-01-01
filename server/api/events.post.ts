@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
       note: body.note?.trim(),
       category: body.category?.trim(),
       repetition: body.repetition,
-      notify: body.notify ?? false,
+      notify: body.notify || [],
       guests: {
         waiting: body.guests.waiting,
         accepted: []
