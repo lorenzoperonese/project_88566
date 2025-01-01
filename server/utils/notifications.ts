@@ -63,6 +63,7 @@ export async function sendPushNotification(notification: PushNotification) {
         await webpush.sendNotification(
           opt.subscription,
           JSON.stringify({
+            id: notification.id,
             title: notification.title,
             body: notification.body,
             event_id: notification.event_id

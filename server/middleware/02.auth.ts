@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
     const token = getCookie(event, 'auth:token')
 
     if (!token) {
+      console.log('No token')
       setResponseStatus(event, 401)
       return {
         err: 'Unauthenticated'
@@ -13,6 +14,7 @@ export default defineEventHandler(async (event) => {
 
     const s = await getAuthSession(token)
     if (!s) {
+      console.log('No session')
       setResponseStatus(event, 401)
       return {
         err: 'Cookie for auth is not valid or expired'

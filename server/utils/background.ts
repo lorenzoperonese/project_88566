@@ -174,7 +174,7 @@ export class Notificator {
 
         // Check if it's time to send the initial notification
         if (
-          !state &&
+          (state === undefined || !state.responded) &&
           currentTime >= notificationTime &&
           currentTime < event.start
         ) {
@@ -317,12 +317,14 @@ export class Notificator {
     )
   }
 
-  public markAsResponded(eventId: string, notificationId: string): void {
-    const state = this.notificationStates.find(
-      (s) => s.notification_id === notificationId
+  public markAsResponded(notification_id: string): void {
+    console.log('Marking notification as responded. id: ', notification_id)
+    const state_index = this.notificationStates.findIndex(
+      (s) => s.notification_id === notification_id
     )
-    if (state) {
-      state.responded = true
+    if (state_index) {
+      console.log('Marking notification as responded. index: ', state_index)
+      this.notificationStates[state_index].responded = true
     }
   }
 }

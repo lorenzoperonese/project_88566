@@ -2,6 +2,16 @@ import webpush from 'web-push'
 import { Notificator } from '@/server/utils/background'
 import { Event, type IEvent } from '@/server/db'
 
+let globalNotificator: Notificator | null = null
+
+export function getNotificator(): Notificator {
+  if (!globalNotificator) {
+    throw new Error('Global notificator not initialized')
+  }
+
+  return globalNotificator
+}
+
 export default defineNitroPlugin(async () => {
   const config = useRuntimeConfig()
 
@@ -13,6 +23,7 @@ export default defineNitroPlugin(async () => {
     config.PUSH_KEY as string
   )
 
+  globalNotificator = new Notificator()
   notificatorManager()
 })
 
@@ -20,7 +31,7 @@ async function notificatorManager() {
   console.log('Notificator manager started')
 
   // This is a global istance of the Notificator class.
-  let notificator = new Notificator()
+  let notificator = getNotificator()
 
   const loop = async () => {
     await notificatorWorker(notificator)
