@@ -6,12 +6,8 @@ export default defineEventHandler(async (event) => {
     const body = await readBody<webpush.PushSubscription>(event)
 
     await PushNotification.deleteMany({ subscription: body })
-    await PushNotification.create({
-      subscription: body,
-      user_id: event.context.auth.id
-    })
 
-    return { msg: 'Notification subscription added' }
+    return { msg: 'Notification subscription deleted' }
   } catch (err) {
     console.error(err)
     setResponseStatus(event, 500)

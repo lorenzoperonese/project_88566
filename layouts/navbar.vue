@@ -39,9 +39,24 @@ function closeModal() {
   modal.value?.close()
 }
 
-function logout() {
+async function logout() {
   localStorage.removeItem('pomodoro-status')
   localStorage.removeItem('pomodoro-timer')
+
+  const registration = await navigator.serviceWorker.ready
+  const subscription = await registration.pushManager.getSubscription()
+  if (subscription) {
+    subscription.unsubscribe()
+    try {
+      await $fetch('/api/notify', {
+        method: 'DELETE',
+        body: JSON.stringify(subscription)
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const { signOut } = useAuth()
 
   try {
