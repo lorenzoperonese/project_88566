@@ -4,44 +4,66 @@ import { Task, ProjectTask, PomodoroEvent, type IEvent } from '@/server/db'
 export async function updateTasks(): Promise<void> {
   const today = await getNowTime()
 
-  await Task.updateMany(
+  const filter = {
+    completed: false,
+    end: {
+      $lt: today
+    }
+  }
+
+  const tasks = await Task.find(filter)
+  for (const t of tasks) {
+    let message = `Task "${t.title}" has been postponed to the next day`
+    if (t.postponed) message += ` ${t.postponed + 1} times`
+
+    let users = t.users.map((u) => u.toString())
+    users.push(t.user_id.toString())
+
+    const n = {
+      id: '0',
+      title: 'Task Postponed',
+      body: message,
+      users: users,
+      event_id: t._id,
+      type: 'task'
+    } as PushNotification
+
+    sendPushNotification(n)
+  }
+
+  await Task.updateMany(filter, [
     {
-      completed: false,
-      end: {
-        $lt: today
-      }
-    },
-    [
-      {
-        // Calculates how many days have passed since the task's end date ($subtract: [today, "$end"])
-        // Divides by milliseconds in a day to get number of days
-        // Rounds up to the nearest day ($ceil)
-        // Multiplies by milliseconds in a day to get the total time to add
-        // Adds this to the original end date
-        $set: {
-          end: {
-            // Calculate days passed and add that many days to the original end date
-            $add: [
-              '$end',
-              {
-                $multiply: [
-                  {
-                    $ceil: {
-                      $divide: [
-                        { $subtract: [today, '$end'] },
-                        24 * 60 * 60 * 1000 // milliseconds in a day
-                      ]
-                    }
-                  },
-                  24 * 60 * 60 * 1000 // milliseconds in a day
-                ]
-              }
-            ]
-          }
+      // Calculates how many days have passed since the task's end date ($subtract: [today, "$end"])
+      // Divides by milliseconds in a day to get number of days
+      // Rounds up to the nearest day ($ceil)
+      // Multiplies by milliseconds in a day to get the total time to add
+      // Adds this to the original end date
+      $set: {
+        end: {
+          // Calculate days passed and add that many days to the original end date
+          $add: [
+            '$end',
+            {
+              $multiply: [
+                {
+                  $ceil: {
+                    $divide: [
+                      { $subtract: [today, '$end'] },
+                      24 * 60 * 60 * 1000 // milliseconds in a day
+                    ]
+                  }
+                },
+                24 * 60 * 60 * 1000 // milliseconds in a day
+              ]
+            }
+          ]
+        },
+        postponed: {
+          $add: ['$postponed', 1]
         }
       }
-    ]
-  )
+    }
+  ])
 }
 
 // Set projects tasks that are in_progress and have passed their end date to 'late'

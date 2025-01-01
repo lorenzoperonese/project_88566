@@ -8,6 +8,7 @@ export interface ITask extends Document {
   note?: string
   category?: string
   completed: boolean
+  postponed?: number
   user_id: Types.ObjectId
   users: Types.ObjectId[]
 }
@@ -19,6 +20,7 @@ const schema = new Schema<ITask>(
     note: { type: String },
     category: { type: String, required: true },
     completed: { type: Boolean, required: true },
+    postponed: { type: Number, default: 0 },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: User },
     users: [{ type: Schema.Types.ObjectId, ref: User }]
   },

@@ -26,8 +26,8 @@ const $emits = defineEmits<{
 const { $toast } = useNuxtApp()
 
 const _title = ref('')
-const _endDate = ref<string>(formatDate(end.getTime() + 60 * 60 * 1000))
-const _endTime = ref<string>(formatTime(end.getTime()))
+const _endDate = ref<string>(formatDate(end.getTime()))
+const _endTime = ref<string>(formatTime(end.getTime() + 60 * 60 * 1000))
 const _note = ref<string>('')
 const _category = ref('Not categorized')
 const _completed = ref(false)
