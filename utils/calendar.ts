@@ -276,6 +276,17 @@ export function getProjectsForDay(
   })
 }
 
+export function getNotAvailableForDay(
+  notAvailable: NotAvailable[] | null,
+  day: Date
+): NotAvailable[] {
+  return getItemsForDay(notAvailable, day, {
+    startField: 'start',
+    endField: 'end',
+    sortField: 'start'
+  })
+}
+
 export function isToday(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }
@@ -298,6 +309,24 @@ export function isResourceAvailable(
     console.log(start, end)
     return (
       r.title === resourceName &&
+      ((rStart <= start && start < rEnd) ||
+        (rStart >= start && rStart < end) ||
+        (rStart <= start && rEnd >= end))
+    )
+  })
+}
+
+export function isUserAvailable(
+  notAvailable: NotAvailable[],
+  userId: string,
+  start: Date,
+  end: Date
+): boolean {
+  return !notAvailable.some((n) => {
+    const rStart = new Date(n.start)
+    const rEnd = new Date(n.end)
+    return (
+      n.user_id === userId &&
       ((rStart <= start && start < rEnd) ||
         (rStart >= start && rStart < end) ||
         (rStart <= start && rEnd >= end))

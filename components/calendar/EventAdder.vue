@@ -19,6 +19,8 @@ const { data: resourceList } = await useFetch<ResourceList[]>(
   '/api/resources-list'
 )
 const { data: resources } = await useFetch<Resource[]>('/api/resources')
+const { data: _notAvailable } =
+  await useFetch<NotAvailable[]>('/api/not-available')
 
 const _showRepetition = ref(false)
 const _showNotifications = ref(false)
@@ -242,10 +244,23 @@ function addGuest(g: string) {
     return
   }
   const user = _users.value.filter((u) => u.username === g)[0]
-  if (!user) $toast.error('User not found')
-  else
-    _guestsWaiting.value.push(_users.value.filter((u) => u.username === g)[0])
-  return
+  if (!user) {
+    $toast.error('User not found')
+    return
+  }
+
+  const startDate = new Date(_startDate.value + ' ' + _startTime.value)
+  const endDate = new Date(_endDate.value + ' ' + _endTime.value)
+
+  if (
+    _notAvailable.value &&
+    !isUserAvailable(_notAvailable.value, user.id, startDate, endDate)
+  ) {
+    $toast.error('User is busy')
+    return
+  }
+
+  _guestsWaiting.value.push(_users.value.filter((u) => u.username === g)[0])
 }
 </script>
 

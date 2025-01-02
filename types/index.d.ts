@@ -212,6 +212,14 @@ export declare global {
     sent_count: number // Number of times notification has been sent
     responded: boolean // For untilResponse notifications
   }
+
+  // Not available for group events
+  interface NotAvailable {
+    id: string
+    start: number
+    end: number
+    user_id: string
+  }
 }
 
 export interface JSONResponse {

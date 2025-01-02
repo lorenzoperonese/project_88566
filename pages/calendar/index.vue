@@ -25,7 +25,15 @@ const { data: _projects } = await useFetch<ProjectEvent[]>(
   '/api/projects-events'
 )
 
+const { data: _notAvailable } =
+  await useFetch<NotAvailable[]>('/api/not-available')
+
 const me = await getME()
+
+const _fNotAvailable = computed(() => {
+  if (!_notAvailable.value) return []
+  return _notAvailable.value.filter((na) => na.user_id === me.id)
+})
 
 const showResources = ref(false)
 
@@ -61,6 +69,11 @@ const fetchResources = async () => {
   _resources.value = tmp
 }
 
+const fetchNotAvailable = async () => {
+  const tmp = await $fetch('/api/not-available')
+  _notAvailable.value = tmp
+}
+
 function closeModal() {
   console.log('CLOSED')
   if (_add_element.value === 0) {
@@ -72,6 +85,8 @@ function closeModal() {
     fetchPomodoro()
   } else if (_add_element.value === 3) {
     fetchResources()
+  } else if (_add_element.value === 4) {
+    fetchNotAvailable()
   }
 
   if (input.value) {
@@ -102,6 +117,11 @@ function addPomodoro() {
 
 function addResource() {
   _add_element.value = 3
+  showModal()
+}
+
+function addNotAvailable() {
+  _add_element.value = 4
   showModal()
 }
 
@@ -249,6 +269,7 @@ function header(): string {
       :pomodoro="_pomodoro"
       :resources="fResources"
       :projects="_projects"
+      :not-available="_fNotAvailable"
       :week-days="_weekDays"
     />
 
@@ -262,6 +283,10 @@ function header(): string {
         <CalendarTaskAdder v-if="_add_element == 1" @close="closeModal" />
         <CalendarPomodoroAdder v-if="_add_element == 2" @close="closeModal" />
         <CalendarResourceAdder v-if="_add_element == 3" @close="closeModal" />
+        <CalendarNotAvailableAdder
+          v-if="_add_element == 4"
+          @close="closeModal"
+        />
       </div>
     </dialog>
 
@@ -291,6 +316,7 @@ function header(): string {
           <li><a @click="addEvent"> Event </a></li>
           <li><a @click="addTask"> Task </a></li>
           <li><a @click="addPomodoro"> Pomodoro </a></li>
+          <li><a @click="addNotAvailable"> Not available </a></li>
           <li v-if="isAdmin(me)"><a @click="addResource"> Resource </a></li>
         </ul>
       </div>

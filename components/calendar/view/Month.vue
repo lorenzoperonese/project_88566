@@ -6,6 +6,7 @@ const $props = defineProps<{
   pomodoro: PomodoroEvent[] | null
   resources: Resource[] | null
   projects: ProjectEvent[] | null
+  notAvailable: NotAvailable[] | null
   displayDate: Date
   today: Date
 }>()
@@ -46,6 +47,7 @@ interface CalendarCell {
   pomodoros: PomodoroEvent[]
   resources: Resource[]
   projects: ProjectEvent[]
+  notAvailable: NotAvailable[]
 }
 
 const calendar = computed((): CalendarCell[] => {
@@ -66,7 +68,8 @@ const calendar = computed((): CalendarCell[] => {
       tasks: getTasksForDay($props.tasks, normalizedDate),
       pomodoros: getPomodorosForDay($props.pomodoro, normalizedDate),
       resources: getResourcesForDay($props.resources, normalizedDate),
-      projects: getProjectsForDay($props.projects, normalizedDate)
+      projects: getProjectsForDay($props.projects, normalizedDate),
+      notAvailable: getNotAvailableForDay($props.notAvailable, normalizedDate)
     })
   }
   return result
@@ -144,6 +147,14 @@ const calendar = computed((): CalendarCell[] => {
         v-for="p in c.projects"
         :key="p.id"
         :pEvent="p"
+        :today="$props.today"
+        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
+      />
+
+      <CalendarNotAvailable
+        v-for="na in c.notAvailable"
+        :key="na.id"
+        :notAvailable="na"
         :today="$props.today"
         :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
