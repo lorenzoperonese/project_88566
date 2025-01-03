@@ -287,6 +287,17 @@ export function getNotAvailableForDay(
   })
 }
 
+export function getNoteTasksForDay(
+  noteTasks: NoteTask[] | null,
+  day: Date
+): NoteTask[] {
+  return getItemsForDay(noteTasks, day, {
+    startField: 'end',
+    endField: 'end',
+    sortField: 'end'
+  })
+}
+
 export function isToday(today: Date, day: Date): boolean {
   return today.toDateString() == day.toDateString()
 }

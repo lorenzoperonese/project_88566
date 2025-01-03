@@ -16,6 +16,14 @@ export declare global {
     }[]
   }
 
+  interface NoteTask {
+    id: string
+    title: string
+    end: number
+    done: boolean
+    note_id: string
+  }
+
   interface User {
     id: string
     username: string

@@ -28,6 +28,8 @@ const { data: _projects } = await useFetch<ProjectEvent[]>(
 const { data: _notAvailable } =
   await useFetch<NotAvailable[]>('/api/not-available')
 
+const { data: _noteTasks } = await useFetch<NoteTask[]>('/api/notes-todos')
+
 const me = await getME()
 
 const _fNotAvailable = computed(() => {
@@ -270,6 +272,7 @@ function header(): string {
       :resources="fResources"
       :projects="_projects"
       :not-available="_fNotAvailable"
+      :note-tasks="_noteTasks"
       :week-days="_weekDays"
     />
 
