@@ -31,6 +31,8 @@ export default defineEventHandler(async (event) => {
     body.shared_with = []
   }
 
+  console.log('todos: ', body.todos)
+
   try {
     const note = new Note({
       title: body.title,
@@ -38,8 +40,11 @@ export default defineEventHandler(async (event) => {
       category_id: body.category_id,
       user_id: event.context.auth.id,
       state: body.state,
-      shared_with: body.shared_with
+      shared_with: body.shared_with,
+      todos: body.todos
     })
+
+    console.log('note: ', note)
 
     await note.save()
     return { message: 'Note created successfuly' }

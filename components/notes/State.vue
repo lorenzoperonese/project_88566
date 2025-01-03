@@ -60,7 +60,7 @@ function save() {
 <template>
   <div>
     <div>
-      <button class="btn btn-neutral" @click="stateManagement()">
+      <button class="btn btn-neutral" @click.prevent="stateManagement()">
         {{ _state }}
       </button>
     </div>

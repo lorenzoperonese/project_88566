@@ -9,6 +9,11 @@ export declare global {
     user_id: string // private, public, shared
     state: string
     shared_with: string[]
+    todos?: {
+      title: string
+      end: number
+      done: boolean
+    }[]
   }
 
   interface User {

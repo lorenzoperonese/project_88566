@@ -58,7 +58,8 @@ export default defineEventHandler(async (event) => {
         body: body.body,
         category_id: body.category_id,
         state: body.state,
-        shared_with: body.shared_with
+        shared_with: body.shared_with,
+        todos: body.todos
       }
     )
 

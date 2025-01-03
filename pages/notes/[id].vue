@@ -45,6 +45,15 @@ const _categoryName = computed(() => {
       <div class="prose">
         <MDC :value="_note.body" />
       </div>
+      <div class="divider"></div>
+      <div>
+        <div v-for="t in _note.todos" class="flex gap-4">
+          <div :class="{ 'line-through': t.done }">
+            {{ t.title }}
+          </div>
+          <div>{{ formatTime(t.end) }} {{ formatDate(t.end) }}</div>
+        </div>
+      </div>
     </div>
     <div v-else>Something went wrong :(</div>
   </div>

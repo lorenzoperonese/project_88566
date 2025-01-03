@@ -32,6 +32,7 @@ export default defineEventHandler(async (event): Promise<Note | null> => {
       created_at: n.createdAt.getTime(),
       state: n.state,
       shared_with: n.shared_with.map((user) => user.username),
+      todos: n.todos,
       user_id: n.user_id.toString()
     } as Note
   } catch (err) {

@@ -3,23 +3,26 @@ definePageMeta({
   layout: 'navbar'
 })
 
-const _notes = ref<Note[]>([])
-const _notesCategories = ref<NoteCategory[]>([])
+const { data: _notes } = await useFetch<Note[]>('/api/notes')
+const { data: _notesCategories } = await useFetch<NoteCategory[]>(
+  '/api/notes-categories'
+)
 
 const _search = ref('')
 
 const _newCategory = ref('')
 
-const _filteredNotes = computed<Note[]>(() => {
+const _filteredNotes = computed(() => {
   if (_search.value.length == 0) {
     return _notes.value
-  } else {
-    const f = _notes.value.filter((e) => {
-      return e.title.includes(_search.value) || e.body.includes(_search.value)
-    })
-    console.log(f)
-    return f
   }
+
+  if (_notes.value === null) return []
+
+  const f = _notes.value.filter((e) => {
+    return e.title.includes(_search.value) || e.body.includes(_search.value)
+  })
+  return f
 })
 
 provide('notesCategories', _notesCategories)
@@ -93,6 +96,8 @@ async function deleteCategory(id: string) {
 const me = await getME()
 
 function duplicate(id: string) {
+  if (_notes.value === null) return
+
   const n = _notes.value.find((x) => x.id == id)
 
   if (!n) {
@@ -108,22 +113,6 @@ function duplicate(id: string) {
 
   addNote(n)
 }
-
-onMounted(async () => {
-  const res = await useFetch('/api/notes')
-  if (res.status.value == 'success' && res.data.value) {
-    _notes.value = res.data.value
-  } else {
-    console.error(res.error.value)
-  }
-
-  const res2 = await useFetch('/api/notes-categories')
-  if (res2.status.value == 'success' && res2.data.value) {
-    _notesCategories.value = res2.data.value
-  } else {
-    console.error(res2.error.value)
-  }
-})
 </script>
 
 <template>

@@ -10,6 +10,11 @@ export interface INote extends Document {
   user_id: Types.ObjectId
   state: string // private, shared, public
   shared_with: Types.ObjectId[]
+  todos?: {
+    title: string
+    end: number
+    done: boolean
+  }[]
   updatedAt: Date
   createdAt: Date
 }
@@ -21,10 +26,17 @@ const schema = new Schema<INote>(
     category_id: { type: Schema.Types.ObjectId, ref: NoteCategory },
     user_id: { type: Schema.Types.ObjectId, required: true, ref: User },
     state: { type: String, required: true, default: 'private' },
-    shared_with: [{ type: Schema.Types.ObjectId, ref: User }]
+    shared_with: [{ type: Schema.Types.ObjectId, ref: User }],
+    todos: [
+      {
+        title: { type: String, required: true },
+        end: { type: Number, required: true },
+        done: { type: Boolean, required: true, default: false }
+      }
+    ]
   },
   {
-    timestamps: true // Log when user is added and modified
+    timestamps: true
   }
 )
 

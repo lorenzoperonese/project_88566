@@ -20,7 +20,8 @@ export default defineEventHandler(async (event): Promise<Note[]> => {
       updated_at: n.updatedAt.getTime(),
       shared_with: n.shared_with.map((user) => user.username),
       user_id: n.user_id.toString(),
-      state: n.state
+      state: n.state,
+      todos: n.todos
     })) as Note[]
   } catch (err) {
     console.error(err)

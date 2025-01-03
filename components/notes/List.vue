@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const $props = defineProps({
-  notes: { type: Array as PropType<Note[]>, required: true }
-})
+const $props = defineProps<{
+  notes: Note[] | null
+}>()
 
 const $emits = defineEmits<{
   (e: 'delete' | 'duplicate', id: string): void
@@ -11,6 +11,8 @@ const sorting = ref('0')
 const state = ref('all')
 
 const sortedNotes = computed(() => {
+  if (!$props.notes) return []
+
   let notes
   if (state.value === 'all') {
     notes = $props.notes
@@ -62,7 +64,7 @@ const sortedNotes = computed(() => {
       </div>
     </div>
 
-    <div v-if="$props.notes.length > 0" class="flex flex-col gap-4">
+    <div v-if="$props.notes?.length || 0 > 0" class="flex flex-col gap-4">
       <template v-for="note in sortedNotes" :key="note.id">
         <NotesNote
           :note="note"

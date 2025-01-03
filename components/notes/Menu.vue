@@ -3,9 +3,9 @@ const _search = defineModel<string>({
   required: true
 })
 
-const $props = defineProps({
-  categories: { type: Array as PropType<NoteCategory[]>, require: true }
-})
+const $props = defineProps<{
+  categories: NoteCategory[] | null
+}>()
 
 const $emits = defineEmits<{
   (e: 'delete-category', id: string): void

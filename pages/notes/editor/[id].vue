@@ -35,6 +35,34 @@ const _categoryName = computed(() => {
   return 'Error'
 })
 
+const today = await getToday()
+
+interface NoteTodo {
+  title: string
+  date: string
+  time: string
+  done: boolean
+}
+
+const _todoDate = ref<string>(formatDate(today.getTime() + 60 * 60 * 1000))
+const _todoTime = ref<string>(formatTime(today.getTime() + 60 * 60 * 1000))
+const _todoList = ref<NoteTodo[]>(
+  data.value?.todos?.map((t) => ({
+    title: t.title,
+    date: formatDate(t.end),
+    time: formatTime(t.end),
+    done: t.done
+  })) || []
+)
+
+const emptyTodo = (): NoteTodo => ({
+  title: '',
+  date: _todoDate.value,
+  time: _todoTime.value,
+  done: false
+})
+_todoList.value.push(emptyTodo())
+
 async function save() {
   if (data.value) {
     if (data.value.title.trim() === '') {
@@ -44,13 +72,18 @@ async function save() {
     } else {
       try {
         await $fetch(`/api/notes/${_id}`, {
-          method: 'put',
+          method: 'PUT',
           body: {
             title: data.value.title,
             body: data.value.body,
             category_id: _selected.value == '' ? undefined : _selected.value,
             state: state.value,
-            shared_with: state.value == 'shared' ? guestsIDs.value : []
+            shared_with: state.value == 'shared' ? guestsIDs.value : [],
+            todos: _todoList.value.slice(0, -1).map((t) => ({
+              title: t.title,
+              end: new Date(t.date + ' ' + t.time).getTime(),
+              done: t.done
+            }))
           }
         })
         navigateTo(`/notes/${_id}`)
@@ -64,6 +97,32 @@ async function save() {
 const updateGuests = (g: string[], s: string) => {
   guestsIDs.value = g
   state.value = s
+}
+
+function addTodo() {
+  const l = _todoList.value.length
+  if (l == 0) {
+    $toast.error('Something went wrong')
+    return
+  }
+
+  if (_todoList.value[l - 1].title.trim() == '') {
+    $toast.error('Title is required')
+    return
+  }
+
+  _todoList.value.push(emptyTodo())
+  return
+}
+
+function delTodo(t: NoteTodo) {
+  const i = _todoList.value.indexOf(t)
+  if (i == -1) {
+    $toast.error('Something went wrong')
+    return
+  }
+
+  _todoList.value.splice(i, 1)
 }
 </script>
 
@@ -118,6 +177,53 @@ const updateGuests = (g: string[], s: string) => {
             class="w-full resize-none rounded-b-lg bg-transparent outline-none"
           >
           </textarea>
+        </div>
+        <div class="divider"></div>
+        <div class="flex w-full flex-col gap-2">
+          <div v-for="(t, indx) in _todoList" class="flex gap-2">
+            <input
+              class="input text-xs placeholder:text-gray-600"
+              type="text"
+              placeholder="Todo..."
+              v-model="t.title"
+            />
+            <input
+              class="input input-bordered text-xs"
+              type="date"
+              v-model="t.date"
+            />
+            <input
+              class="input input-bordered text-xs"
+              type="time"
+              v-model="t.time"
+            />
+            <div class="form-control">
+              <label class="label cursor-pointer">
+                <span class="label-text text-xs">Completed</span>
+                <input
+                  type="checkbox"
+                  v-model="t.done"
+                  class="checkbox"
+                  @click.stop=""
+                />
+              </label>
+            </div>
+
+            <button
+              v-if="indx == _todoList.length - 1"
+              class="btn btn-primary text-xs"
+              @click.prevent="addTodo"
+            >
+              Add
+            </button>
+            <button
+              v-else
+              class="btn btn-error text-xs"
+              @click.prevent="delTodo(t)"
+            >
+              Del
+            </button>
+          </div>
         </div>
       </div>
 

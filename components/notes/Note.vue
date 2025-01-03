@@ -61,6 +61,15 @@ const copyToClipboard = async () => {
             <div class="prose prose-sm">
               <MDC :value="$props.note.body" />
             </div>
+            <div class="divider"></div>
+            <div>
+              <div v-for="t in $props.note.todos" class="flex gap-4">
+                <div :class="{ 'line-through': t.done }">
+                  {{ t.title }}
+                </div>
+                <div>{{ formatTime(t.end) }} {{ formatDate(t.end) }}</div>
+              </div>
+            </div>
           </NuxtLink>
         </div>
         <div class="flex flex-col gap-2">
