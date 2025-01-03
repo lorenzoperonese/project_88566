@@ -1,7 +1,8 @@
 import {
   updateTasks,
   updateProjectTasks,
-  updatePomodoros
+  updatePomodoros,
+  updateNotesTasks
 } from '../utils/background'
 
 export default defineEventHandler(async (event) => {
@@ -12,5 +13,10 @@ export default defineEventHandler(async (event) => {
 
   await useStorage().setItem<number>(`tm:delta`, delta)
 
-  await Promise.all([updateTasks(), updateProjectTasks(), updatePomodoros()])
+  await Promise.all([
+    updateTasks(),
+    updateProjectTasks(),
+    updatePomodoros(),
+    updateNotesTasks()
+  ])
 })

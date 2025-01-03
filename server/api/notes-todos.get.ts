@@ -10,8 +10,6 @@ export default defineEventHandler(async (event): Promise<NoteTask[]> => {
       ]
     })
 
-    console.log(notes)
-
     return notes.flatMap((note) => {
       if (note.todos === undefined) return []
 

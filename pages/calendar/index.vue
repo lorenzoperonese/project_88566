@@ -56,6 +56,13 @@ const fetchEvents = async () => {
   _events.value = tmp
 }
 
+const fetchEventsGuest = async () => {
+  const tmp = await $fetch('/api/events-guest', {
+    query: { status: 'accepted' }
+  })
+  _eventsGuest.value = tmp
+}
+
 const fetchTasks = async () => {
   const tmp = await $fetch('/api/tasks')
   _tasks.value = tmp
@@ -71,9 +78,19 @@ const fetchResources = async () => {
   _resources.value = tmp
 }
 
+const fetchProjects = async () => {
+  const tmp = await $fetch('/api/projects-events')
+  _projects.value = tmp
+}
+
 const fetchNotAvailable = async () => {
   const tmp = await $fetch('/api/not-available')
   _notAvailable.value = tmp
+}
+
+const fetchNoteTasks = async () => {
+  const tmp = await $fetch('/api/notes-todos')
+  _noteTasks.value = tmp
 }
 
 function closeModal() {
@@ -195,8 +212,13 @@ async function updateToday() {
   _displayDate.value = new Date(today)
 
   fetchEvents()
+  fetchEventsGuest()
   fetchTasks()
   fetchPomodoro()
+  fetchResources()
+  fetchProjects()
+  fetchNotAvailable()
+  fetchNoteTasks()
 }
 
 function changeView(view: string) {

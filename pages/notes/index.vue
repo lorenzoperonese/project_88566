@@ -116,27 +116,30 @@ function duplicate(id: string) {
 </script>
 
 <template>
-  <div class="flex">
-    <NotesMenu
-      v-model="_search"
-      :categories="_notesCategories"
-      class="h-full border-r border-r-neutral"
-      style="height: calc(100vh - var(--navbar-height))"
-      @add-category="addCategory"
-      @delete-category="deleteCategory"
-    />
-
-    <div
-      class="w-full overflow-y-auto p-5"
-      style="height: calc(100vh - var(--navbar-height))"
-    >
-      <NotesAdder :categories="_notesCategories" @save="addNote" />
-      <NotesList
-        :notes="_search ? _filteredNotes : _notes"
-        class=""
-        @delete="deleteNote"
-        @duplicate="duplicate"
+  <div>
+    <div class="flex">
+      <NotesMenu
+        v-model="_search"
+        :categories="_notesCategories"
+        class="h-full border-r border-r-neutral"
+        style="height: calc(100vh - var(--navbar-height))"
+        @add-category="addCategory"
+        @delete-category="deleteCategory"
       />
+
+      <div
+        class="w-full overflow-y-auto p-5"
+        style="height: calc(100vh - var(--navbar-height))"
+      >
+        <NotesAdder :categories="_notesCategories" @save="addNote" />
+        <NotesList
+          :notes="_search ? _filteredNotes : _notes"
+          class=""
+          @delete="deleteNote"
+          @duplicate="duplicate"
+        />
+      </div>
     </div>
+    <TmButton class="fixed bottom-4 left-4" @update="fetchNotes()" />
   </div>
 </template>

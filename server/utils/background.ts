@@ -1,4 +1,10 @@
-import { Task, ProjectTask, PomodoroEvent, type IEvent } from '@/server/db'
+import {
+  Task,
+  ProjectTask,
+  PomodoroEvent,
+  type IEvent,
+  Note
+} from '@/server/db'
 
 // Move all non-completed tasks to the next day
 export async function updateTasks(): Promise<void> {
@@ -108,6 +114,80 @@ export async function updatePomodoros(): Promise<void> {
       }
     )
   }
+}
+
+// Update notes tasks
+export async function updateNotesTasks(): Promise<void> {
+  const today = await getNowTime()
+
+  const filter = {
+    'todos.end': {
+      $lt: today
+    }
+  }
+
+  const notes = await Note.find(filter)
+  for (const nt of notes) {
+    let message = `Tasks in note "${nt.title}" were been postponed to the next day`
+
+    let users = nt.shared_with.map((u) => u.toString())
+    users.push(nt.user_id.toString())
+
+    const n = {
+      id: '0',
+      title: 'Tasks in note Postponed',
+      body: message,
+      users: users,
+      event_id: nt._id,
+      type: 'task'
+    } as PushNotification
+
+    sendPushNotification(n)
+  }
+
+  await Note.updateMany(filter, [
+    {
+      $set: {
+        todos: {
+          $map: {
+            input: '$todos',
+            as: 'todo',
+            in: {
+              $cond: {
+                if: { $lt: ['$$todo.end', today] },
+                then: {
+                  $mergeObjects: [
+                    '$$todo',
+                    {
+                      end: {
+                        $add: [
+                          '$$todo.end',
+                          {
+                            $multiply: [
+                              {
+                                $ceil: {
+                                  $divide: [
+                                    { $subtract: [today, '$$todo.end'] },
+                                    24 * 60 * 60 * 1000
+                                  ]
+                                }
+                              },
+                              24 * 60 * 60 * 1000
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                else: '$$todo'
+              }
+            }
+          }
+        }
+      }
+    }
+  ])
 }
 
 // This part is for the notification array
