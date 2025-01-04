@@ -185,6 +185,25 @@ function skip() {
   }
 }
 
+function adjustTime(value: number) {
+  _minutes.value += value
+  if (_minutes.value < 0) {
+    if (_hours.value > 0) {
+      _hours.value--
+      _minutes.value += 60
+    } else {
+      _minutes.value = 0
+    }
+  } else if (_minutes.value > 59) {
+    if (_hours.value < 99) {
+      _hours.value++
+      _minutes.value -= 60
+    } else {
+      _minutes.value = 59
+    }
+  }
+}
+
 onMounted(() => {
   let status = localStorage.getItem('pomodoro-status')
   if (status == 'running' || status == 'paused') {
@@ -385,6 +404,20 @@ watch(
         Ciclo {{ _cycleCounter }} - {{ isStudying ? 'Studio' : 'Pausa' }}
       </p>
       <div class="flex w-96 flex-col gap-2">
+        <div class="flex justify-evenly space-x-2">
+          <button class="btn btn-primary flex-1" @click="adjustTime(-5)">
+            -5
+          </button>
+          <button class="btn btn-primary flex-1" @click="adjustTime(-1)">
+            -1
+          </button>
+          <button class="btn btn-primary flex-1" @click="adjustTime(1)">
+            +1
+          </button>
+          <button class="btn btn-primary flex-1" @click="adjustTime(5)">
+            +5
+          </button>
+        </div>
         <button v-if="!_paused" class="btn btn-warning" @click="pause">
           Pausa
         </button>
