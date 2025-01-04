@@ -375,7 +375,9 @@ watch(
           />
         </div>
         <div class="flex flex-col">
-          <label class="mb-1 font-bold">Cicli</label>
+          <label class="mb-1 font-bold"
+            >Cicli <span class="invisible sm:hidden">(min)</span></label
+          >
           <input
             v-model="_cycles"
             min="1"
@@ -398,13 +400,13 @@ watch(
       </div>
     </div>
 
-    <div v-else class="text-center">
+    <div v-else class="w-full max-w-xs text-center md:max-w-md">
       <h2 class="mb-4 text-4xl font-bold">{{ timeDisplay }}</h2>
       <p class="mb-4 text-xl">
         Ciclo {{ _cycleCounter }} - {{ isStudying ? 'Studio' : 'Pausa' }}
       </p>
-      <div class="flex w-96 flex-col gap-2">
-        <div class="flex justify-evenly space-x-2">
+      <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
           <button class="btn btn-primary flex-1" @click="adjustTime(-5)">
             -5
           </button>

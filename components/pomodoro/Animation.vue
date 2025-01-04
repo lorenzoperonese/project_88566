@@ -37,14 +37,16 @@ const sauceState = computed(() => ({
 
 <template>
   <div>
-    <div class="scene">
+    <div class="relative h-[400px] w-[360px] sm:w-[400px]">
       <div class="basket">
         <div class="tomato tomato1"></div>
         <div class="tomato tomato2"></div>
         <div class="tomato tomato3"></div>
         <div class="tomato tomato4"></div>
       </div>
-      <div class="wooden-board">
+      <div
+        class="wooden-board absolute top-[140px] h-[30px] w-[200px] sm:w-[300px]"
+      >
         <div class="wooden-lines"></div>
       </div>
       <div class="jar">
@@ -60,17 +62,7 @@ const sauceState = computed(() => ({
 </template>
 
 <style scoped>
-.scene {
-  position: relative;
-  width: 400px;
-  height: 400px;
-}
-
 .wooden-board {
-  position: absolute;
-  top: 140px;
-  width: 300px;
-  height: 30px;
   background: #8b4513;
   transform: rotate(20deg);
   /* Solo questa riga è cambiata */
@@ -160,20 +152,20 @@ const sauceState = computed(() => ({
 }
 
 .tomato1 {
-  left: 10px;
+  left: 5px;
 }
 
 .tomato2 {
   left: 35px;
+  animation: rollTomato 8s infinite;
 }
 
 .tomato3 {
-  left: 60px;
+  left: 35px;
 }
 
 .tomato4 {
   left: 60px;
-  animation: rollTomato 8s infinite;
 }
 
 @keyframes rollTomato {
@@ -198,7 +190,7 @@ const sauceState = computed(() => ({
   }
 
   100% {
-    transform: translateX(250px) translateY(220px) rotate(540deg);
+    transform: translateX(230px) translateY(220px) rotate(540deg);
     opacity: 0;
   }
 }

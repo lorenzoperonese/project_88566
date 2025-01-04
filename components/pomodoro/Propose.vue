@@ -53,10 +53,7 @@ function acceptProposal() {
         <p>Cicli: {{ _proposal.cycles }}</p>
         <p>Tempo rimanente: {{ _proposal.remaining }} min</p>
       </div>
-      <button
-        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-        @click="acceptProposal"
-      >
+      <button class="btn btn-success" @click="acceptProposal">
         Accetta proposta
       </button>
     </div>

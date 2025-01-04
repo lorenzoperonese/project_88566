@@ -79,7 +79,7 @@ watch(wsState.notifications, updatePending)
 </script>
 
 <template>
-  <div class="grid grid-cols-3 bg-base-300">
+  <div class="grid grid-cols-3 bg-base-300 p-2">
     <div class="lg:col-span-2">
       <div class="dropdown block lg:hidden">
         <div tabindex="0" role="button" class="btn btn-circle btn-ghost">

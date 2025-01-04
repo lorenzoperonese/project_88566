@@ -59,7 +59,7 @@ async function deleteResource(id: string) {
     </div>
 
     <div class="mt-5">
-      <div class="form-control max-w-sm">
+      <div class="form-control max-w-sm gap-y-2">
         <input
           class="input input-bordered"
           type="text"
