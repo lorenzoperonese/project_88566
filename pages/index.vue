@@ -24,9 +24,11 @@ watch(updateSettings as any, () => {
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col items-center">
     <h1 class="p-5 text-xl font-bold">Home page</h1>
-    <div class="flex flex-col gap-2 p-5 md:flex-row">
+    <div
+      class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6"
+    >
       <RouterLink
         class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
         to="/calendar"
