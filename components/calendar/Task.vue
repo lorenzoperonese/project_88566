@@ -23,16 +23,21 @@ const isInPast = computed(() => {
     >
       <div
         :class="['font-semibold', { 'line-through': $props.task.completed }]"
+        class="overflow-x-clip whitespace-nowrap"
       >
         {{ $props.task.title }}
       </div>
-      <div>
-        <div v-if="$props.fullDate">
-          {{ formatDate(task.end) }} - {{ formatTime(task.end) }}
+      <div class="hidden md:block">
+        <div>
+          <div v-if="$props.fullDate">
+            {{ formatDate(task.end) }} - {{ formatTime(task.end) }}
+          </div>
+          <div v-else>{{ formatTime(task.end) }}</div>
         </div>
-        <div v-else>{{ formatTime(task.end) }}</div>
+        <div class="hidden lg:block" v-if="$props.task.category">
+          🏷️ {{ $props.task.category }}
+        </div>
       </div>
-      <div v-if="$props.task.category">🏷️ {{ $props.task.category }}</div>
     </div>
   </NuxtLink>
 </template>

@@ -18,7 +18,7 @@ const isInPast = computed(() => {
 <template>
   <NuxtLink :to="`/calendar/p/${$props.pomodoro.id}`">
     <div
-      class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-accent hover:bg-blue-200"
+      class="mt-1 cursor-pointer rounded bg-error-content p-1 text-xs text-error hover:bg-red-200"
       :class="{ 'opacity-60': isInPast }"
     >
       <div
@@ -26,13 +26,11 @@ const isInPast = computed(() => {
           'font-semibold',
           { 'line-through': $props.pomodoro.cycles === 0 }
         ]"
+        class="overflow-x-clip whitespace-nowrap"
       >
         {{ $props.pomodoro.title }}
       </div>
-      <div>
-        <div>
-          {{ formatDate($props.pomodoro.date) }}
-        </div>
+      <div class="hidden md:block">
         <div>
           🍅 {{ $props.pomodoro.study }} - {{ $props.pomodoro.break }} -
           {{ $props.pomodoro.cycles }}

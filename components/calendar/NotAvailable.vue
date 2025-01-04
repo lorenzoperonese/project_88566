@@ -18,11 +18,13 @@ const isInPast = computed(() => {
 <template>
   <NuxtLink :to="`/calendar/n/${$props.notAvailable.id}`">
     <div
-      class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-accent hover:bg-blue-200"
+      class="mt-1 cursor-pointer rounded bg-warning-content p-1 text-xs text-warning hover:bg-yellow-100"
       :class="{ 'opacity-60': isInPast }"
     >
-      <div class="font-semibold">Not available</div>
-      <div>
+      <div class="overflow-x-clip whitespace-nowrap font-semibold">
+        Not available
+      </div>
+      <div class="hidden md:block">
         <div>
           {{ formatTime($props.notAvailable.start) }} -
           {{ formatTime($props.notAvailable.end) }}

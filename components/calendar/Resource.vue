@@ -19,11 +19,13 @@ const me = await getME()
 <template>
   <NuxtLink :to="isAdmin(me) ? `/calendar/r/${resource.id}` : ''">
     <div
-      class="mt-1 w-full cursor-pointer rounded bg-warning-content p-1 text-xs text-warning hover:bg-blue-200"
+      class="mt-1 w-full cursor-pointer rounded bg-info-content p-1 text-xs text-info hover:bg-blue-200"
       :class="{ 'opacity-60': isInPast }"
     >
-      <div class="font-semibold">{{ resource.title }}</div>
-      <div>
+      <div class="overflow-x-clip whitespace-nowrap font-semibold">
+        {{ resource.title }}
+      </div>
+      <div class="hidden md:block">
         {{ formatTime(resource.start) }} - {{ formatTime(resource.end) }}
       </div>
     </div>
