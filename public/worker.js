@@ -36,3 +36,12 @@ self.addEventListener('notificationclick', (event) => {
       })
   )
 })
+
+self.addEventListener('message', function (event) {
+  const msg = event.data
+
+  self.registration.showNotification(msg.title, {
+    body: msg.body,
+    icon: '/icon.png'
+  })
+})

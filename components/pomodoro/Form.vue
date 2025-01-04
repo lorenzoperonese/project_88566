@@ -110,6 +110,12 @@ function start(recalculate = true) {
           ? 'Complimenti, ora puoi riposarti!'
           : 'Pausa terminata, rimettiti al lavoro!'
         $toast.success(msg)
+        if (_pomodoroSettings.value.enableNotifications) {
+          postMessageToWoker({
+            title: 'Pomodoro',
+            body: msg
+          })
+        }
         if (!isStudying.value) _cycleCounter.value++
         isStudying.value = !isStudying.value
         calculateTime()
