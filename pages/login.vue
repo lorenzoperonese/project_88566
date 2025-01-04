@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { postMessageToWoker } from '~/utils/worker'
 const { $registerPushNotifications } = useNuxtApp()
 
 // login page is in dark mode by default
@@ -41,8 +40,6 @@ async function login() {
     await signIn(credentials, { callbackUrl: '/' })
     changeTheme()
     wsSendAuth()
-
-    postMessageToWoker({ type: 'authenticated' })
 
     if (window.Notification.permission === 'granted') {
       try {
