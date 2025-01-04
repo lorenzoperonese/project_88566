@@ -270,8 +270,10 @@ function addGuest(g: string) {
       {{ $props.event ? 'Modify event' : 'Add event' }}
     </h1>
     <form class="flex flex-col gap-2" @submit.prevent="">
-      <div>
-        <label>Title:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">Title</label>
+        </div>
         <input
           v-model="_title"
           type="text"
@@ -281,25 +283,33 @@ function addGuest(g: string) {
         />
       </div>
 
-      <div>
-        <label>Start:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">Start</label>
+        </div>
         <input v-model="_startDate" class="input input-bordered" type="date" />
         <input v-model="_startTime" class="input input-bordered" type="time" />
       </div>
 
-      <div>
-        <label>End:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">End</label>
+        </div>
         <input v-model="_endDate" class="input input-bordered" type="date" />
         <input v-model="_endTime" class="input input-bordered" type="time" />
       </div>
 
-      <div>
-        <label>Location:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">Location</label>
+        </div>
         <input v-model="_location" class="input input-bordered" type="string" />
       </div>
 
-      <div>
-        <label>Note:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">Note</label>
+        </div>
         <textarea
           v-model="_note"
           class="textarea textarea-bordered w-full"
@@ -307,13 +317,17 @@ function addGuest(g: string) {
         ></textarea>
       </div>
 
-      <div>
-        <label>Category:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">Category</label>
+        </div>
         <input v-model="_category" class="input input-bordered" type="string" />
       </div>
 
-      <div>
-        <label>Resource:</label>
+      <div class="form-control">
+        <div class="label">
+          <label class="label-text">Resource</label>
+        </div>
         <select v-model="_resource" class="select select-bordered">
           <option value="null">None</option>
           <option v-for="r in fResourcesList" :value="r.name">
@@ -342,36 +356,40 @@ function addGuest(g: string) {
           <pre>{{ _notificationsSummary }}</pre>
         </div>
 
-        <div>
-          Guests:
-          <div>
-            <input
-              v-model="_guest"
-              type="text"
-              class="input input-bordered w-full max-w-xs"
-            />
-          </div>
-          <div @click.prevent="">
-            <button
-              class="btn btn-circle btn-info btn-sm"
-              @click="addGuest(_guest)"
-            >
-              <svg
-                class="h-5 w-5 opacity-70"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" />
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            </button>
+        <div class="flex">
+          <div class="form-control w-full">
+            <div class="label">
+              <label class="label-text">Guests</label>
+            </div>
+            <div class="flex gap-2">
+              <input
+                v-model="_guest"
+                type="text"
+                class="input input-bordered flex-1"
+              />
+              <div class="flex items-center">
+                <button
+                  class="btn btn-circle btn-info btn-sm"
+                  @click="addGuest(_guest)"
+                >
+                  <svg
+                    class="h-5 w-5 opacity-70"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div v-for="(g, index) in _guestsAccepted" :key="index">

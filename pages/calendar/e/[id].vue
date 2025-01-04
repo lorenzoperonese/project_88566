@@ -25,8 +25,12 @@ const editMode = ref(false)
         Edit
       </button>
     </div>
-    <div v-else>
-      <CalendarEventAdder :event="_event" @close="update" />
+    <div v-else class="flex justify-center">
+      <CalendarEventAdder
+        :event="_event"
+        @close="update"
+        class="w-full max-w-xs p-4 md:max-w-2xl"
+      />
     </div>
   </div>
 </template>

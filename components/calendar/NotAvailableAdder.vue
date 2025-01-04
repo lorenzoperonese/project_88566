@@ -78,7 +78,7 @@ function deleteNotAvailable() {
         <div class="label">
           <label class="label-text">Start</label>
         </div>
-        <div class="flex justify-between gap-4">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row">
           <input
             v-model="_startDate"
             class="input input-bordered w-full"
@@ -96,7 +96,7 @@ function deleteNotAvailable() {
         <div class="label">
           <label class="label-text">End</label>
         </div>
-        <div class="flex justify-between gap-4">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row">
           <input
             v-model="_endDate"
             class="input input-bordered w-full"

@@ -80,24 +80,35 @@ const calendar = computed((): CalendarCell[] => {
 </script>
 
 <template>
-  <div class="grid flex-grow grid-cols-7 gap-1 bg-base-200 p-2">
-    <div v-for="day in days" :key="day" class="p-2 text-center font-bold">
+  <div class="grid flex-grow grid-cols-7 bg-base-200 md:gap-1 md:p-2">
+    <div
+      v-for="day in days"
+      :key="day"
+      class="hidden p-2 text-center font-bold md:block"
+    >
       {{ day }}
+    </div>
+    <div
+      v-for="day in days"
+      :key="day"
+      class="p-2 text-center text-xs font-bold md:hidden"
+    >
+      {{ day[0] }}
     </div>
     <div
       v-for="c in calendar"
       :key="c.index"
-      class="h-32 overflow-y-auto rounded border border-neutral p-2"
+      class="h-28 overflow-y-auto border border-neutral md:h-32 md:rounded md:p-2 lg:h-40"
     >
       <div
-        class="font-semibold"
+        class="flex justify-center p-2 text-xs font-semibold md:justify-start md:p-0 md:text-base"
         :class="{
           'opacity-20': !isInCurrentMonth($props.displayDate, c.index)
         }"
       >
         <div
           :class="{
-            'h-6 w-6 rounded-full bg-primary text-center text-primary-content':
+            'w-1/2 max-w-10 rounded-full bg-primary text-center text-primary-content':
               isToday(
                 $props.today,
                 getNormalizedDate($props.displayDate, c.day, c.index)

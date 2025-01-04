@@ -298,7 +298,7 @@ function header(): string {
       :week-days="_weekDays"
     />
 
-    <dialog id="modal" ref="modal" class="modal">
+    <dialog id="modal" ref="modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <CalendarEventAdder
           v-if="_add_element == 0"

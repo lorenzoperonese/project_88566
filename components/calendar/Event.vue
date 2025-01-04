@@ -23,10 +23,12 @@ const isInPast = computed(() => {
       class="mt-1 w-full cursor-pointer rounded bg-primary-content p-1 text-xs text-primary hover:bg-blue-200"
       :class="{ 'opacity-60': isInPast }"
     >
-      <div class="font-semibold">{{ event.title }}</div>
-      <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
-      <div v-if="event.location">📍 {{ event.location }}</div>
-      <div v-if="event.category">🏷️ {{ event.category }}</div>
+      <div class="text-xs font-semibold">{{ event.title }}</div>
+      <div class="hidden md:block">
+        <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
+        <div v-if="event.location">📍 {{ event.location }}</div>
+        <div v-if="event.category">🏷️ {{ event.category }}</div>
+      </div>
     </div>
   </NuxtLink>
 </template>

@@ -87,28 +87,56 @@ function deleteResource() {
       {{ $props.resource ? 'Modify resource time' : 'Add resource time' }}
     </h1>
     <form class="flex flex-col gap-2" @submit.prevent="">
-      <div>
-        <label>Resource name:</label>
+      <div class="form-control bordered">
+        <div class="label">
+          <label class="label-text">Resource name</label>
+        </div>
         <select v-model="_resouceName" class="select select-bordered">
           <option value="null">None</option>
           <option v-for="r in resouceList" :value="r.name">{{ r.name }}</option>
         </select>
       </div>
 
-      <div>
-        <label>Start:</label>
-        <input v-model="_startDate" class="input input-bordered" type="date" />
-        <input v-model="_startTime" class="input input-bordered" type="time" />
+      <div class="form-control bordered">
+        <div class="label">
+          <label class="label-text">Start</label>
+        </div>
+        <div class="flex flex-col justify-between gap-2 sm:flex-row">
+          <input
+            v-model="_startDate"
+            class="input input-bordered w-full"
+            type="date"
+          />
+          <input
+            v-model="_startTime"
+            class="input input-bordered w-full"
+            type="time"
+          />
+        </div>
       </div>
 
-      <div>
-        <label>End:</label>
-        <input v-model="_endDate" class="input input-bordered" type="date" />
-        <input v-model="_endTime" class="input input-bordered" type="time" />
+      <div class="form-control bordered">
+        <div class="label">
+          <label class="label-text">End</label>
+        </div>
+        <div class="flex flex-col justify-between gap-2 sm:flex-row">
+          <input
+            v-model="_endDate"
+            class="input input-bordered w-full"
+            type="date"
+          />
+          <input
+            v-model="_endTime"
+            class="input input-bordered w-full"
+            type="time"
+          />
+        </div>
       </div>
 
-      <div>
-        <label>Note:</label>
+      <div class="form-control bordered">
+        <div class="label">
+          <label class="label-text">Note</label>
+        </div>
         <textarea
           v-model="_note"
           class="textarea textarea-bordered w-full"
