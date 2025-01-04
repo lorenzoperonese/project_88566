@@ -1,6 +1,16 @@
 <script setup lang="ts">
+import { useSound } from '@vueuse/sound'
+
 const $props = defineProps({
   timer: { type: Object as PropType<Timer>, required: true }
+})
+
+const _pomodoroSettings = ref({
+  enableSound: true,
+  enableNotifications: true,
+  alarmSound: 'alarm',
+  musicSound: 'lofi-01',
+  volume: 80
 })
 
 const actualTime = defineModel()
@@ -64,6 +74,10 @@ function calculateTime() {
 }
 
 function start(recalculate = true) {
+  if (_pomodoroSettings.value.enableSound) {
+    playMusic(_pomodoroSettings.value.musicSound)
+  }
+
   localStorage.setItem('pomodoro-status', 'running')
   if (_study.value < 1 || _break.value < 1 || _cycles.value < 1) {
     $toast.error('Valori non validi')
@@ -89,6 +103,9 @@ function start(recalculate = true) {
         $emit('cycle')
         stop()
       } else {
+        if (_pomodoroSettings.value.enableSound) {
+          playAlarm(_pomodoroSettings.value.alarmSound)
+        }
         const msg = isStudying.value
           ? 'Complimenti, ora puoi riposarti!'
           : 'Pausa terminata, rimettiti al lavoro!'
@@ -104,7 +121,11 @@ function start(recalculate = true) {
     )
   }, 1000)
 }
+
 function stop() {
+  if (_pomodoroSettings.value.enableSound) {
+    stopMusic(_pomodoroSettings.value.musicSound)
+  }
   localStorage.setItem('pomodoro-status', 'stopped')
   $emit('stop')
   _study.value = $props.timer.study
@@ -118,6 +139,9 @@ function stop() {
 }
 
 function pause() {
+  if (_pomodoroSettings.value.enableSound) {
+    pauseMusic(_pomodoroSettings.value.musicSound)
+  }
   localStorage.setItem('pomodoro-status', 'paused')
   _paused.value = true
   $emit('pause')
@@ -125,6 +149,10 @@ function pause() {
 }
 
 function restart() {
+  if (_pomodoroSettings.value.enableSound) {
+    stopMusic(_pomodoroSettings.value.musicSound)
+  }
+
   _paused.value = false
   const msg = isStudying.value
     ? 'Resta concentrato stavolta'
@@ -136,6 +164,9 @@ function restart() {
 }
 
 function skip() {
+  if (_pomodoroSettings.value.enableSound) {
+    stopMusic(_pomodoroSettings.value.musicSound)
+  }
   _paused.value = false
   if (_timer) clearInterval(_timer)
   if (isStudying.value && _cycles.value <= _cycleCounter.value) {
@@ -168,6 +199,129 @@ onBeforeUnmount(() => {
     pause()
   }
 })
+
+const {
+  play: playAlarm1,
+  stop: stopAlarm1,
+  pause: pauseAlarm1
+} = useSound('/music/alarm.mp3', { interrupt: true })
+const {
+  play: playAlarm2,
+  stop: stopAlarm2,
+  pause: pauseAlarm2
+} = useSound('/music/piano-alarm-01.mp3', { interrupt: true })
+const {
+  play: playAlarm3,
+  stop: stopAlarm3,
+  pause: pauseAlarm3
+} = useSound('/music/piano-alarm-02.mp3', { interrupt: true })
+
+const {
+  play: playMusic1,
+  stop: stopMusic1,
+  pause: pauseMusic1,
+  isPlaying: isPlayingMusic1
+} = useSound('/music/lofi-01.mp3')
+const {
+  play: playMusic2,
+  stop: stopMusic2,
+  pause: pauseMusic2,
+  isPlaying: isPlayingMusic2
+} = useSound('/music/lofi-02.mp3')
+const {
+  play: playMusic3,
+  stop: stopMusic3,
+  pause: pauseMusic3,
+  isPlaying: isPlayingMusic3
+} = useSound('/music/ocean.mp3')
+const {
+  play: playMusic4,
+  stop: stopMusic4,
+  pause: pauseMusic4,
+  isPlaying: isPlayingMusic4
+} = useSound('/music/rain.mp3')
+
+const playAlarm = (value: string) => {
+  if (value === 'alarm') {
+    playAlarm1()
+  } else if (value === 'piano-alarm-01') {
+    playAlarm2()
+  } else if (value === 'piano-alarm-02') {
+    playAlarm3()
+  }
+}
+
+const stopAlarm = (value: string) => {
+  if (value === 'alarm') {
+    stopAlarm1()
+  } else if (value === 'piano-alarm-01') {
+    stopAlarm2()
+  } else if (value === 'piano-alarm-02') {
+    stopAlarm3()
+  }
+}
+
+const playMusic = (value: string) => {
+  console.log('playMusic', value)
+  if (value === 'lofi-01') {
+    playMusic1()
+  } else if (value === 'lofi-02') {
+    playMusic2()
+  } else if (value === 'ocean') {
+    playMusic3()
+  } else if (value === 'rain') {
+    playMusic4()
+  }
+}
+
+const stopMusic = (value: string) => {
+  console.log('stopMusic', value)
+  if (value === 'lofi-01') {
+    stopMusic1()
+  } else if (value === 'lofi-02') {
+    stopMusic2()
+  } else if (value === 'ocean') {
+    stopMusic3()
+  } else if (value === 'rain') {
+    stopMusic4()
+  }
+}
+
+const pauseMusic = (value: string) => {
+  console.log('pauseMusic', value)
+  if (value === 'lofi-01') {
+    pauseMusic1()
+  } else if (value === 'lofi-02') {
+    pauseMusic2()
+  } else if (value === 'ocean') {
+    pauseMusic3()
+  } else if (value === 'rain') {
+    pauseMusic4()
+  }
+}
+
+// To keep the music playing when track ends
+watch(
+  () => [
+    isPlayingMusic1.value,
+    isPlayingMusic2.value,
+    isPlayingMusic3.value,
+    isPlayingMusic4.value
+  ],
+  (newVal: boolean[], oldVal: boolean[]) => {
+    if (
+      _pomodoroSettings.value.enableSound &&
+      _counting.value &&
+      !_paused.value
+    ) {
+      for (let i = 0; i < newVal.length; i++) {
+        if (!newVal[i] && oldVal[i]) {
+          playMusic(_pomodoroSettings.value.musicSound)
+        }
+      }
+    }
+  }
+)
 </script>
 
 <template>
@@ -214,6 +368,7 @@ onBeforeUnmount(() => {
             :break="_break"
             :cycle="_cycles"
           />
+          <PomodoroSettings v-model="_pomodoroSettings" />
         </div>
       </div>
     </div>
