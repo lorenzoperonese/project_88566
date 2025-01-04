@@ -79,9 +79,9 @@ watch(wsState.notifications, updatePending)
 </script>
 
 <template>
-  <div class="navbar bg-base-300">
-    <div class="navbar-start">
-      <div class="dropdown">
+  <div class="grid grid-cols-3 bg-base-300">
+    <div class="lg:col-span-2">
+      <div class="dropdown block lg:hidden">
         <div tabindex="0" role="button" class="btn btn-circle btn-ghost">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -122,12 +122,31 @@ watch(wsState.notifications, updatePending)
           </li>
         </ul>
       </div>
+
+      <div class="hidden lg:block">
+        <NuxtLink class="btn btn-ghost text-lg" to="/">Home</NuxtLink>
+        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'calendar' }"
+          >Calendar</NuxtLink
+        >
+        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'notes' }"
+          >Note</NuxtLink
+        >
+        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'pomodoro' }"
+          >Pomodoro</NuxtLink
+        >
+        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'chat' }"
+          >Chat</NuxtLink
+        >
+        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'projects' }"
+          >Projects</NuxtLink
+        >
+      </div>
     </div>
-    <div class="navbar-center">
+    <div class="flex justify-center lg:hidden">
       <NuxtLink to="/" class="btn btn-ghost text-xl">Selfie</NuxtLink>
     </div>
 
-    <div class="navbar-end gap-2">
+    <div class="col-start-3 flex justify-end">
       <div class="dropdown dropdown-left dropdown-bottom">
         <button class="btn btn-circle btn-ghost">
           <div class="indicator">
