@@ -219,6 +219,13 @@ async function updateToday() {
   fetchNoteTasks()
 }
 
+const phoneView = ref('month')
+
+watch(phoneView, (value) => {
+  console.log(value)
+  _currentView.value = value
+})
+
 function changeView(view: string) {
   _currentView.value = view
 }
@@ -240,10 +247,26 @@ function header(): string {
     return `${months[_displayDate.value.getMonth()]} ${_displayDate.value.getFullYear()}`
   }
 }
+
+import type { SwipeDirection } from '@vueuse/core'
+const swipeEl = ref(null)
+useSwipe(swipeEl, {
+  onSwipeEnd: (e: TouchEvent, direction: SwipeDirection) => {
+    if (direction === 'LEFT') {
+      nextPeriod()
+    } else if (direction === 'RIGHT') {
+      previousPeriod()
+    }
+  }
+})
 </script>
 
 <template>
-  <div class="flex h-full flex-col">
+  <div
+    ref="swipeEl"
+    class="flex h-full flex-col"
+    style="height: calc(100vh - var(--navbar-height))"
+  >
     <div
       class="relative hidden items-center justify-between bg-base-100 p-4 md:flex"
     >
@@ -276,10 +299,11 @@ function header(): string {
         </button>
 
         <select
+          v-model="phoneView"
           class="select select-info select-sm block bg-info font-bold text-black md:hidden"
         >
           <template v-for="view in ['month', 'week', 'day', 'tasks']">
-            <option @click="changeView(view)">
+            <option :value="view">
               {{ view.charAt(0).toUpperCase() + view.slice(1) }}
             </option>
           </template>

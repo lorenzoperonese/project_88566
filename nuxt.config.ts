@@ -2,7 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@sidebase/nuxt-auth', '@nuxtjs/mdc'],
+  modules: [
+    '@nuxt/eslint',
+    '@sidebase/nuxt-auth',
+    '@nuxtjs/mdc',
+    '@vueuse/nuxt',
+    '@vueuse/nuxt'
+  ],
   runtimeConfig: {
     DB_URL: process.env.MONGO_URL,
     PUSH_PUBLIC_KEY: process.env.PUSH_PUBLIC_KEY,

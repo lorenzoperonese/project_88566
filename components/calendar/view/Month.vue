@@ -10,6 +10,7 @@ const $props = defineProps<{
   noteTasks: NoteTask[] | null
   displayDate: Date
   today: Date
+  weekDays: Date[]
 }>()
 
 const _days = computed(() => {
@@ -80,7 +81,7 @@ const calendar = computed((): CalendarCell[] => {
 </script>
 
 <template>
-  <div class="grid flex-grow grid-cols-7 bg-base-200 md:gap-1 md:p-2">
+  <div class="grid grid-cols-7 bg-base-200 md:gap-1 md:p-2">
     <div
       v-for="day in days"
       :key="day"
@@ -95,10 +96,14 @@ const calendar = computed((): CalendarCell[] => {
     >
       {{ day[0] }}
     </div>
+  </div>
+  <div
+    class="grid h-full grid-cols-7 overflow-y-clip bg-base-200 md:gap-1 md:p-2"
+  >
     <div
       v-for="c in calendar"
       :key="c.index"
-      class="h-28 overflow-y-auto border border-neutral md:h-32 md:rounded md:p-2 lg:h-40"
+      class="overflow-y-auto border border-neutral md:rounded md:p-2"
     >
       <div
         class="flex justify-center p-2 text-xs font-semibold md:justify-start md:p-0 md:text-base"
