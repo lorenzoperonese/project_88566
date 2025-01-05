@@ -41,6 +41,8 @@ async function login() {
     changeTheme()
     wsSendAuth()
 
+    await setThemeFromBackend()
+
     if (window.Notification.permission === 'granted') {
       try {
         const subscription = await $registerPushNotifications()

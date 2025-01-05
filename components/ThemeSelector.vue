@@ -1,22 +1,7 @@
 <script setup lang="ts">
 const theme = ref('dark')
 
-fetch('/api/session')
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('During profile fetch: ' + response.statusText)
-    }
-    return response.json()
-  })
-  .then((data) => {
-    if (data) {
-      theme.value = data.theme
-      document.documentElement.setAttribute('data-theme', theme.value)
-    }
-  })
-  .catch((e) => {
-    console.error(e)
-  })
+theme.value = await setThemeFromBackend()
 
 const themes = [
   'light',
@@ -52,8 +37,13 @@ const themes = [
   'nord',
   'sunset'
 ]
-function changeTheme() {
+async function changeTheme() {
   document.documentElement.setAttribute('data-theme', theme.value)
+
+  await $fetch('/api/session', {
+    method: 'PUT',
+    body: JSON.stringify({ theme: theme.value })
+  })
 }
 </script>
 <template>
