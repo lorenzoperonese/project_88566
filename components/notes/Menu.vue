@@ -5,6 +5,7 @@ const _search = defineModel<string>({
 
 const $props = defineProps<{
   categories: NoteCategory[] | null
+  modal: boolean
 }>()
 
 const $emits = defineEmits<{
@@ -29,7 +30,10 @@ const addCategory = () => {
 
 <template>
   <div class="flex flex-col bg-base-100 p-2">
-    <label class="input input-bordered flex items-center gap-2">
+    <label
+      v-show="!$props.modal"
+      class="input input-bordered flex items-center gap-2"
+    >
       <input v-model="_search" type="text" class="grow" placeholder="Search" />
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +49,7 @@ const addCategory = () => {
       </svg>
     </label>
 
-    <div class="divider"></div>
+    <div class="divider" v-show="!$props.modal"></div>
     <div class="">
       <div class="text-lg font-bold">Categories</div>
       <div class="mt-2">

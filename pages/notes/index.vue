@@ -113,15 +113,45 @@ function duplicate(id: string) {
 
   addNote(n)
 }
+
+// On mobile this view is a lot different
+const _mobileSearching = ref(false)
+
+watch(_mobileSearching, (val) => {
+  _search.value = ''
+})
+
+const _mobileCategories = ref(false)
+const modal = useTemplateRef('notes_categories_modal')
+
+watch(_mobileCategories, (val) => {
+  if (val) {
+    showMobileCategories()
+  } else {
+    hideMobileCategories()
+  }
+})
+
+const showMobileCategories = () => {
+  if (modal.value === null) return
+  modal.value.showModal()
+}
+
+const hideMobileCategories = () => {
+  if (modal.value === null) return
+  modal.value.close()
+}
 </script>
 
 <template>
   <div>
     <div class="flex">
       <NotesMenu
+        v-show="!_mobileSearching"
         v-model="_search"
         :categories="_notesCategories"
-        class="h-full border-r border-r-neutral"
+        :modal="false"
+        class="hidden h-full border-r border-r-neutral md:block"
         style="height: calc(100vh - var(--navbar-height))"
         @add-category="addCategory"
         @delete-category="deleteCategory"
@@ -131,15 +161,57 @@ function duplicate(id: string) {
         class="w-full overflow-y-auto p-5"
         style="height: calc(100vh - var(--navbar-height))"
       >
-        <NotesAdder :categories="_notesCategories" @save="addNote" />
+        <NotesAdder
+          class="flex-1"
+          v-show="!_mobileSearching"
+          :categories="_notesCategories"
+          @save="addNote"
+        />
+
+        <div>
+          <input
+            type="text"
+            v-model="_search"
+            placeholder="Search"
+            class="input input-bordered w-full p-2"
+            v-show="_mobileSearching"
+          />
+        </div>
+
         <NotesList
           :notes="_search ? _filteredNotes : _notes"
           class=""
           @delete="deleteNote"
           @duplicate="duplicate"
+          @mobileSearch="_mobileSearching = !_mobileSearching"
+          @mobile-categories="_mobileCategories = !_mobileCategories"
         />
       </div>
     </div>
+
+    <dialog
+      ref="notes_categories_modal"
+      class="modal modal-bottom sm:modal-middle"
+    >
+      <div class="modal-box">
+        <NotesMenu
+          v-show="!_mobileSearching"
+          v-model="_search"
+          :categories="_notesCategories"
+          :modal="true"
+          class=""
+          @add-category="addCategory"
+          @delete-category="deleteCategory"
+        />
+        <div class="modal-action">
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
     <TmButton class="fixed bottom-4 left-4" @update="fetchNotes()" />
   </div>
 </template>

@@ -61,7 +61,10 @@ const copyToClipboard = async () => {
             <div class="prose prose-sm">
               <MDC :value="$props.note.body" />
             </div>
-            <div class="divider"></div>
+            <div
+              class="divider"
+              v-show="$props.note.todos && $props.note.todos.length > 0"
+            ></div>
             <div>
               <div v-for="t in $props.note.todos" class="flex gap-4">
                 <div :class="{ 'line-through': t.done }">
@@ -72,7 +75,10 @@ const copyToClipboard = async () => {
             </div>
           </NuxtLink>
         </div>
-        <div class="divider md:hidden"></div>
+        <div
+          class="divider md:hidden"
+          v-show="$props.note.todos && $props.note.todos.length > 0"
+        ></div>
         <div class="flex flex-row flex-wrap gap-2 md:flex-col">
           <button
             class="btn btn-neutral btn-sm md:btn-md"
