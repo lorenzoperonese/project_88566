@@ -32,19 +32,17 @@ const { data: _noteTasks } = await useFetch<NoteTask[]>('/api/notes-todos')
 
 const me = await getME()
 
+const _filterEvents = ref(true)
+const _filterTasks = ref(true)
+const _filterPomodoro = ref(true)
+const _filterResources = ref(false)
+const _filterProjects = ref(true)
+const _filterNotAvailable = ref(true)
+const _filterNoteTasks = ref(true)
+
 const _fNotAvailable = computed(() => {
   if (!_notAvailable.value) return []
   return _notAvailable.value.filter((na) => na.user_id === me.id)
-})
-
-const showResources = ref(false)
-
-const fResources = computed(() => {
-  if (showResources.value) {
-    return _resources.value
-  } else {
-    return []
-  }
 })
 
 // true => add event, false => add task
@@ -157,7 +155,7 @@ const showComponent = computed(() => {
       return CalendarViewWeek
     case 'day':
       return CalendarViewDay
-    case 'tasks-list':
+    case 'tasks':
       return CalendarViewTasks
   }
 })
@@ -246,20 +244,28 @@ function header(): string {
 
 <template>
   <div class="flex h-full flex-col">
-    <div class="relative flex items-center justify-between bg-base-100 p-4">
+    <div
+      class="relative hidden items-center justify-between bg-base-100 p-4 md:flex"
+    >
       <button class="btn btn-info" @click="previousPeriod">Previous</button>
-      <h2 class="text-2xl font-semibold">
+
+      <h2 class="text-base font-semibold md:text-2xl">
         {{ header() }}
       </h2>
+
       <button class="btn btn-info" @click="nextPeriod">Next</button>
     </div>
 
-    <div class="grid grid-cols-3">
+    <div class="mx-2 grid grid-cols-3 md:mx-4">
+      <h2 class="flex items-center text-base font-semibold md:hidden">
+        {{ header() }}
+      </h2>
+
       <div class="col-start-2 flex justify-center space-x-2 bg-base-100 p-2">
         <button
-          v-for="view in ['month', 'week', 'day', 'tasks-list']"
+          v-for="view in ['month', 'week', 'day', 'tasks']"
           :key="view"
-          class="btn"
+          class="btn btn-md hidden md:block"
           :class="{
             'btn-info': _currentView === view
           }"
@@ -268,17 +274,103 @@ function header(): string {
           {{ view.charAt(0).toUpperCase() + view.slice(1) }}
           <!-- Capitalize first letter -->
         </button>
+
+        <select
+          class="select select-info select-sm block bg-info font-bold text-black md:hidden"
+        >
+          <template v-for="view in ['month', 'week', 'day', 'tasks']">
+            <option @click="changeView(view)">
+              {{ view.charAt(0).toUpperCase() + view.slice(1) }}
+            </option>
+          </template>
+        </select>
       </div>
-      <div class="mr-4 flex items-center justify-end">
-        <div class="form-control w-32">
-          <label class="label cursor-pointer">
-            <span class="label-text">Resources</span>
-            <input
-              type="checkbox"
-              v-model="showResources"
-              class="checkbox-warning checkbox"
-            />
-          </label>
+      <div class="flex items-center justify-end">
+        <div class="dropdown dropdown-end dropdown-bottom">
+          <div tabindex="0" role="button" class="btn btn-sm m-1 md:btn-md">
+            Filter
+          </div>
+          <ul
+            tabindex="0"
+            class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow *:text-xs md:*:text-base"
+          >
+            <li @click="_filterEvents = !_filterEvents">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterEvents"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Events
+              </a>
+            </li>
+
+            <li @click="_filterTasks = !_filterTasks">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterTasks"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Tasks
+              </a>
+            </li>
+
+            <li @click="_filterPomodoro = !_filterPomodoro">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterPomodoro"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Pomodoro
+              </a>
+            </li>
+
+            <li @click="_filterResources = !_filterResources">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterResources"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Resources
+              </a>
+            </li>
+
+            <li @click="_filterProjects = !_filterProjects">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterProjects"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Projects
+              </a>
+            </li>
+
+            <li @click="_filterNotAvailable = !_filterNotAvailable">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterNotAvailable"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Not available
+              </a>
+            </li>
+
+            <li @click="_filterNoteTasks = !_filterNoteTasks">
+              <a>
+                <input
+                  type="checkbox"
+                  v-model="_filterNoteTasks"
+                  class="checkbox checkbox-sm md:checkbox-md"
+                />
+                Note tasks
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -287,14 +379,14 @@ function header(): string {
       :is="showComponent"
       :display-date="_displayDate"
       :today="_today"
-      :events="_events"
-      :events-guest="_eventsGuest"
-      :tasks="_tasks"
-      :pomodoro="_pomodoro"
-      :resources="fResources"
-      :projects="_projects"
-      :not-available="_fNotAvailable"
-      :note-tasks="_noteTasks"
+      :events="_filterEvents ? _events : []"
+      :events-guest="_filterEvents ? _eventsGuest : []"
+      :tasks="_filterTasks ? _tasks : []"
+      :pomodoro="_filterPomodoro ? _pomodoro : []"
+      :resources="_filterResources ? _resources : []"
+      :projects="_filterProjects ? _projects : []"
+      :not-available="_filterNotAvailable ? _fNotAvailable : []"
+      :note-tasks="_filterNoteTasks ? _noteTasks : []"
       :week-days="_weekDays"
     />
 
@@ -317,7 +409,11 @@ function header(): string {
 
     <div class="fixed bottom-4 right-4">
       <div class="dropdown dropdown-end dropdown-top">
-        <div tabindex="0" role="button" class="btn btn-info m-1">
+        <div
+          tabindex="0"
+          role="button"
+          class="btn btn-info btn-sm m-1 md:btn-md"
+        >
           <svg
             class="text-content h-5 w-5"
             width="24"

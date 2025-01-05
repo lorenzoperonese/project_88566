@@ -15,19 +15,19 @@ const $props = defineProps<{
 </script>
 
 <template>
-  <div class="grid flex-grow grid-cols-7 gap-1 bg-base-200 p-2">
+  <div class="grid flex-grow grid-cols-7 bg-base-200 md:gap-1 md:p-2">
     <div
       v-for="(day, index) in $props.weekDays"
       :key="index"
       class="flex flex-col"
     >
-      <div class="p-2 text-center font-bold">
+      <div class="p-2 text-center text-xs font-bold md:text-base">
         {{ day.toLocaleDateString('en-US', { weekday: 'short' }) }}
         <br />
         {{ day.getDate() }}
       </div>
       <div
-        class="flex-grow overflow-y-auto p-2"
+        class="flex-grow overflow-y-auto border border-base-200 md:p-2"
         :class="{
           'bg-base-100': !isToday($props.today, day),
           'bg-base-200': isToday($props.today, day)

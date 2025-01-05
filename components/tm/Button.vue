@@ -25,7 +25,7 @@ function closeModal() {
 
 <template>
   <div>
-    <button class="btn btn-secondary m-1" @click="showModal">
+    <button class="btn btn-secondary btn-sm m-1 md:btn-md" @click="showModal">
       <svg
         id="_x32_"
         class="h-5 w-5"
