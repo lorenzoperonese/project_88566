@@ -146,33 +146,36 @@ function delTodo(t: NoteTodo) {
         @click="_adding = true"
       >
       </textarea>
+      <div v-if="_adding" class="divider"></div>
       <div v-if="_adding" class="px-4 py-2">
-        <div class="divider"></div>
         <div class="flex w-full flex-col gap-2">
-          <div v-for="(t, indx) in _todoList" class="flex gap-2">
+          <div
+            v-for="(t, indx) in _todoList"
+            class="flex flex-wrap justify-evenly gap-2 border-b border-b-neutral-800 last:border-none"
+          >
             <input
-              class="input text-xs placeholder:text-gray-600"
+              class="input input-sm text-xs md:input-md placeholder:text-gray-600"
               type="text"
               placeholder="Todo..."
               v-model="t.title"
             />
             <input
-              class="input input-bordered text-xs"
+              class="input input-sm input-bordered text-xs md:input-md"
               type="date"
               v-model="t.date"
             />
             <input
-              class="input input-bordered text-xs"
+              class="input input-sm input-bordered text-xs md:input-md"
               type="time"
               v-model="t.time"
             />
             <div class="form-control">
               <label class="label cursor-pointer">
-                <span class="label-text text-xs">Completed</span>
+                <span class="label-text mr-2">Completed</span>
                 <input
                   type="checkbox"
                   v-model="t.done"
-                  class="checkbox"
+                  class="checkbox checkbox-sm md:checkbox-md"
                   @click.stop=""
                 />
               </label>
@@ -180,14 +183,14 @@ function delTodo(t: NoteTodo) {
 
             <button
               v-if="indx == _todoList.length - 1"
-              class="btn btn-primary text-xs"
+              class="btn btn-primary btn-sm md:btn-md"
               @click.prevent="addTodo"
             >
               Add
             </button>
             <button
               v-else
-              class="btn btn-error text-xs"
+              class="btn btn-error btn-sm md:btn-md"
               @click.prevent="delTodo(t)"
             >
               Del
@@ -195,21 +198,27 @@ function delTodo(t: NoteTodo) {
           </div>
         </div>
       </div>
+      <div v-if="_adding" class="divider"></div>
       <div
         v-if="_adding"
-        class="flex justify-between rounded-b-lg bg-base-200 p-1"
+        class="flex flex-wrap justify-evenly gap-y-2 rounded-b-lg bg-base-200 p-1 md:justify-between"
       >
-        <button class="btn btn-error" @click.prevent="del()">Cancel</button>
+        <button
+          class="btn btn-error btn-sm order-2 md:btn-md md:order-1"
+          @click.prevent="del()"
+        >
+          Cancel
+        </button>
 
-        <div class="flex gap-4">
+        <div class="order-1 flex gap-4 md:order-2">
           <div class="dropdown dropdown-hover w-52">
             <div
               tabindex="0"
               role="button"
-              class="btn w-full bg-neutral-content text-neutral hover:bg-neutral-300"
+              class="btn btn-sm w-full bg-neutral-content text-neutral md:btn-md hover:bg-neutral-300"
             >
               <span
-                class="block w-full"
+                class="block w-full text-sm md:text-base"
                 :class="{ 'text-gray-600': _selected.length == 0 }"
               >
                 {{ _categoryName }}
@@ -217,7 +226,7 @@ function delTodo(t: NoteTodo) {
             </div>
             <ul
               tabindex="0"
-              class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
+              class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 shadow *:text-sm md:p-2 md:*:text-base"
             >
               <li @click="_selected = ''">
                 <a> Not categorized </a>
@@ -237,7 +246,12 @@ function delTodo(t: NoteTodo) {
           <NotesState @save="updateGuests" />
         </div>
 
-        <button class="btn btn-success" @click.prevent="save()">Save</button>
+        <button
+          class="btn btn-success btn-sm order-3 md:btn-md"
+          @click.prevent="save()"
+        >
+          Save
+        </button>
       </div>
     </form>
   </div>

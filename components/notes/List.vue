@@ -39,23 +39,29 @@ const sortedNotes = computed(() => {
 
 <template>
   <div class="mt-10 flex flex-col gap-4">
-    <div class="flex justify-between">
-      <div class="flex gap-2">
+    <div class="flex justify-between md:flex-row">
+      <div class="form-control">
         <div class="label">
           <span class="label-text">Sorting: </span>
         </div>
-        <select class="select select-bordered" v-model="sorting">
+        <select
+          class="select select-bordered select-xs md:select-md"
+          v-model="sorting"
+        >
           <option value="0">Alphabetical</option>
           <option value="1">Modification date</option>
           <option value="2">Length</option>
         </select>
       </div>
 
-      <div class="flex gap-2">
+      <div class="form-control">
         <div class="label">
           <span class="label-text">State: </span>
         </div>
-        <select class="select select-bordered" v-model="state">
+        <select
+          class="select select-bordered select-xs md:select-md"
+          v-model="state"
+        >
           <option value="all">All</option>
           <option value="private">Private</option>
           <option value="public">Public</option>

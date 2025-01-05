@@ -43,7 +43,7 @@ const copyToClipboard = async () => {
 <template>
   <div class="card w-full bg-base-200 shadow-lg">
     <div class="card-body">
-      <div class="flex">
+      <div class="flex flex-col md:flex-row">
         <div class="mr-4 w-full">
           <NuxtLink :to="`/notes/${$props.note.id}`">
             <!-- div>ID: {{ $props.note.id }}</div -->
@@ -72,21 +72,32 @@ const copyToClipboard = async () => {
             </div>
           </NuxtLink>
         </div>
-        <div class="flex flex-col gap-2">
-          <button class="btn btn-neutral" @click="copyToClipboard">
+        <div class="divider md:hidden"></div>
+        <div class="flex flex-row flex-wrap gap-2 md:flex-col">
+          <button
+            class="btn btn-neutral btn-sm md:btn-md"
+            @click="copyToClipboard"
+          >
             Copy to clipboard
           </button>
           <NuxtLink
             v-if="isMine"
-            class="btn btn-info"
+            class="btn btn-info btn-sm md:btn-md"
             :to="`/notes/editor/${$props.note.id}`"
           >
             Modify
           </NuxtLink>
-          <button class="btn btn-accent" @click="$emits('duplicate')">
+          <button
+            class="btn btn-accent btn-sm md:btn-md"
+            @click="$emits('duplicate')"
+          >
             Duplicate
           </button>
-          <button v-if="isMine" class="btn btn-error" @click="$emits('delete')">
+          <button
+            v-if="isMine"
+            class="btn btn-error btn-sm md:btn-md"
+            @click="$emits('delete')"
+          >
             Delete
           </button>
         </div>
