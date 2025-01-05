@@ -60,11 +60,13 @@ async function login() {
   <div class="flex min-h-screen items-center justify-center bg-base-200">
     <div class="card w-96 bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title">Login</h2>
+        <h2 class="card-title text-base md:text-xl">Login</h2>
         <form @click.prevent="">
           <div class="form-control">
             <label for="input-mail" class="label">
-              <span class="label-text"> Username or mail </span>
+              <span class="label-text text-xs md:text-base">
+                Username or mail
+              </span>
             </label>
             <div
               class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
@@ -73,7 +75,7 @@ async function login() {
                 id="input-text"
                 v-model="_username"
                 type="text"
-                class="X-required grow invalid:text-error"
+                class="X-required grow text-xs invalid:text-error md:text-base"
                 placeholder="Enter Username"
               />
             </div>
@@ -81,7 +83,7 @@ async function login() {
 
           <div class="form-control">
             <label for="input-password" class="label">
-              <span class="label-text"> Password </span>
+              <span class="label-text text-xs md:text-base"> Password </span>
             </label>
             <div
               class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
@@ -90,7 +92,7 @@ async function login() {
                 id="input-password"
                 v-model="_password"
                 type="password"
-                class="X-required grow invalid:text-error"
+                class="X-required grow text-xs invalid:text-error md:text-base"
                 placeholder="Enter password"
               />
             </div>
@@ -101,14 +103,18 @@ async function login() {
           </div>
 
           <div class="form-control mt-6">
-            <button class="btn btn-primary" @click="login">Login</button>
+            <button class="btn btn-primary text-base md:text-lg" @click="login">
+              Login
+            </button>
           </div>
         </form>
 
-        <div class="divider">OR</div>
+        <div class="divider text-xs md:text-base">OR</div>
         <div class="text-center">
-          <p>Don't have an account?</p>
-          <NuxtLink to="/register" class="link link-primary"
+          <p class="text-xs md:text-base">Don't have an account?</p>
+          <NuxtLink
+            to="/register"
+            class="link link-primary text-xs md:text-base"
             >Sign up now</NuxtLink
           >
         </div>
