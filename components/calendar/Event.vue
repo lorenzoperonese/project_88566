@@ -3,7 +3,8 @@ const $props = defineProps({
   event: { type: Object as PropType<EventType>, required: true },
   today: { type: Date, required: true },
   displayDate: { type: Date, required: false },
-  guest: { type: Boolean, default: false }
+  guest: { type: Boolean, default: false },
+  isResponsive: { type: Boolean, default: true }
 })
 
 const isInPast = computed(() => {
@@ -26,11 +27,18 @@ const isInPast = computed(() => {
       <div class="overflow-x-clip whitespace-nowrap text-xs font-semibold">
         {{ event.title }}
       </div>
-      <div class="hidden md:block">
+      <div :class="{ 'hidden md:block': $props.isResponsive }">
         <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
-        <div class="hidden lg:block">
-          <div v-if="event.location">📍 {{ event.location }}</div>
-          <div v-if="event.category">🏷️ {{ event.category }}</div>
+        <div
+          :class="{ 'hidden lg:block': $props.isResponsive }"
+          class="overflow-x-clip"
+        >
+          <div v-if="event.location" class="whitespace-nowrap">
+            📍 {{ event.location }}
+          </div>
+          <div v-if="event.category" class="whitespace-nowrap">
+            🏷️ {{ event.category }}
+          </div>
         </div>
       </div>
     </div>

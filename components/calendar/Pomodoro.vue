@@ -3,7 +3,8 @@ const $props = defineProps({
   pomodoro: { type: Object as PropType<PomodoroEvent>, required: true },
   today: { type: Date, required: true },
   displayDate: { type: Date, required: false },
-  fullDate: { type: Boolean, default: false }
+  fullDate: { type: Boolean, default: false },
+  isResponsive: { type: Boolean, default: true }
 })
 
 const isInPast = computed(() => {
@@ -30,7 +31,7 @@ const isInPast = computed(() => {
       >
         {{ $props.pomodoro.title }}
       </div>
-      <div class="hidden md:block">
+      <div :class="{ 'hidden md:block': $props.isResponsive }">
         <div>
           🍅 {{ $props.pomodoro.study }} - {{ $props.pomodoro.break }} -
           {{ $props.pomodoro.cycles }}

@@ -4,6 +4,10 @@ const $props = defineProps<{
   eventsGuest: EventType[] | null
   tasks: Task[] | null
   pomodoro: PomodoroEvent[] | null
+  resources: Resource[] | null
+  projects: ProjectEvent[] | null
+  notAvailable: NotAvailable[] | null
+  noteTasks: NoteTask[] | null
   displayDate: Date
   today: Date
 }>()
@@ -30,6 +34,7 @@ const $props = defineProps<{
           :key="event.id"
           :event="event"
           :today="$props.today"
+          :is-responsive="false"
         />
         <CalendarEvent
           v-for="event in getEventsForDay(
@@ -40,6 +45,7 @@ const $props = defineProps<{
           :event="event"
           :today="$props.today"
           :guest="true"
+          :is-responsive="false"
         />
 
         <CalendarTask
@@ -47,6 +53,7 @@ const $props = defineProps<{
           :key="task.id"
           :task="task"
           :today="$props.today"
+          :is-responsive="false"
         />
 
         <CalendarPomodoro
@@ -57,6 +64,45 @@ const $props = defineProps<{
           :key="pomodoro.id"
           :pomodoro="pomodoro"
           :today="$props.today"
+          :is-responsive="false"
+        />
+
+        <CalendarResource
+          v-for="resource in getResourcesForDay(
+            $props.resources,
+            $props.displayDate
+          )"
+          :key="resource.id"
+          :resource="resource"
+          :today="$props.today"
+          :is-responsive="false"
+        />
+
+        <CalendarProject
+          v-for="p in getProjectsForDay($props.projects, $props.displayDate)"
+          :key="p.id"
+          :pEvent="p"
+          :today="$props.today"
+          :is-responsive="false"
+        />
+
+        <CalendarNotAvailable
+          v-for="na in getNotAvailableForDay(
+            $props.notAvailable,
+            $props.displayDate
+          )"
+          :key="na.id"
+          :notAvailable="na"
+          :today="$props.today"
+          :is-responsive="false"
+        />
+
+        <CalendarNoteTask
+          v-for="nt in getNoteTasksForDay($props.noteTasks, $props.displayDate)"
+          :key="nt.id"
+          :noteTask="nt"
+          :today="$props.today"
+          :is-responsive="false"
         />
       </div>
     </div>

@@ -3,7 +3,8 @@ const $props = defineProps({
   noteTask: { type: Object as PropType<NoteTask>, required: true },
   today: { type: Date, required: true },
   displayDate: { type: Date, required: false },
-  fullDate: { type: Boolean, default: false }
+  fullDate: { type: Boolean, default: false },
+  isResponsive: { type: Boolean, default: true }
 })
 
 const isInPast = computed(() => {
@@ -21,14 +22,22 @@ const isInPast = computed(() => {
       class="mt-1 cursor-pointer rounded bg-primary-content p-1 text-xs text-accent hover:bg-blue-200"
       :class="{ 'opacity-60': isInPast }"
     >
-      <div :class="['font-semibold', { 'line-through': $props.noteTask.done }]">
+      <div
+        class="overflow-x-clip whitespace-nowrap text-xs font-semibold"
+        :class="[{ 'line-through': $props.noteTask.done }]"
+      >
         {{ $props.noteTask.title }}
       </div>
-      <div>
-        <div v-if="$props.fullDate">
+      <div
+        :class="{ 'hidden lg:block': $props.isResponsive }"
+        class="overflow-x-clip"
+      >
+        <div v-if="$props.fullDate" class="whitespace-nowrap">
           {{ formatDate(noteTask.end) }} - {{ formatTime(noteTask.end) }}
         </div>
-        <div v-else>{{ formatTime(noteTask.end) }}</div>
+        <div v-else class="whitespace-nowrap">
+          {{ formatTime(noteTask.end) }}
+        </div>
       </div>
     </div>
   </NuxtLink>

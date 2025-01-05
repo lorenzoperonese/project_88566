@@ -3,7 +3,8 @@ const $props = defineProps({
   task: { type: Object as PropType<Task>, required: true },
   today: { type: Date, required: true },
   displayDate: { type: Date, required: false },
-  fullDate: { type: Boolean, default: false }
+  fullDate: { type: Boolean, default: false },
+  isResponsive: { type: Boolean, default: true }
 })
 
 const isInPast = computed(() => {
@@ -23,18 +24,21 @@ const isInPast = computed(() => {
     >
       <div
         :class="['font-semibold', { 'line-through': $props.task.completed }]"
-        class="overflow-x-clip whitespace-nowrap"
+        class="overflow-x-clip whitespace-nowrap text-xs font-semibold"
       >
         {{ $props.task.title }}
       </div>
-      <div class="hidden md:block">
+      <div :class="{ 'hidden md:block': $props.isResponsive }">
         <div>
           <div v-if="$props.fullDate">
             {{ formatDate(task.end) }} - {{ formatTime(task.end) }}
           </div>
           <div v-else>{{ formatTime(task.end) }}</div>
         </div>
-        <div class="hidden lg:block" v-if="$props.task.category">
+        <div
+          :class="{ 'hidden lg:block': $props.isResponsive }"
+          v-if="$props.task.category"
+        >
           🏷️ {{ $props.task.category }}
         </div>
       </div>

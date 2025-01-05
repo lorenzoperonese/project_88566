@@ -4,6 +4,10 @@ const $props = defineProps<{
   eventsGuest: EventType[] | null
   tasks: Task[] | null
   pomodoro: PomodoroEvent[] | null
+  resources: Resource[] | null
+  projects: ProjectEvent[] | null
+  notAvailable: NotAvailable[] | null
+  noteTasks: NoteTask[] | null
   displayDate: Date
   today: Date
   weekDays: Date[]
@@ -54,6 +58,34 @@ const $props = defineProps<{
           v-for="pomodoro in getPomodorosForDay($props.pomodoro, day)"
           :key="pomodoro.id"
           :pomodoro="pomodoro"
+          :today="$props.today"
+        />
+
+        <CalendarResource
+          v-for="resource in getResourcesForDay($props.resources, day)"
+          :key="resource.id"
+          :resource="resource"
+          :today="$props.today"
+        />
+
+        <CalendarProject
+          v-for="p in getProjectsForDay($props.projects, day)"
+          :key="p.id"
+          :pEvent="p"
+          :today="$props.today"
+        />
+
+        <CalendarNotAvailable
+          v-for="na in getNotAvailableForDay($props.notAvailable, day)"
+          :key="na.id"
+          :notAvailable="na"
+          :today="$props.today"
+        />
+
+        <CalendarNoteTask
+          v-for="nt in getNoteTasksForDay($props.noteTasks, day)"
+          :key="nt.id"
+          :noteTask="nt"
           :today="$props.today"
         />
       </div>
