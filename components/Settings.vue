@@ -42,6 +42,11 @@ watch(
 
 <template>
   <div class="flex flex-col gap-4">
+    <form method="dialog" class="md:hidden">
+      <button class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+        ✕
+      </button>
+    </form>
     <div class="mb-4">
       <h1 class="text-center text-xl font-bold">Settings</h1>
     </div>
