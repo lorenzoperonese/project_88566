@@ -165,6 +165,10 @@ export declare global {
     output: string
     translation: boolean
     milestone: boolean
+    subtasks: {
+      title: string
+      done: boolean
+    }[]
     dependency: string | null
     project_id: string
   }

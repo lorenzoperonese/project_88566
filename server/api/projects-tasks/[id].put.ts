@@ -151,6 +151,7 @@ export default defineEventHandler(async (event) => {
         dependency: body.dependency,
         translation: body.translation,
         milestone: body.milestone,
+        subtasks: body.subtasks,
         user_id: body.user_id
       }
     )

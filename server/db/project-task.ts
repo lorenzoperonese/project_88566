@@ -13,6 +13,10 @@ export interface IProjectTask extends Document {
   output: string
   translation: boolean // The activity needs to be translated if dependency is not met in time
   milestone: boolean // The activity is a milestone
+  subtasks: {
+    title: string
+    done: boolean
+  }[]
   dependency: Types.ObjectId | null
   project_id: Types.ObjectId
 }
@@ -30,6 +34,12 @@ const schema = new Schema<IProjectTask>(
     output: { type: String, required: true },
     translation: { type: Boolean, required: true, default: false },
     milestone: { type: Boolean, required: true, default: false },
+    subtasks: [
+      {
+        title: { type: String, required: true },
+        done: { type: Boolean, required: true, default: false }
+      }
+    ],
     dependency: { type: Schema.Types.ObjectId, ref: 'ProjectTask' },
     project_id: { type: Schema.Types.ObjectId, required: true }
   },

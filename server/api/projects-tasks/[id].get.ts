@@ -42,6 +42,7 @@ export default defineEventHandler(async (event): Promise<ProjectTask[]> => {
       output: task.output,
       dependency: task.dependency ? task.dependency.toString() : null,
       translation: task.translation,
+      subtasks: task.subtasks,
       milestone: task.milestone,
       project_id: task.project_id.toString()
     })) as ProjectTask[]

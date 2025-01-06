@@ -48,6 +48,7 @@ onMounted(async () => {
   }
 
   let tasks = []
+  let tmpSubtasks = []
 
   async function fetchTasks() {
     try {
@@ -83,18 +84,11 @@ onMounted(async () => {
       tasksLinear.removeChild(tasksLinear.firstChild)
     }
 
-    //if (tasks.length === 0) {
-    //  const noTasksText = document.createTextNode('No tasks')
-    //  tasksGrid.appendChild(noTasksText)
-    //}
-
     // Header
 
     let min = new Date(Math.min(...tasks.map((task) => task.start)))
     let max = new Date(Math.max(...tasks.map((task) => task.end)))
 
-    const nYears = max.getFullYear() - min.getFullYear() + 1
-    const nMonths = (max.getMonth() - min.getMonth() + 13) % 12
     const nDays = (max - min) / (1000 * 60 * 60 * 24) + 1
 
     tasksGrid.style.gridTemplateColumns = `auto repeat(${nDays}, 1fr)`
@@ -107,22 +101,6 @@ onMounted(async () => {
     emptyForGrid.style.gridRow = '1 / 1'
     emptyForGrid.style.gridColumn = '1 / 1'
     tasksGrid.appendChild(emptyForGrid)
-
-    //for (let i = 0; i < nMonths; i++) {
-    //  const month = document.createElement('div')
-    //  month.classList.add('text-center')
-    //  month.textContent = `${min.getMonth() + i}`
-    //  month.style.gridRow = '1 / 1'
-    //  month.style.gridColumn = `${(nDays / nMonths) * i + 2} / ${nDays / nMonths}`
-    //  tasksGrid.appendChild(month)
-    //}
-
-    //const years = document.createElement('div')
-    //years.classList.add('text-center')
-    //years.style.gridRow = '1 / 1'
-    //years.style.gridColumn = `2 / ${nDays + 2}`
-    //years.textContent = '2024'
-    //tasksGrid.appendChild(years)
 
     const today = await getToday()
 
@@ -230,7 +208,11 @@ onMounted(async () => {
       taskDiv2.appendChild(taksDiv2Description)
 
       const taskDiv2Person = document.createElement('div')
-      taskDiv2Person.textContent = (await allUsers()).find(
+      let __users = await allUsers()
+      console.log('users', __users)
+      console.log('task', task)
+      console.log('task.user_id', task.user_id)
+      taskDiv2Person.textContent = __users.find(
         (user) => user.id === task.user_id
       ).name
       taskDiv2.appendChild(taskDiv2Person)
@@ -361,6 +343,7 @@ onMounted(async () => {
     const milestone = document.getElementById(
       'task-modal-checkbox-milestone'
     ).checked
+    const subtasks = tmpSubtasks
     const user_id = document.getElementById('task-modal-select-user').value
 
     if (!title) {
@@ -415,7 +398,7 @@ onMounted(async () => {
     }
 
     try {
-      $fetch(`/api/projects-tasks/${$route.params.id}`, {
+      await $fetch(`/api/projects-tasks/${$route.params.id}`, {
         method: addingTask ? 'POST' : 'PUT',
         body: JSON.stringify({
           id: taskID,
@@ -430,12 +413,13 @@ onMounted(async () => {
           translation: translation === 'true',
           milestone,
           dependency,
+          subtasks,
           user_id
         })
       })
 
-      updateTasks()
       document.getElementById('task_modal').close()
+      await updateTasks()
       addingTask = true
     } catch (error) {
       console.error(error)
@@ -482,6 +466,19 @@ onMounted(async () => {
     document.getElementById('task-modal-checkbox-milestone').checked =
       t.milestone
     document.getElementById('task-modal-select-user').value = t.user_id
+    tmpSubtasks = t.subtasks
+
+    if (t.user_id === me.id || me.id == project.user_id) {
+      displaySubtasks(false)
+      document
+        .getElementById('task-modal-subtasks-adder')
+        .classList.remove('invisible')
+    } else {
+      displaySubtasks(true)
+      document
+        .getElementById('task-modal-subtasks-adder')
+        .classList.add('invisible')
+    }
 
     document.getElementById('task_modal').showModal()
     addingTask = false
@@ -493,6 +490,36 @@ onMounted(async () => {
 
     if (me.id === project.user_id || me.id === t.user_id) {
       document.getElementById('task-modal-save').classList.remove('invisible')
+    }
+  }
+
+  function displaySubtasks(disabled = false) {
+    document.getElementById('task-modal-subtasks-list').innerHTML = ''
+
+    for (const t of tmpSubtasks) {
+      let div = document.createElement('div')
+      div.innerHTML = `
+        <div class="flex gap-2 justify-between">
+          <div>
+            ${t.title}
+          </div>
+          <input type="checkbox" ${t.done ? 'checked' : ''} class="checkbox" ${disabled ? 'disabled' : ''} />
+          <button class="btn btn-error btn-sm ${disabled ? 'invisible' : ''}">Delete</button>
+        </div>
+      `
+      div.getElementsByTagName('button')[0].addEventListener('click', () => {
+        console.log('Deleted subtask', t)
+        tmpSubtasks = tmpSubtasks.filter((subtask) => subtask !== t)
+        div.remove()
+      })
+      div.getElementsByTagName('input')[0].addEventListener('change', (e) => {
+        const indx = tmpSubtasks.findIndex((e) => e === t)
+        if (indx !== -1) {
+          tmpSubtasks[indx].done = !tmpSubtasks[indx].done
+        }
+      })
+
+      document.getElementById('task-modal-subtasks-list').appendChild(div)
     }
   }
 
@@ -574,6 +601,24 @@ onMounted(async () => {
         }
       }
     })
+
+  // Add subtask
+  function addSubtask() {
+    const input = document.getElementById('task-modal-subtasks-input')
+    const title = input.value
+    const sb = {
+      title,
+      done: false
+    }
+
+    tmpSubtasks.push(sb)
+    displaySubtasks()
+    input.value = ''
+  }
+
+  document
+    .getElementById('btn-add-subtask')
+    .addEventListener('click', addSubtask)
 
   // ------ Utils ------
   async function updateTasks() {
@@ -877,6 +922,36 @@ function dispatchEvent() {
             >
               <!-- NEED TO FILL -->
             </select>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-control">
+            <div class="label">
+              <label class="label-text">SubTasks</label>
+            </div>
+            <div
+              id="task-modal-subtasks-list"
+              class="flex flex-col gap-2"
+            ></div>
+            <div
+              class="mt-2 flex justify-between gap-2"
+              id="task-modal-subtasks-adder"
+            >
+              <input
+                type="text"
+                placeholder="Subtask..."
+                class="input input-bordered flex-1 text-sm placeholder:text-gray-600"
+                id="task-modal-subtasks-input"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="btn-add-subtask"
+              >
+                Add subtask task
+              </button>
+            </div>
           </div>
         </form>
 
