@@ -131,21 +131,25 @@ function delTodo(t: NoteTodo) {
     <h1 class="m-2 mb-5 w-full text-center text-3xl font-bold">Note Editor</h1>
     <form
       v-if="data"
-      class="flex gap-4 rounded-lg border bg-base-200 p-4"
+      class="flex flex-col gap-4 rounded-lg border bg-base-200 p-4 md:flex-row"
       @click.prevent=""
     >
       <div class="w-full">
-        <div class="flex justify-between">
+        <div class="flex flex-col justify-between gap-4 md:flex-row md:gap-0">
           <input
             v-model="data.title"
             type="text"
-            class="w-full rounded-t-lg bg-transparent text-2xl font-bold outline-none focus:underline"
+            class="order-2 w-full rounded-t-lg bg-transparent text-2xl font-bold outline-none focus:underline md:order-1"
           />
 
-          <div class="flex gap-2">
+          <div class="order-1 flex justify-between gap-2 md:order-2">
             <div class="dropdown dropdown-hover">
-              <div tabindex="0" role="button" class="btn border border-neutral">
-                <div class="w-60 rounded-t-lg p-2 group-hover:bg-white">
+              <div
+                tabindex="0"
+                role="button"
+                class="btn btn-sm border border-neutral md:btn-md"
+              >
+                <div class="rounded-t-lg p-2 group-hover:bg-white md:w-60">
                   Category: {{ _categoryName }}
                 </div>
               </div>
@@ -170,6 +174,7 @@ function delTodo(t: NoteTodo) {
             </div>
           </div>
         </div>
+        <div class="divider"></div>
         <div class="w-full">
           <textarea
             id="noteBody"
@@ -179,31 +184,34 @@ function delTodo(t: NoteTodo) {
           </textarea>
         </div>
         <div class="divider"></div>
-        <div class="flex w-full flex-col gap-2">
-          <div v-for="(t, indx) in _todoList" class="flex gap-2">
+        <div class="flex w-full max-w-[50rem] flex-col gap-2">
+          <div
+            v-for="(t, indx) in _todoList"
+            class="flex flex-wrap justify-evenly gap-2 border-b border-b-neutral-800 pb-2 last:border-none md:border-none"
+          >
             <input
-              class="input text-xs placeholder:text-gray-600"
+              class="input input-sm text-xs md:input-md placeholder:text-gray-600"
               type="text"
               placeholder="Todo..."
               v-model="t.title"
             />
             <input
-              class="input input-bordered text-xs"
+              class="input input-sm input-bordered text-xs md:input-md"
               type="date"
               v-model="t.date"
             />
             <input
-              class="input input-bordered text-xs"
+              class="input input-sm input-bordered text-xs md:input-md"
               type="time"
               v-model="t.time"
             />
             <div class="form-control">
               <label class="label cursor-pointer">
-                <span class="label-text text-xs">Completed</span>
+                <span class="label-text mr-2">Completed</span>
                 <input
                   type="checkbox"
                   v-model="t.done"
-                  class="checkbox"
+                  class="checkbox checkbox-sm md:checkbox-md"
                   @click.stop=""
                 />
               </label>
@@ -211,14 +219,14 @@ function delTodo(t: NoteTodo) {
 
             <button
               v-if="indx == _todoList.length - 1"
-              class="btn btn-primary text-xs"
+              class="btn btn-primary btn-sm md:btn-md"
               @click.prevent="addTodo"
             >
               Add
             </button>
             <button
               v-else
-              class="btn btn-error text-xs"
+              class="btn btn-error btn-sm md:btn-md"
               @click.prevent="delTodo(t)"
             >
               Del
@@ -228,7 +236,9 @@ function delTodo(t: NoteTodo) {
       </div>
 
       <div class="flex items-center">
-        <div class="flex h-40 max-h-96 flex-col justify-evenly">
+        <div
+          class="flex h-full max-h-60 w-full flex-row justify-evenly gap-2 md:flex-col"
+        >
           <button class="btn btn-success" @click="save()">Save</button>
           <NuxtLink class="btn btn-error" :to="`/notes/${data.id}`">
             Cancel

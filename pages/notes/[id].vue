@@ -19,12 +19,32 @@ const _categoryName = computed(() => {
 
   return 'Error'
 })
+
+const me = await getME()
+const isMine = computed(() => {
+  if (!_note) return false
+  return _note.user_id === me.id
+})
 </script>
 
 <template>
-  <div class="p-2">
-    <NuxtLink to="/notes" class="btn btn-neutral"> Go Back </NuxtLink>
-    <div v-if="_note">
+  <div
+    class="overflow-y-auto p-2"
+    style="height: calc(100vh - var(--navbar-height))"
+  >
+    <div class="flex justify-between">
+      <NuxtLink to="/notes" class="btn btn-neutral btn-sm md:btn-md">
+        Go Back
+      </NuxtLink>
+      <NuxtLink
+        v-if="isMine && _note"
+        class="btn btn-info btn-sm md:btn-md"
+        :to="`/notes/editor/${_note.id}`"
+      >
+        Modify
+      </NuxtLink>
+    </div>
+    <div v-if="_note" class="mb-16 flex flex-col items-center">
       <h1 class="text-4xl font-extrabold">
         {{ _note.title }}
       </h1>
@@ -45,13 +65,19 @@ const _categoryName = computed(() => {
       <div class="prose">
         <MDC :value="_note.body" />
       </div>
-      <div class="divider"></div>
-      <div>
-        <div v-for="t in _note.todos" class="flex gap-4">
-          <div :class="{ 'line-through': t.done }">
-            {{ t.title }}
+      <div v-show="_note.todos && _note.todos.length > 0" class="divider"></div>
+      <div
+        v-show="_note.todos && _note.todos.length > 0"
+        class="flex w-full flex-col items-center gap-4"
+      >
+        <div class="text-2xl font-bold">Todos:</div>
+        <div class="w-full max-w-xl">
+          <div v-for="t in _note.todos" class="grid grid-cols-2 gap-y-2">
+            <div :class="{ 'line-through': t.done }" class="text-lg font-bold">
+              {{ t.title }}
+            </div>
+            <div>{{ formatTime(t.end) }} {{ formatDate(t.end) }}</div>
           </div>
-          <div>{{ formatTime(t.end) }} {{ formatDate(t.end) }}</div>
         </div>
       </div>
     </div>

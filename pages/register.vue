@@ -90,11 +90,11 @@ function validate() {
   <div class="flex min-h-screen items-center justify-center bg-base-200">
     <div class="card w-96 bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title">Register</h2>
+        <h2 class="card-title text-base md:text-xl">Register</h2>
         <form @click.prevent="">
           <div class="form-control">
             <label for="input-mail" class="label">
-              <span class="label-text"> Username </span>
+              <span class="label-text text-xs md:text-base"> Username </span>
             </label>
             <div
               class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
@@ -103,7 +103,7 @@ function validate() {
                 id="input-username"
                 v-model="username"
                 type="text"
-                class="X-required grow invalid:text-error"
+                class="X-required grow text-xs invalid:text-error md:text-base"
                 :placeholder="usernamePlaceholders[placeholderIndex]"
               />
             </div>
@@ -111,7 +111,7 @@ function validate() {
 
           <div class="form-control mt-5">
             <label for="input-password1" class="label">
-              <span class="label-text"> Password </span>
+              <span class="label-text text-xs md:text-base"> Password </span>
             </label>
             <div
               class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
@@ -120,12 +120,14 @@ function validate() {
                 id="input-password1"
                 v-model="passwd1"
                 type="password"
-                class="X-required grow invalid:text-error"
+                class="X-required grow text-xs invalid:text-error md:text-base"
                 placeholder="Choose a password"
               />
             </div>
             <label for="input-password2" class="label">
-              <span class="label-text"> Confirm Password </span>
+              <span class="label-text text-xs md:text-base">
+                Confirm Password
+              </span>
             </label>
             <div
               class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
@@ -134,14 +136,14 @@ function validate() {
                 id="input-password2"
                 v-model="passwd2"
                 type="password"
-                class="X-required grow invalid:text-error"
+                class="X-required grow text-xs invalid:text-error md:text-base"
                 placeholder="Confirm password"
               />
             </div>
 
             <div class="form-control mt-5">
               <label for="input-name" class="label">
-                <span class="label-text"> Full Name </span>
+                <span class="label-text text-xs md:text-base"> Full Name </span>
               </label>
               <div
                 class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
@@ -150,7 +152,7 @@ function validate() {
                   id="input-name"
                   v-model="name"
                   type="text"
-                  class="grow invalid:text-error"
+                  class="grow text-xs invalid:text-error md:text-base"
                   placeholder="Alex"
                 />
               </div>
@@ -158,7 +160,10 @@ function validate() {
           </div>
 
           <div class="form-control mt-6">
-            <button class="btn btn-secondary" @click="register">
+            <button
+              class="btn btn-secondary text-base md:text-lg"
+              @click="register"
+            >
               Register
             </button>
           </div>

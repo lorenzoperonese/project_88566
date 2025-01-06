@@ -38,6 +38,13 @@ const copyToClipboard = async () => {
     $toast.error('Failed to copy to clipboard')
   }
 }
+
+const fBody = computed(() => {
+  if ($props.note.body.length < 403) {
+    return $props.note.body
+  }
+  return $props.note.body.substring(0, 400) + '...'
+})
 </script>
 
 <template>
@@ -59,7 +66,7 @@ const copyToClipboard = async () => {
               </div>
             </div>
             <div class="prose prose-sm">
-              <MDC :value="$props.note.body" />
+              <MDC :value="fBody" />
             </div>
             <div
               class="divider"
@@ -79,7 +86,7 @@ const copyToClipboard = async () => {
           class="divider md:hidden"
           v-show="$props.note.todos && $props.note.todos.length > 0"
         ></div>
-        <div class="flex flex-row flex-wrap gap-2 md:flex-col">
+        <div class="flex flex-row flex-wrap justify-evenly gap-2 md:flex-col">
           <button
             class="btn btn-neutral btn-sm md:btn-md"
             @click="copyToClipboard"
