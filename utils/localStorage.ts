@@ -7,7 +7,9 @@ export async function storageSetItem(key: string, value: any) {
 
 export async function storageGetItem(key: string) {
   const me = await getME()
-  return localStorage.getItem(`${me.id}-${key}`)
+  const tmp = localStorage.getItem(`${me.id}-${key}`)
+  if (!tmp) return null
+  return JSON.parse(tmp)
 }
 
 export async function storageRemoveItem(key: string) {
