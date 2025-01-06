@@ -172,8 +172,8 @@ const hideMobileCategories = () => {
           <input
             type="text"
             v-model="_search"
-            placeholder="Search"
-            class="input input-bordered w-full p-2"
+            placeholder="Search..."
+            class="input input-bordered w-full p-2 placeholder:text-gray-600"
             v-show="_mobileSearching"
           />
         </div>
@@ -210,6 +210,9 @@ const hideMobileCategories = () => {
           </form>
         </div>
       </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
     </dialog>
 
     <TmButton class="fixed bottom-4 left-4" @update="fetchNotes()" />
