@@ -126,7 +126,7 @@ function stopSounds() {
 
 <template>
   <div>
-    <button class="btn btn-neutral" @click="openModal()">Condividi</button>
+    <button class="btn btn-neutral" @click="openModal()">Settings</button>
     <dialog ref="settings-pomodoro-modal" class="modal" @close="stopSounds()">
       {{ settings.volume }}
       <div class="modal-box">
@@ -174,6 +174,10 @@ function stopSounds() {
             <option value="rain">Rain</option>
           </select>
         </label>
+
+        <form method="dialog" class="mt-2">
+          <button class="btn">Close</button>
+        </form>
       </div>
     </dialog>
   </div>
