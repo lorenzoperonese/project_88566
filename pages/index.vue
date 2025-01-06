@@ -114,18 +114,5 @@ watch(updateSettings as any, () => {
         <div class="text-center">No preview available</div>
       </NuxtLink>
     </div>
-
-    <h1 class="mt-5 pl-5 text-xl font-bold">Notifications</h1>
-    <div class="p-5">
-      <NotifyPermission />
-    </div>
-
-    <div class="divider"></div>
-
-    <NotificationsMenu />
-
-    <div class="divider"></div>
-
-    <Connection />
   </div>
 </template>

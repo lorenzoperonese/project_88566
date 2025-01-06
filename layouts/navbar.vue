@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Profile, Settings } from '#components'
+import { Profile, Settings, Debug } from '#components'
 import { wsState } from '@/utils/websocket'
 const modal = useTemplateRef('navbar-modal')
 
@@ -18,7 +18,16 @@ const avatar = computed(() => {
 })
 
 const showComponent = computed(() => {
-  return component.value === 'Profile' ? Profile : Settings
+  switch (component.value) {
+    case 'Profile':
+      return Profile
+    case 'Settings':
+      return Settings
+    case 'Debug':
+      return Debug
+    default:
+      return Profile
+  }
 })
 
 function showProfile() {
@@ -28,6 +37,11 @@ function showProfile() {
 
 function showSettings() {
   component.value = 'Settings'
+  showModal()
+}
+
+function showDebug() {
+  component.value = 'Debug'
   showModal()
 }
 
@@ -193,6 +207,7 @@ watch(wsState.notifications, updatePending)
             <a class="justify-between"> Profile </a>
           </li>
           <li @click="showSettings"><a>Settings</a></li>
+          <li @click="showDebug"><a>Debug</a></li>
           <li @click="logout"><a>Logout</a></li>
         </ul>
       </div>

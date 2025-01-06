@@ -35,7 +35,7 @@ async function enable() {
   }
 }
 
-async function sendTest() {
+async function sendRemoteTest() {
   let SW = await navigator.serviceWorker.getRegistration()
   if (SW === undefined) {
     await startServiceWorker()
@@ -56,7 +56,14 @@ async function sendTest() {
 
   //SW.active.postMessage('Provolone')
 
-  fetch('/api/notify')
+  await $fetch('/api/notify')
+}
+
+function sendLocalTest() {
+  postMessageToWoker({
+    title: 'Local test',
+    body: 'This is a local test'
+  })
 }
 </script>
 
@@ -64,18 +71,30 @@ async function sendTest() {
   <div>
     <button
       v-if="permission == 'default'"
-      class="btn btn-accent"
+      class="btn btn-outline btn-accent"
       @click="enable()"
     >
       Enable notifications
     </button>
 
     <div v-if="permission == 'granted'">
-      <div class="text-accent">Notifications are enabled :)</div>
+      <div class="text-success">Notifications are enabled :)</div>
 
-      <button class="btn btn-warning mt-2" @click="sendTest()">
-        Send test
-      </button>
+      <div class="flex justify-between">
+        <button
+          class="btn btn-outline btn-primary mt-2"
+          @click="sendLocalTest()"
+        >
+          Send local test
+        </button>
+
+        <button
+          class="btn btn-outline btn-secondary mt-2"
+          @click="sendRemoteTest()"
+        >
+          Send remote test
+        </button>
+      </div>
     </div>
 
     <div v-if="permission == 'denied'" class="text-error">

@@ -22,18 +22,15 @@ async function send() {
 </script>
 
 <template>
-  <div>
-    <button class="btn btn-outline btn-primary" @click="send">
-      Send notification to other
-    </button>
-
+  <div class="flex flex-col justify-between gap-2 md:flex-row">
     <input
       v-model="user"
       type="text"
-      class="input input-bordered"
-      placeholder="user"
+      class="input input-bordered placeholder:text-gray-600"
+      placeholder="Username"
     />
-
-    <!-- NotificationsList /-->
+    <button class="btn btn-outline btn-info btn-sm md:btn-md" @click="send">
+      Send notification
+    </button>
   </div>
 </template>
