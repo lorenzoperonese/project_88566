@@ -40,11 +40,6 @@ function sendMessage() {
 
 <template>
   <div class="flex flex-col bg-base-200">
-    <div class="md:hidden">
-      <label for="rooms" class="btn btn-primary drawer-button"
-        >Open drawer</label
-      >
-    </div>
     <div
       id="messages-container"
       class="h-full flex-1 flex-col overflow-y-auto px-4 py-2"
