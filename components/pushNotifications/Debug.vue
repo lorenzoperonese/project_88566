@@ -1,33 +1,10 @@
 <script setup lang="ts">
-const { $registerPushNotifications } = useNuxtApp()
-
-const enableNotifications = async () => {
-  try {
-    const subscription = await $registerPushNotifications()
-    console.log('Registered:', subscription)
-  } catch (err) {
-    console.error('Failed:', err)
-  }
-}
-
 const permission = ref(window.Notification.permission)
-
-async function requestNotificationPermission() {
-  const permission = await window.Notification.requestPermission()
-  // value of permission can be 'granted', 'default', 'denied'
-  // granted: user has accepted the request
-  // default: user has dismissed the notification permission popup by clicking on x
-  // denied: user has denied the request.
-  if (permission !== 'granted') {
-    throw new Error('Permission not granted for Notification')
-  }
-  return permission
-}
 
 async function enable() {
   try {
     permission.value = await requestNotificationPermission()
-    enableNotifications()
+    registerPush()
 
     startServiceWorker()
   } catch (e) {

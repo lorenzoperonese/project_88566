@@ -21,6 +21,11 @@ watch(updateSettings as any, () => {
     fetchSettings()
   }
 })
+
+const pushPermission = ref(window.Notification.permission)
+function updatePushPermission() {
+  pushPermission.value = window.Notification.permission
+}
 </script>
 
 <template>
@@ -30,7 +35,7 @@ watch(updateSettings as any, () => {
       class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6"
     >
       <RouterLink
-        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        class="h-full w-60 transform overflow-clip rounded-lg bg-base-300 p-4 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
         to="/calendar"
       >
         <div class="text-center text-lg font-bold">Calendar</div>
@@ -45,7 +50,7 @@ watch(updateSettings as any, () => {
       </RouterLink>
 
       <NuxtLink
-        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        class="h-full w-60 transform overflow-clip rounded-lg bg-base-300 p-4 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
         to="/notes"
       >
         <div class="text-center text-lg font-bold">Notes</div>
@@ -59,7 +64,7 @@ watch(updateSettings as any, () => {
         />
       </NuxtLink>
       <NuxtLink
-        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        class="h-full w-60 transform overflow-clip rounded-lg bg-base-300 p-4 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
         to="/pomodoro"
       >
         <div class="text-center text-lg font-bold">Pomodoro</div>
@@ -73,7 +78,7 @@ watch(updateSettings as any, () => {
         />
       </NuxtLink>
       <NuxtLink
-        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        class="h-full w-60 transform overflow-clip rounded-lg bg-base-300 p-4 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
         to="/chat"
       >
         <div class="text-center text-lg font-bold">Chat</div>
@@ -88,7 +93,7 @@ watch(updateSettings as any, () => {
       </NuxtLink>
 
       <NuxtLink
-        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        class="h-full w-60 transform overflow-clip rounded-lg bg-base-300 p-4 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
         to="/projects"
       >
         <div class="text-center text-lg font-bold">Projects</div>
@@ -104,7 +109,7 @@ watch(updateSettings as any, () => {
 
       <NuxtLink
         v-if="isAdmin(me)"
-        class="h-full w-60 overflow-clip rounded-lg bg-base-300 p-4 shadow-lg"
+        class="h-full w-60 transform overflow-clip rounded-lg bg-base-300 p-4 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
         to="/resources"
       >
         <div class="text-center text-lg font-bold">Resources</div>
@@ -114,5 +119,10 @@ watch(updateSettings as any, () => {
         <div class="text-center">No preview available</div>
       </NuxtLink>
     </div>
+
+    <PushNotificationsAsk
+      v-if="pushPermission == 'default'"
+      @update="updatePushPermission"
+    />
   </div>
 </template>

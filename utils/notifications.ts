@@ -45,3 +45,27 @@ export async function setNotificationAsRead(id: string): Promise<JSONResponse> {
     return { err: 'Error reading notifications', status: 'error' }
   }
 }
+
+// Utils for push notifications
+
+export async function registerPush() {
+  const { $registerPushNotifications } = useNuxtApp()
+  try {
+    const subscription = await $registerPushNotifications()
+    console.log('Registered:', subscription)
+  } catch (err) {
+    console.error('Failed:', err)
+  }
+}
+
+export async function requestNotificationPermission() {
+  const permission = await window.Notification.requestPermission()
+  // value of permission can be 'granted', 'default', 'denied'
+  // granted: user has accepted the request
+  // default: user has dismissed the notification permission popup by clicking on x
+  // denied: user has denied the request.
+  if (permission !== 'granted') {
+    throw new Error('Permission not granted for Notification')
+  }
+  return permission
+}
