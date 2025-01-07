@@ -193,6 +193,8 @@ onMounted(async () => {
       taskDiv2.classList.add('flex-col')
       taskDiv2.classList.add('gap-2')
       taskDiv2.classList.add('min-w-40')
+      taskDiv2.classList.add('w-full')
+      taskDiv2.classList.add('w-max-xs')
       taskDiv2.classList.add('p-2')
       taskDiv2.classList.add('rounded-lg')
       taskDiv2.classList.add('hover:opacity-90')
@@ -204,21 +206,23 @@ onMounted(async () => {
       taskDiv2.appendChild(taskDiv2Title)
 
       const taksDiv2Description = document.createElement('div')
-      taksDiv2Description.textContent = task.description
+      taksDiv2Description.textContent =
+        task.description.length > 253
+          ? task.description.substring(0, 250) + '...'
+          : task.description
       taskDiv2.appendChild(taksDiv2Description)
 
       const taskDiv2Person = document.createElement('div')
       let __users = await allUsers()
-      console.log('users', __users)
-      console.log('task', task)
-      console.log('task.user_id', task.user_id)
       taskDiv2Person.textContent = __users.find(
         (user) => user.id === task.user_id
       ).name
+      taskDiv2Person.classList.add('font-bold')
       taskDiv2.appendChild(taskDiv2Person)
 
       const taskDiv2Period = document.createElement('div')
       taskDiv2Period.textContent = `${start.getDate()}-${start.getMonth() + 1}-${start.getFullYear()} to ${end.getDate()}-${end.getMonth() + 1}-${end.getFullYear()}`
+      taskDiv2Period.classList.add('italic')
       taskDiv2.appendChild(taskDiv2Period)
 
       switch (task.state) {
@@ -503,7 +507,7 @@ onMounted(async () => {
           <div>
             ${t.title}
           </div>
-          <input type="checkbox" ${t.done ? 'checked' : ''} class="checkbox" ${disabled ? 'disabled' : ''} />
+          <input type="checkbox" ${t.done ? 'checked' : ''} class="checkbox checkbox-sm md:checkbox-md" ${disabled ? 'disabled' : ''} />
           <button class="btn btn-error btn-sm ${disabled ? 'invisible' : ''}">Delete</button>
         </div>
       `
@@ -642,7 +646,11 @@ onMounted(async () => {
       div.classList.add('rounded-lg')
       div.classList.add(`color-${state}`)
       div.classList.add('w-40')
-      div.textContent = state
+      div.classList.add('md:text-base')
+      div.classList.add('text-sm')
+      div.textContent = (
+        state.charAt(0).toUpperCase() + state.slice(1)
+      ).replace('_', ' ')
       el.appendChild(div)
     }
   }
@@ -653,7 +661,6 @@ onMounted(async () => {
     .getElementById('select-gannt-linear')
     .addEventListener('change', (e) => {
       const mode = e.target.value
-      const tasksGrid = document.getElementById('tasks-grid')
 
       if (mode === 'gannt') {
         document.getElementById('view-linear').classList.add('hidden')
@@ -715,14 +722,17 @@ function dispatchEvent() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 p-2">
+  <div
+    class="flex flex-col gap-2 overflow-y-auto p-2"
+    style="height: calc(100vh - var(--navbar-height))"
+  >
     <div class="flex justify-between">
       <div>
         <h1 id="project-title" class="text-2xl font-bold"></h1>
         <p id="project-description" class=""></p>
       </div>
 
-      <div class="flex gap-2">
+      <div class="flex flex-col gap-2 md:flex-row">
         <div class="form-control bordered invisible" id="select-linear-order">
           <select class="select select-bordered w-full max-w-xs">
             <option value="date">Date</option>
@@ -748,15 +758,24 @@ function dispatchEvent() {
       </div>
 
       <div id="view-linear" class="hidden">
-        <div class="flex gap-4" id="tasks-linear"></div>
+        <div
+          class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
+          id="tasks-linear"
+        ></div>
       </div>
 
-      <div class="mt-5 flex justify-between">
-        <button class="btn btn-outline btn-primary" id="btn-add-task">
+      <div class="mt-5 flex flex-col justify-between gap-4 md:flex-row">
+        <button
+          class="btn btn-outline btn-primary btn-sm md:btn-md"
+          id="btn-add-task"
+        >
           Add task
         </button>
 
-        <div id="color-legend" class="flex gap-2"></div>
+        <div
+          id="color-legend"
+          class="grid grid-cols-2 gap-2 md:grid-cols-7"
+        ></div>
       </div>
     </div>
 
@@ -772,7 +791,7 @@ function dispatchEvent() {
             <input
               id="task-modal-title"
               type="text"
-              class="input input-bordered"
+              class="input input-sm input-bordered md:input-md"
             />
           </div>
 
@@ -785,7 +804,7 @@ function dispatchEvent() {
             <textarea
               id="task-modal-description"
               type="text"
-              class="textarea textarea-bordered"
+              class="textarea textarea-bordered textarea-sm md:textarea-md"
             ></textarea>
           </div>
 
@@ -796,7 +815,7 @@ function dispatchEvent() {
             <input
               id="task-modal-phase"
               type="text"
-              class="input input-bordered"
+              class="input input-sm input-bordered md:input-md"
             />
           </div>
 
@@ -805,7 +824,7 @@ function dispatchEvent() {
               <label for="task-modal-state" class="label-text">State</label>
             </div>
             <select
-              class="select select-bordered w-full max-w-xs"
+              class="select select-bordered select-sm w-full max-w-xs md:select-md"
               id="task-modal-state"
             >
               <option value="unavailable">Unavailable</option>
@@ -818,7 +837,7 @@ function dispatchEvent() {
             </select>
           </div>
 
-          <div class="flex justify-between">
+          <div class="flex flex-col justify-between gap-2 md:flex-row">
             <div class="flex gap-2">
               <div class="label">
                 <label
@@ -830,7 +849,7 @@ function dispatchEvent() {
               <input
                 id="task-modal-start"
                 type="date"
-                class="input input-bordered"
+                class="input input-sm input-bordered w-full md:input-md md:w-auto"
               />
             </div>
 
@@ -843,7 +862,7 @@ function dispatchEvent() {
               <input
                 id="task-modal-end"
                 type="date"
-                class="input input-bordered"
+                class="input input-sm input-bordered w-full md:input-md md:w-auto"
               />
             </div>
           </div>
@@ -855,7 +874,7 @@ function dispatchEvent() {
             <input
               id="task-modal-input"
               type="text"
-              class="input input-bordered"
+              class="input input-sm input-bordered md:input-md"
             />
           </div>
 
@@ -866,7 +885,7 @@ function dispatchEvent() {
             <input
               id="task-modal-output"
               type="text"
-              class="input input-bordered"
+              class="input input-sm input-bordered md:input-md"
             />
           </div>
 
@@ -877,7 +896,7 @@ function dispatchEvent() {
               >
             </div>
             <select
-              class="select select-bordered w-full max-w-xs"
+              class="select select-bordered select-sm w-full max-w-xs md:select-md"
               id="task-modal-select-depends"
             >
               <!-- NEED TO FILL -->
@@ -890,7 +909,7 @@ function dispatchEvent() {
             </div>
             <div class="flex justify-between">
               <select
-                class="select select-bordered w-full max-w-xs"
+                class="select select-bordered select-sm w-full max-w-xs md:select-md"
                 id="task-modal-select-translation"
               >
                 <option value="true">Translation</option>
@@ -902,7 +921,7 @@ function dispatchEvent() {
                   <span class="label-text mr-4">Milestone</span>
                   <input
                     type="checkbox"
-                    class="checkbox"
+                    class="checkbox checkbox-sm md:checkbox-md"
                     id="task-modal-checkbox-milestone"
                   />
                 </label>
@@ -917,7 +936,7 @@ function dispatchEvent() {
               >
             </div>
             <select
-              class="select select-bordered w-full max-w-xs"
+              class="select select-bordered select-sm w-full max-w-xs md:select-md"
               id="task-modal-select-user"
             >
               <!-- NEED TO FILL -->
@@ -941,11 +960,11 @@ function dispatchEvent() {
               <input
                 type="text"
                 placeholder="Subtask..."
-                class="input input-bordered flex-1 text-sm placeholder:text-gray-600"
+                class="input input-sm input-bordered flex-1 text-sm md:input-md placeholder:text-gray-600"
                 id="task-modal-subtasks-input"
               />
               <button
-                class="btn btn-primary"
+                class="btn btn-primary btn-sm md:btn-md"
                 type="button"
                 id="btn-add-subtask"
               >
@@ -958,12 +977,18 @@ function dispatchEvent() {
         <div class="mt-6 flex justify-evenly">
           <form method="dialog">
             <!-- if there is a button in form, it will close the modal -->
-            <button class="btn">Close</button>
+            <button class="btn btn-sm md:btn-md">Close</button>
           </form>
-          <button class="btn btn-error invisible" id="task-modal-delete">
+          <button
+            class="btn btn-error btn-sm invisible md:btn-md"
+            id="task-modal-delete"
+          >
             Delete
           </button>
-          <button class="btn btn-success invisible" id="task-modal-save">
+          <button
+            class="btn btn-success btn-sm invisible md:btn-md"
+            id="task-modal-save"
+          >
             Save
           </button>
         </div>

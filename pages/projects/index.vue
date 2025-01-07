@@ -62,21 +62,28 @@ onMounted(async () => {
     for (const p in projects) {
       let project = projects[p]
       let el = document.createElement('div')
+      const desc =
+        project.description.length > 103
+          ? project.description.substring(0, 100) + '...'
+          : project.description
+
       el.innerHTML = `
         <div class="card bg-base-200 shadow-lg">
           <div class="card-body">
             <div class="card-title">${project.title}</div>
-            <div class="">${project.description}</div>
-            <div class="card-actions justify-center">
-              <button id="detail-${project.id}" class="btn btn-outline btn-secondary">
-                Details
-              </button>
-              <button id="edit-${project.id}" class="btn btn-outline btn-info ${me.id != project.user_id ? 'invisible' : 'visible'}">
-                Edit
-              </button>
-              <button id="delete-${project.id}" class="btn btn-outline btn-error">
-                Delete
-              </button>
+            <div class="">${desc}</div>
+            <div class="card-actions justify-center mt-2">
+              <div class="flex justify-evenly max-w-sm w-full">
+                <button id="detail-${project.id}" class="btn btn-outline btn-secondary">
+                  Details
+                </button>
+                <button id="edit-${project.id}" class="btn btn-outline btn-info ${me.id != project.user_id ? 'invisible' : 'visible'}">
+                  Edit
+                </button>
+                <button id="delete-${project.id}" class="btn btn-outline btn-error">
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -171,8 +178,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <div id="project-list" class="flex gap-4 p-4"></div>
+  <div
+    class="overflow-y-auto"
+    style="height: calc(100vh - var(--navbar-height))"
+  >
+    <div
+      id="project-list"
+      class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-3"
+    ></div>
 
     <div class="fixed bottom-4 right-4">
       <NuxtLink to="/projects/new" class="btn btn-primary"> ADD </NuxtLink>
