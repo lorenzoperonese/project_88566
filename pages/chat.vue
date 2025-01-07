@@ -139,7 +139,7 @@ async function sendMessage(message: string) {
       />
 
       <ChatMessages
-        v-show="current_room_id !== undefined"
+        :class="[{ 'hidden md:block': current_room_id === undefined }]"
         class="h-full w-full"
         :messages="messages"
         :current-user-id="userID"
