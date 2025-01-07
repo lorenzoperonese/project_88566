@@ -85,7 +85,10 @@ function handleCycle() {
 </script>
 
 <template>
-  <div>
+  <div
+    class="overflow-y-auto"
+    style="height: calc(100vh - var(--navbar-height))"
+  >
     <div class="container mx-auto p-4">
       <h1 class="mb-6 text-center text-3xl font-bold">Pomodoro Timer</h1>
 

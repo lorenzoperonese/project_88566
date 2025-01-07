@@ -264,7 +264,7 @@ useSwipe(swipeEl, {
 <template>
   <div
     ref="swipeEl"
-    class="flex h-full flex-col"
+    class="flex h-full flex-col overflow-y-auto"
     style="height: calc(100vh - var(--navbar-height))"
   >
     <div
