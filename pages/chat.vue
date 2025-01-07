@@ -9,8 +9,8 @@ const { $toast } = useNuxtApp()
 const current_room_id = ref<string | undefined>()
 
 const { getSession } = useAuth()
-const userID: string = (toRaw(await getSession()) as any)?.s.user_id
-
+const session = await getSession()
+const userID: string = (toRaw(session) as any)?.s.user_id
 const rooms = ref<ChatRoom[]>([])
 const messages = ref<ChatMessage[]>([])
 
@@ -19,6 +19,13 @@ watch(current_room_id, async (newRoomId) => {
     console.log('Room changed')
     await fetchMessages(newRoomId)
   }
+})
+
+const userAvatar = computed(() => {
+  return (
+    rooms.value.find((r) => r.id == current_room_id.value)?.receiver.avatar ||
+    ''
+  )
 })
 
 const roomFromReceiver = (senderId: string) => {
@@ -114,20 +121,34 @@ async function sendMessage(message: string) {
 </script>
 
 <template>
-  <div class="flex" style="height: calc(100vh - var(--navbar-height))">
-    <ChatRooms
-      v-model="current_room_id"
-      :rooms="rooms"
-      class="h-full"
-      @add-room="addRoom"
-    />
+  <div style="height: calc(100vh - var(--navbar-height))">
+    <div class="block h-full w-full md:flex">
+      <ChatRooms
+        v-model="current_room_id"
+        :rooms="rooms"
+        class="hidden h-full md:block"
+        @add-room="addRoom"
+      />
 
-    <ChatMessages
-      class="w-full"
-      :messages="messages"
-      :current-user-id="userID"
-      :current-room-id="current_room_id"
-      @send-message="sendMessage"
-    />
+      <ChatRooms
+        v-show="current_room_id === undefined"
+        v-model="current_room_id"
+        :rooms="rooms"
+        class="block h-full md:hidden"
+        @add-room="addRoom"
+      />
+
+      <ChatMessages
+        v-show="current_room_id !== undefined"
+        class="h-full w-full"
+        :messages="messages"
+        :current-user-id="userID"
+        :current-user-avatar="userAvatar"
+        :current-room-id="current_room_id"
+        :rooms="rooms"
+        @send-message="sendMessage"
+        @back="current_room_id = undefined"
+      />
+    </div>
   </div>
 </template>

@@ -34,6 +34,7 @@ function addRoom() {
 
   if (!receiver_id) {
     $toast.error('User not found')
+    closeModal()
     return
   }
 
@@ -52,7 +53,7 @@ const searchRooms = computed(() => {
   <div class="flex flex-col p-2">
     <header>
       <div class="flex justify-between gap-4">
-        <label class="input input-bordered flex items-center gap-2">
+        <label class="input input-bordered flex flex-1 items-center gap-2">
           <input
             v-model="search"
             type="text"
@@ -97,7 +98,7 @@ const searchRooms = computed(() => {
         </div>
       </div>
 
-      <dialog ref="room_adder_modal" class="modal">
+      <dialog ref="room_adder_modal" class="modal modal-top md:modal-middle">
         <div class="modal-box">
           <h3 class="text-lg font-bold">Add room:</h3>
           <div class="mt-5 flex justify-between gap-2">
