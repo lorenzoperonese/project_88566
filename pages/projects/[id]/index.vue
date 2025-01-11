@@ -266,15 +266,20 @@ onMounted(async () => {
   async function allUsers() {
     let users = []
 
-    let me = await getME()
-    users.push(me)
-
     project.guests.waiting.forEach((user) => {
       users.push(user)
     })
     project.guests.accepted.forEach((user) => {
       users.push(user)
     })
+
+    try {
+      const allUsers = await fetch('/api/users').then((res) => res.json())
+      users.push(allUsers.find((user) => user.id === project.user_id))
+    } catch (error) {
+      console.error(error)
+      showError('Could not fetch users')
+    }
 
     return users
   }
