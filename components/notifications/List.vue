@@ -66,7 +66,7 @@ async function readNotification(id: string) {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div class="overflow-x-hidden">
     <ul class="flex flex-col gap-2">
       <div
         v-for="n in _notifications_unread"
