@@ -154,7 +154,7 @@ function delTodo(t: NoteTodo) {
             class="flex flex-wrap justify-evenly gap-2 border-b border-b-neutral-800 last:border-none"
           >
             <input
-              class="input input-sm text-xs md:input-md placeholder:text-gray-600"
+              class="input input-sm flex-1 text-xs md:input-md placeholder:text-gray-600"
               type="text"
               placeholder="Todo..."
               v-model="t.title"
