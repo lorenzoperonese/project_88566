@@ -779,7 +779,7 @@ function dispatchEvent() {
 
         <div
           id="color-legend"
-          class="grid grid-cols-2 gap-2 md:grid-cols-7"
+          class="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7"
         ></div>
       </div>
     </div>
