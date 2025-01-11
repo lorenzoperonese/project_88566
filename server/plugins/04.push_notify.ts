@@ -42,12 +42,9 @@ async function notificatorManager() {
 }
 
 async function notificatorWorker(notificator: Notificator) {
-  console.log('Notificator worker')
   const today = await getNowTime()
   const events = await getAllEvents(today)
-  console.log('Events:', events)
   const ns = notificator.processEvents(events, today)
-  console.log('NS: ', ns)
 
   for (const n of ns) {
     await sendPushNotification(n)
