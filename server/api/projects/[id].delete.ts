@@ -6,6 +6,35 @@ export default defineEventHandler(async (event) => {
     // Get project ID from request path
     const id = getRouterParam(event, 'id')
 
+    if (!id) {
+      setResponseStatus(event, 400)
+      return
+    }
+
+    let fp = await Project.findById(id)
+
+    if (!fp) {
+      setResponseStatus(event, 404)
+      return
+    }
+
+    if (
+      fp.user_id.toString() !== event.context.auth.id &&
+      fp.guests.accepted.length > 0 &&
+      !fp.guests.accepted.includes(event.context.auth.id)
+    ) {
+      setResponseStatus(event, 403)
+      return
+    }
+
+    if (fp.user_id.toString() !== event.context.auth.id) {
+      await Project.updateOne(
+        { _id: id },
+        { $pull: { 'guests.accepted': event.context.auth.id } }
+      )
+      return { message: 'Guest removed' }
+    }
+
     // Find project by ID
     let p = await Project.findOneAndDelete({
       _id: id,

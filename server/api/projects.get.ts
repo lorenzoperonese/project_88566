@@ -16,7 +16,6 @@ export default defineEventHandler(async (event): Promise<Project[]> => {
     const projects = await Project.find({
       $or: [
         { user_id: event.context.auth.id },
-        { 'guests.waiting': event.context.auth.id },
         { 'guests.accepted': event.context.auth.id }
       ]
     })

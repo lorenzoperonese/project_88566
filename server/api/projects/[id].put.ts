@@ -48,6 +48,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    if (og.user_id.toString() !== event.context.auth.id) {
+      throw createError({
+        statusCode: 403,
+        message: 'You are not the owner of this project'
+      })
+    }
+
     og.title = body.title
     og.description = body.description
 
@@ -115,8 +122,6 @@ export default defineEventHandler(async (event) => {
         )
       }
     }
-
-    console.log(og)
 
     await Project.findOneAndUpdate(
       {
