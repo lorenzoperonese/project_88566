@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const session = ref<User | null>(null)
 
+const { $toast } = useNuxtApp()
+
 fetch('/api/session')
   .then((response) => {
     if (!response.ok) {
@@ -19,6 +21,26 @@ fetch('/api/session')
   })
 
 const avatar = ref('Aidan')
+const passwd = ref('')
+
+async function updatePassword() {
+  if (!passwd.value) {
+    $toast.error('Password cannot be empty')
+    return
+  }
+
+  try {
+    await $fetch('/api/password', {
+      method: 'PUT',
+      body: JSON.stringify({ password: passwd.value })
+    })
+    $toast.success('Password updated')
+  } catch (e) {
+    console.error(e)
+    $toast.error('Failed to update password')
+    return
+  }
+}
 </script>
 
 <template>
@@ -31,6 +53,25 @@ const avatar = ref('Aidan')
       <div>
         <span> Username: </span>
         <span class="text-lg font-bold"> {{ session.username }} </span>
+      </div>
+
+      <div class="form-control">
+        <div class="label">
+          <span class="label-text"> Change password </span>
+        </div>
+        <div class="flex justify-between gap-2">
+          <input
+            v-model="passwd"
+            type="password"
+            class="input input-sm input-bordered flex-1 md:input-md"
+          />
+          <button
+            class="btn btn-primary btn-sm md:btn-md"
+            @click="updatePassword"
+          >
+            Change
+          </button>
+        </div>
       </div>
 
       <div class="flex gap-4">
