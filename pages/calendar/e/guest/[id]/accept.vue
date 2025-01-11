@@ -26,7 +26,7 @@ function rejectEvent() {
 </script>
 
 <template>
-  <div v-if="_eventGuest">
+  <div v-if="_eventGuest" class="w-full max-w-md">
     <CalendarShowEvent :event="_eventGuest" />
     <button class="btn btn-error w-full" @click="rejectEvent">Reject</button>
     <button class="btn btn-success w-full" @click="acceptEvent">Accept</button>

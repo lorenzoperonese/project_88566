@@ -142,8 +142,8 @@ export default defineEventHandler(async (event) => {
 
     guestChanges.waiting.added.forEach((user: User) => {
       sendNotification(
-        'You have been invited to an event',
-        `${body.title}, ${new Date(body.start).toLocaleDateString()}`,
+        'Event invitation',
+        `You have been invited to a new event: ${body.title}, ${new Date(body.start).toLocaleDateString()}`,
         user.id,
         'event-invited',
         id

@@ -161,37 +161,16 @@ watch(wsState.notifications, updatePending)
     </div>
 
     <div class="col-start-3 flex justify-end">
-      <div class="dropdown dropdown-left dropdown-bottom">
-        <button class="btn btn-circle btn-ghost">
-          <div class="indicator">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-            <span
-              v-show="pending != 0"
-              class="badge indicator-item badge-primary badge-xs"
-            ></span>
-          </div>
-        </button>
-
-        <div
-          tabindex="0"
-          class="menu dropdown-content menu-sm z-[1] mt-3 max-h-96 w-96 overflow-y-auto rounded-box bg-base-300 p-2 shadow"
-        >
-          <NotificationsList @update="updatePending" />
-        </div>
-      </div>
+      <NotificationsDropdown
+        class="hidden md:block"
+        :pending="pending"
+        @update="updatePending"
+      />
+      <NotificationsModal
+        class="block md:hidden"
+        :pending="pending"
+        @update="updatePending"
+      />
 
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">

@@ -105,8 +105,8 @@ export default defineEventHandler(async (event) => {
 
     const notificationPromises = body.guests.waiting.map((user: User) =>
       sendNotification(
-        `You have been invited to an event by ${sender.username}`,
-        `${newEvent.title}, ${new Date(newEvent.start).toLocaleDateString()}`,
+        `Event invitation`,
+        `You have been invited to an event by ${sender.username}: ${newEvent.title}, ${new Date(newEvent.start).toLocaleDateString()}`,
         user.id,
         'event-invited',
         newEvent.id

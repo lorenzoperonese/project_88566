@@ -47,10 +47,10 @@ export default defineEventHandler(async (event) => {
     for (const user of body.users) {
       sendNotification(
         'Task created',
-        `Task "${body.title}" has been created`,
+        `You have been added to task: "${body.title}"`,
         user,
-        'basic',
-        undefined
+        'task-created',
+        e.id
       )
     }
 

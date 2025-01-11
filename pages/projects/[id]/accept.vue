@@ -1,4 +1,8 @@
 <script setup lang="js">
+definePageMeta({
+  layout: 'navbar'
+})
+
 const $route = useRoute()
 onMounted(async () => {
   let project = {}
@@ -63,7 +67,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 p-2">
+  <div class="flex w-full max-w-md flex-col gap-2 p-2">
     <div>
       <h1 id="title" class="text-2xl font-bold"></h1>
       <p id="description"></p>
@@ -77,9 +81,9 @@ onMounted(async () => {
         <ul id="guests-accepted"></ul>
       </div>
     </div>
-    <div>
-      <button class="btn btn-success w-full" id="btn-accept">Accept</button>
-      <button class="btn btn-error w-full" id="btn-reject">Reject</button>
+    <div class="flex justify-evenly">
+      <button class="btn btn-success w-2/5" id="btn-accept">Accept</button>
+      <button class="btn btn-error w-2/5" id="btn-reject">Reject</button>
     </div>
   </div>
 </template>

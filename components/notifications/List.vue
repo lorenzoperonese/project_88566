@@ -32,6 +32,9 @@ function notificationLink(
     case 'event-invited':
       navigateTo(`/calendar/e/guest/${identifier}/accept`)
       break
+    case 'task-created':
+      navigateTo(`/calendar/t/${identifier}`)
+      break
     case 'project-invited':
       navigateTo(`/projects/${identifier}/accept`)
       break
@@ -63,15 +66,25 @@ async function readNotification(id: string) {
 </script>
 
 <template>
-  <div>
+  <div class="overflow-hidden">
     <ul class="flex flex-col gap-2">
-      <div v-for="n in _notifications_unread" :key="n.id" class="flex">
-        <li @click="notificationLink(n.id, n.type, n.identifier)">
-          <a class="flex flex-col" :class="{ 'opacity-70': n.read }">
-            <div class="w-full text-left font-bold">
+      <div
+        v-for="n in _notifications_unread"
+        :key="n.id"
+        class="flex justify-between"
+      >
+        <li
+          @click="notificationLink(n.id, n.type, n.identifier)"
+          class="flex-1"
+        >
+          <a
+            class="flex max-w-64 flex-col md:max-w-72"
+            :class="{ 'opacity-70': n.read }"
+          >
+            <div class="w-full truncate text-left font-bold">
               {{ n.title }}
             </div>
-            <div class="w-full text-left">
+            <div class="w-full truncate text-left">
               {{ n.body }}
             </div>
           </a>
@@ -96,12 +109,9 @@ async function readNotification(id: string) {
         </li>
       </div>
 
-      <div
-        v-show="_notifications_unread.length == 0"
-        class="flex justify-center p-2"
-      >
+      <li v-show="_notifications_unread.length == 0" class="p-2 text-center">
         Inbox empty
-      </div>
+      </li>
     </ul>
   </div>
 </template>
