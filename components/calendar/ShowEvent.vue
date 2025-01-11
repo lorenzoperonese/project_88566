@@ -188,7 +188,7 @@ function notifyMessage(n: Notify[]) {
       </div>
     </div>
 
-    <div class="card-actions mt-4 justify-end">
+    <div class="card-actions mt-4 justify-start">
       <CalendarAddToCalendar :event="event" />
     </div>
   </div>

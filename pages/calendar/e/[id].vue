@@ -19,7 +19,7 @@ const editMode = ref(false)
 
 <template>
   <div v-if="_event" class="max-w-md p-2">
-    <div v-if="!editMode">
+    <div v-if="!editMode" class="flex flex-col gap-2">
       <CalendarShowEvent :event="_event" />
       <button class="btn btn-primary w-full" @click="editMode = true">
         Edit
