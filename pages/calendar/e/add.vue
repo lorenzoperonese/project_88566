@@ -26,5 +26,6 @@ const _event: EventType = {
     :event="_event"
     :is-event-new="true"
     @close="navigateTo({ name: 'calendar' })"
+    class="w-full max-w-md p-2"
   />
 </template>

@@ -22,6 +22,8 @@ const { data: resources } = await useFetch<Resource[]>('/api/resources')
 const { data: _notAvailable } =
   await useFetch<NotAvailable[]>('/api/not-available')
 
+const me = await getME()
+
 const _showRepetition = ref(false)
 const _showNotifications = ref(false)
 const _repetitionSummary = ref('')
@@ -239,13 +241,25 @@ function addNotifications(n: Notify[] | null) {
 function addGuest(g: string) {
   if (g.length == 0) return
   _guest.value = ''
+
   if (!_users.value) {
     $toast.error('User not found')
     return
   }
+
+  if (g.trim() === me.username) {
+    $toast.error('You cannot invite yourself')
+    return
+  }
+
   const user = _users.value.filter((u) => u.username === g)[0]
   if (!user) {
     $toast.error('User not found')
+    return
+  }
+
+  if (_guestsWaiting.value.filter((u) => u.username === g).length > 0) {
+    $toast.error('Username already added')
     return
   }
 

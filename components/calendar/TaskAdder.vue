@@ -104,6 +104,11 @@ function addGuest() {
     return
   }
 
+  if (_guest.value == me.username) {
+    $toast.error('You cannot add yourself')
+    return
+  }
+
   const user = _users.value.filter((u) => u.username === _guest.value)[0]
   if (!user) {
     $toast.error('User not found')

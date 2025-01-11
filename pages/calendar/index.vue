@@ -456,7 +456,7 @@ useSwipe(swipeEl, {
         </div>
         <ul
           tabindex="0"
-          class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow"
+          class="menu dropdown-content z-[1] rounded-box bg-base-300 p-2 shadow *:text-xs md:w-52 md:*:text-base"
         >
           <li><a @click="addEvent"> Event </a></li>
           <li><a @click="addTask"> Task </a></li>
