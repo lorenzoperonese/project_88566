@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { data: _users } = await useFetch<User[]>('/api/users')
+const me = await getME()
 
 const { $toast } = useNuxtApp()
 
@@ -39,11 +40,22 @@ function addGuest() {
     return
   }
 
+  if (guest.value === me.username) {
+    $toast.error('You cannot add yourself')
+    return
+  }
+
   guests.value.push(guest.value)
   guestsIDs.value.push(
     _users.value.filter((u) => u.username === guest.value)[0].id
   )
   guest.value = ''
+}
+
+function removedGuest(g: string) {
+  const index = guests.value.indexOf(g)
+  guests.value.splice(index, 1)
+  guestsIDs.value.splice(index, 1)
 }
 
 const modal = useTemplateRef('note-modal')
@@ -82,7 +94,36 @@ function save() {
             <div>
               <h4 class="text-lg font-bold">Guests</h4>
               <ul class="list-disc">
-                <li v-for="g in guests" :key="g">{{ g }}</li>
+                <li
+                  v-for="g in guests"
+                  :key="g"
+                  class="flex items-center gap-2"
+                >
+                  <button
+                    class="btn btn-circle btn-error btn-xs"
+                    @click="removedGuest(g)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                  <div class="flex items-center">
+                    <div>
+                      {{ g }}
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
             <div class="flex gap-2">
@@ -92,13 +133,15 @@ function save() {
                 class="input input-bordered"
                 v-model="guest"
               />
-              <button class="btn btn-success" @click="addGuest">Add</button>
+              <button class="btn btn-success" @click.prevent="addGuest">
+                Add
+              </button>
             </div>
           </div>
         </div>
 
         <div class="modal-action">
-          <button class="btn" @click="save">Close</button>
+          <button class="btn" @click.prevent="save">Close</button>
         </div>
       </div>
     </dialog>
