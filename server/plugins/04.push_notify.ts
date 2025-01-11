@@ -18,7 +18,7 @@ export default defineNitroPlugin(async () => {
   console.log('Keys: ', config.PUSH_PUBLIC_KEY, config.PUSH_KEY)
 
   webpush.setVapidDetails(
-    `https:http://localhost:3000/contacts`,
+    `https:https://site232417.tw.cs.unibo.it/contacts`,
     config.PUSH_PUBLIC_KEY as string,
     config.PUSH_KEY as string
   )

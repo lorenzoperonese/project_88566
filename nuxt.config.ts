@@ -11,8 +11,12 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     DB_URL: process.env.MONGO_URL,
+    PUSH_KEY: process.env.PUSH_KEY,
     PUSH_PUBLIC_KEY: process.env.PUSH_PUBLIC_KEY,
-    PUSH_KEY: process.env.PUSH_KEY
+
+    public: {
+      pushPublicKey: process.env.PUSH_PUBLIC_KEY
+    }
   },
   typescript: {
     typeCheck: true

@@ -9,17 +9,16 @@ function urlB64ToUint8Array(base64String: string): Uint8Array {
   return outputArray
 }
 
-const applicationServerKey = urlB64ToUint8Array(
-  'BJ50dYyaHqkf3WY_z3ivPl94JzHT32bF4gkpTNUhisQVhjrTEx0-Dpa78fMje7PMwyKnLeZ5nHulhMRkPUTopmQ'
-)
-
 export default defineNuxtPlugin(async () => {
+  const config = useRuntimeConfig()
+  const publicKey = config.public.pushPublicKey as string
+
   const registerServiceWorker = async () => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       const registration = await navigator.serviceWorker.register('/worker.js')
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: applicationServerKey
+        applicationServerKey: urlB64ToUint8Array(publicKey)
       })
 
       // Invia la subscription al backend

@@ -79,8 +79,7 @@ export async function sendPushNotification(notification: PushNotification) {
           })
         )
       } catch (err) {
-        // Avoid errors when notifictions options are old and webpush
-        // returns "Received unexpected response code"
+        console.error('Error sending push notification: ', err)
       }
     }
   }
