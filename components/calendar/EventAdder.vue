@@ -292,7 +292,7 @@ function addGuest(g: string) {
           v-model="_title"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full max-w-xs"
+          class="input input-bordered w-full max-w-md"
           required
         />
       </div>

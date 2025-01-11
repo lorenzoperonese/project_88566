@@ -14,6 +14,32 @@ const isInPast = computed(() => {
     return false
   }
 })
+
+const timeFrame = computed(() => {
+  if (
+    $props.event.end - $props.event.start <= 24 * 60 * 60 * 1000 ||
+    $props.displayDate === undefined
+  ) {
+    return `${formatTime($props.event.start)} - ${formatTime($props.event.end)}`
+  }
+
+  if (
+    !(
+      isToday(new Date($props.event.start), $props.displayDate) ||
+      isToday(new Date($props.event.end), $props.displayDate)
+    )
+  ) {
+    return 'All day'
+  }
+
+  if (isToday(new Date($props.event.start), $props.displayDate)) {
+    return `${formatTime($props.event.start)} - 23:59`
+  } else if (isToday(new Date($props.event.end), $props.displayDate)) {
+    return `00:00 - ${formatTime($props.event.end)}`
+  }
+
+  return `${formatTime($props.event.start)} - ${formatTime($props.event.end)}`
+})
 </script>
 
 <template>
@@ -28,7 +54,7 @@ const isInPast = computed(() => {
         {{ event.title }}
       </div>
       <div :class="{ 'hidden md:block': $props.isResponsive }">
-        <div>{{ formatTime(event.start) }} - {{ formatTime(event.end) }}</div>
+        <div>{{ timeFrame }}</div>
         <div
           :class="{ 'hidden lg:block': $props.isResponsive }"
           class="overflow-x-clip"
