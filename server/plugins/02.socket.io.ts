@@ -7,7 +7,7 @@ import {
   getReceiverFromRoom,
   sendChatMessage
 } from '@/server/utils/chat'
-import { throws } from 'assert'
+import { User } from '@/server/db'
 
 // Create a global io instance
 let globalIo: Server
@@ -50,7 +50,22 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
         let receiver_id = await getReceiverFromRoom(message.roomId)
 
-        io.to(receiver_id).emit('chat_message', message)
+        if (authSockets.has(receiver_id)) {
+          io.to(receiver_id).emit('chat_message', message)
+        } else {
+          let u = await User.findOne({ _id: receiver_id })
+          if (!u) throw new Error('User not found')
+
+          const p = {
+            id: '0',
+            title: `Chat ${u.username}`,
+            body: message.content,
+            users: [receiver_id],
+            event_id: ''
+          } as PushNotification
+
+          sendPushNotification(p)
+        }
       } catch (e) {
         console.error('Sending chat message:', e)
         callback({ type: 'error', message: 'Cannot send message' })
