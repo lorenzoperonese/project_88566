@@ -36,11 +36,20 @@ export async function sendNotification(
     // Internal site notification
     await notification.save()
 
+    const n = {
+      id: notification.id,
+      title: notification.title,
+      body: notification.body,
+      type: notification.type,
+      users: [user.id],
+      event_id: ''
+    } as PushNotification
+
     // Websocket notification
-    getIo().to(user.id.toString()).emit('notification', notification)
+    getIo().to(user.id.toString()).emit('notification', n)
 
     // Push notification
-    await sendPushNotification(user.id.toString())
+    await sendPushNotification(n)
   } catch (e) {
     console.error('Saving notification: ', e)
   }
