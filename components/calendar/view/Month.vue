@@ -33,10 +33,12 @@ const _days = computed(() => {
   }
 
   let i = 1
-  while (result.length % 7 !== 0) {
+  while (result.length < 42) {
     result.push(i)
     i++
   }
+
+  console.log('days', result)
   return result
 })
 
@@ -98,7 +100,7 @@ const calendar = computed((): CalendarCell[] => {
     </div>
   </div>
   <div
-    class="grid h-full grid-cols-7 overflow-y-clip bg-base-200 md:gap-1 md:p-2"
+    class="grid h-full grid-cols-7 grid-rows-[repeat(6,1fr)] overflow-y-clip bg-base-200 md:gap-1 md:p-2"
   >
     <div
       v-for="c in calendar"
