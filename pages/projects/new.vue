@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2">
+  <div class="w-full max-w-md p-2">
     <h1 class="text-xl font-bold" id="main-title">Add Project</h1>
     <form class="mt-4 flex flex-col gap-4" onsubmit="event.preventDefault()">
       <div>
@@ -7,7 +7,7 @@
         <input
           type="text"
           id="title"
-          class="input input-bordered"
+          class="input input-bordered w-full"
           placeholder="Title"
         />
       </div>
@@ -16,33 +16,31 @@
         <label for="description" class="label">Description</label>
         <textarea
           id="description"
-          class="textarea textarea-bordered w-96"
+          class="textarea textarea-bordered w-full"
           placeholder="Description"
         ></textarea>
       </div>
 
-      <div class="flex w-96 flex-col gap-2">
+      <div class="flex flex-col gap-2">
         <div class="font-lg font-bold">Guests</div>
         <div id="guest-list" class="flex flex-col gap-2"></div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between gap-2">
           <input
             type="text"
             id="guest"
-            class="input input-bordered"
+            class="input input-bordered w-full"
             placeholder="Guest"
           />
-          <button id="add-guest" class="btn btn-outline btn-secondary">
-            Add
-          </button>
+          <button id="add-guest" class="btn btn-outline btn-info">Add</button>
         </div>
       </div>
 
       <div id="error" class="text-error"></div>
 
-      <div class="flex justify-evenly">
-        <NuxtLink to="/projects" class="btn btn-neutral w-1/2">Close</NuxtLink>
-        <button id="btn-save" class="btn btn-primary w-1/2">Save</button>
+      <div class="flex justify-evenly gap-2">
+        <NuxtLink to="/projects" class="btn btn-neutral w-2/5">Close</NuxtLink>
+        <button id="btn-save" class="btn btn-success w-2/5">Save</button>
       </div>
     </form>
   </div>
@@ -59,6 +57,9 @@ let editing = false
 if (query.edit !== undefined) {
   editing = true
 }
+
+const { data: _users } = await useFetch('/api/users')
+const me = await getME()
 
 // In order to simulate a real script, we need to write everything inside the
 // `onMounted` hook. Outside the onMounted everything is executed before the
@@ -110,6 +111,27 @@ onMounted(async () => {
       return
     }
 
+    if (!_users.value) {
+      $toast.error('User not found')
+      return
+    }
+
+    const user = _users.value.filter((u) => u.username === guest)[0]
+    if (!user) {
+      $toast.error('User not found')
+      return
+    }
+
+    if (guests.includes(user.username)) {
+      $toast.error('Username already added')
+      return
+    }
+
+    if (user.username === me.username) {
+      $toast.error('You cannot add yourself')
+      return
+    }
+
     guests.push(guest)
     listGuests()
     document.getElementById('guest').value = ''
@@ -136,7 +158,7 @@ onMounted(async () => {
       el.innerHTML = `
         <div class="flex justify-between">
           <div class="flex items-center">${guest}</div>
-          <button id="delete-${guest}" class="btn btn-outline btn-error">
+          <button id="delete-${guest}" class="btn btn-outline btn-error btn-sm md:btn-md">
             Delete
           </button>
         </div>
