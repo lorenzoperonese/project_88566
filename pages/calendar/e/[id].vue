@@ -18,7 +18,7 @@ const editMode = ref(false)
 </script>
 
 <template>
-  <div v-if="_event">
+  <div v-if="_event" class="max-w-md p-2">
     <div v-if="!editMode">
       <CalendarShowEvent :event="_event" />
       <button class="btn btn-primary w-full" @click="editMode = true">

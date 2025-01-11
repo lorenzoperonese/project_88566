@@ -70,66 +70,126 @@ function notifyMessage(n: Notify[]) {
 </script>
 
 <template>
-  <div>
-    <div>
-      <div>
-        <div>Title: {{ $props.event.title.toUpperCase() }}</div>
-        <div>
-          Start: {{ formatDate($props.event.start) }}
-          {{ formatTime($props.event.start, true) }}
+  <div class="w-full max-w-md">
+    <h2 class="text-2xl font-bold text-primary">
+      {{ $props.event.title }}
+    </h2>
+
+    <div class="my-4 space-y-2">
+      <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-3 font-medium">
+          <span> Start: </span>
+          <span class="font-bold">
+            {{ formatTime($props.event.start, true) }}
+          </span>
+          <span class="font-bold">
+            {{ formatDate($props.event.start) }}
+          </span>
         </div>
-        <div>
-          End: {{ formatDate($props.event.end) }}
-          {{ formatTime($props.event.end, true) }}
+        <div class="grid grid-cols-3 font-medium">
+          <span> End: </span>
+          <span class="font-bold">
+            {{ formatTime($props.event.end, true) }}
+          </span>
+          <span class="font-bold">
+            {{ formatDate($props.event.end) }}
+          </span>
         </div>
-        <div>
-          Location:
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-3">
+        <div class="font-medium">Location:</div>
+        <div class="font-bold">
           {{ $props.event.location ? $props.event.location : 'unknown' }}
         </div>
-        <div>
-          Notes: {{ $props.event.note ? $props.event.note : 'No notes' }}
-        </div>
-        <div>
-          Category:
+      </div>
+
+      <div class="grid grid-cols-3">
+        <div class="font-medium">Category:</div>
+        <div class="font-bold">
           {{
-            $props.event.category ? $props.event.category : 'Not categotized'
+            $props.event.category ? $props.event.category : 'Not categorized'
           }}
         </div>
-        <div>
-          Resource: {{ $props.event.resource ? $props.event.resource : 'None' }}
+      </div>
+
+      <div class="grid grid-cols-3">
+        <div class="font-medium">Resource</div>
+        <div class="font-bold">
+          {{ $props.event.resource ? $props.event.resource : 'None' }}
         </div>
-        <div>
-          Repetition:
+      </div>
+
+      <div class="grid grid-cols-3">
+        <div class="font-medium">Repetition</div>
+        <div class="font-bold">
           {{
             $props.event.repetition
               ? repetitionMessage($props.event.repetition)
               : 'No'
           }}
         </div>
-        <div>
-          Notify:
-          {{
-            $props.event.notify.length > 0
-              ? notifyMessage($props.event.notify)
-              : 'No'
-          }}
+      </div>
+    </div>
+
+    <div class="mt-4 rounded-lg bg-base-200 p-4">
+      <div class="mb-2 font-medium text-gray-600">Notes</div>
+      <div class="text-sm">
+        {{ $props.event.note ? $props.event.note : 'No notes' }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="mb-2 font-medium">Notifications</div>
+      <div class="badge badge-secondary badge-outline badge-lg">
+        {{
+          $props.event.notify.length > 0
+            ? notifyMessage($props.event.notify)
+            : 'No notifications'
+        }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="mb-2 font-medium">Guests</div>
+      <div class="flex flex-col gap-2">
+        <div class="flex flex-wrap gap-2">
+          <span class="font-medium text-warning">Waiting:</span>
+          <div class="flex flex-wrap items-center gap-1">
+            <template v-if="$props.event.guests.waiting.length > 0">
+              <span
+                v-for="guest in $props.event.guests.waiting"
+                :key="guest.username"
+                class="badge badge-warning badge-sm"
+              >
+                {{ guest.username }}
+              </span>
+            </template>
+            <span v-else class="text-sm opacity-70">None</span>
+          </div>
         </div>
-        <div>
-          Guests: waiting:
-          {{
-            $props.event.guests.waiting.length > 0
-              ? $props.event.guests.waiting.map((g) => g.username).join(', ')
-              : 'None'
-          }}
-          accepted:
-          {{
-            $props.event.guests.accepted.length > 0
-              ? $props.event.guests.accepted.map((g) => g.username).join(', ')
-              : 'No'
-          }}
+        <div class="flex flex-wrap gap-2">
+          <span class="font-medium text-success">Accepted:</span>
+          <div class="flex flex-wrap items-center gap-1">
+            <template v-if="$props.event.guests.accepted.length > 0">
+              <span
+                v-for="guest in $props.event.guests.accepted"
+                :key="guest.username"
+                class="badge badge-success badge-sm"
+              >
+                {{ guest.username }}
+              </span>
+            </template>
+            <span v-else class="text-sm opacity-70">None</span>
+          </div>
         </div>
       </div>
     </div>
-    <CalendarAddToCalendar :event="event" />
+
+    <div class="card-actions mt-4 justify-end">
+      <CalendarAddToCalendar :event="event" />
+    </div>
   </div>
 </template>

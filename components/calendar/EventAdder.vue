@@ -291,8 +291,8 @@ function addGuest(g: string) {
         <input
           v-model="_title"
           type="text"
-          placeholder="Type here"
-          class="input input-bordered w-full max-w-md"
+          placeholder="Title"
+          class="input input-bordered w-full max-w-md placeholder:text-gray-600"
           required
         />
       </div>
@@ -317,7 +317,12 @@ function addGuest(g: string) {
         <div class="label">
           <label class="label-text">Location</label>
         </div>
-        <input v-model="_location" class="input input-bordered" type="string" />
+        <input
+          v-model="_location"
+          class="input input-bordered placeholder:text-gray-600"
+          type="string"
+          placeholder="Location"
+        />
       </div>
 
       <div class="form-control">
@@ -326,7 +331,7 @@ function addGuest(g: string) {
         </div>
         <textarea
           v-model="_note"
-          class="textarea textarea-bordered w-full"
+          class="textarea textarea-bordered w-full placeholder:text-gray-600"
           placeholder="Bio"
         ></textarea>
       </div>
@@ -351,7 +356,7 @@ function addGuest(g: string) {
       </div>
 
       <div v-if="!modal">
-        <div>
+        <div class="flex flex-col gap-2">
           <CalendarRepetition
             :start-day="_startDate"
             :end-day="_endDate"
@@ -370,90 +375,52 @@ function addGuest(g: string) {
           <pre>{{ _notificationsSummary }}</pre>
         </div>
 
-        <div class="flex">
-          <div class="form-control w-full">
-            <div class="label">
-              <label class="label-text">Guests</label>
-            </div>
-            <div class="flex gap-2">
-              <input
-                v-model="_guest"
-                type="text"
-                class="input input-bordered flex-1"
-              />
-              <div class="flex items-center">
-                <button
-                  class="btn btn-circle btn-info btn-sm"
-                  @click="addGuest(_guest)"
-                >
-                  <svg
-                    class="h-5 w-5 opacity-70"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+        <div class="flex flex-col gap-2">
+          <div class="flex">
+            <div class="form-control w-full">
+              <div class="label">
+                <label class="label-text">Guests</label>
+              </div>
+              <div class="flex gap-2">
+                <input
+                  v-model="_guest"
+                  type="text"
+                  class="input input-sm input-bordered flex-1 md:input-md"
+                />
+                <div class="flex items-center">
+                  <button
+                    class="btn btn-info btn-sm md:btn-md"
+                    @click="addGuest(_guest)"
                   >
-                    <path stroke="none" d="M0 0h24v24H0z" />
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div v-for="(g, index) in _guestsAccepted" :key="index">
-          <div class="items flex">
-            <span>{{ g.username }}</span>
-            <button
-              class="btn btn-circle btn-error btn-sm"
-              @click="_guestsAccepted.splice(_guestsAccepted.indexOf(g), 1)"
-            >
-              <svg
-                class="h-5 w-5 opacity-70"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+
+          <div v-for="(g, index) in _guestsAccepted" :key="index">
+            <div class="items flex items-center justify-between">
+              <span>{{ g.username }}</span>
+              <button
+                class="btn btn-outline btn-error btn-sm"
+                @click="_guestsAccepted.splice(_guestsAccepted.indexOf(g), 1)"
               >
-                <path stroke="none" d="M0 0h24v24H0z" />
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
-        <div v-for="(g, index) in _guestsWaiting" :key="index">
-          <div class="items flex">
-            <span class="text-yellow-400">{{ g.username }}</span>
-            <button
-              class="btn btn-circle btn-error btn-sm"
-              @click="_guestsWaiting.splice(_guestsWaiting.indexOf(g), 1)"
-            >
-              <svg
-                class="h-5 w-5 opacity-70"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+
+          <div v-for="(g, index) in _guestsWaiting" :key="index">
+            <div class="items flex items-center justify-between">
+              <span class="text-yellow-400">{{ g.username }}</span>
+              <button
+                class="btn btn-outline btn-error btn-sm"
+                @click="_guestsWaiting.splice(_guestsWaiting.indexOf(g), 1)"
               >
-                <path stroke="none" d="M0 0h24v24H0z" />
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>

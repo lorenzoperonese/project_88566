@@ -26,9 +26,21 @@ function rejectEvent() {
 </script>
 
 <template>
-  <div v-if="_eventGuest" class="w-full max-w-md">
-    <CalendarShowEvent :event="_eventGuest" />
-    <button class="btn btn-error w-full" @click="rejectEvent">Reject</button>
-    <button class="btn btn-success w-full" @click="acceptEvent">Accept</button>
+  <div class="w-full max-w-md p-2">
+    <div v-if="_eventGuest" class="">
+      <CalendarShowEvent :event="_eventGuest" />
+      <div class="flex justify-evenly">
+        <button class="btn btn-error w-2/5" @click="rejectEvent">Reject</button>
+        <button class="btn btn-success w-2/5" @click="acceptEvent">
+          Accept
+        </button>
+      </div>
+    </div>
+    <div v-else class="flex flex-col gap-2">
+      <div class="text-xl font-bold text-error">Event not found</div>
+      <NuxtLink to="/calendar" class="btn btn-primary w-full"
+        >Back to calendar</NuxtLink
+      >
+    </div>
   </div>
 </template>

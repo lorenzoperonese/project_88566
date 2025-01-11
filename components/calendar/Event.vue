@@ -16,8 +16,10 @@ const isInPast = computed(() => {
 })
 
 const timeFrame = computed(() => {
+  const s = new Date($props.event.start)
+  const e = new Date($props.event.end)
   if (
-    $props.event.end - $props.event.start <= 24 * 60 * 60 * 1000 ||
+    isToday(new Date(s.setHours(0, 0, 0)), new Date(e.setHours(0, 0, 0))) ||
     $props.displayDate === undefined
   ) {
     return `${formatTime($props.event.start)} - ${formatTime($props.event.end)}`

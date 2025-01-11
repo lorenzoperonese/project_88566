@@ -12,7 +12,7 @@ const _eventGuest = await $fetch(`/api/events-guest/${_id}`, {
 </script>
 
 <template>
-  <div v-if="_eventGuest">
+  <div v-if="_eventGuest" class="p-2">
     <CalendarShowEvent :event="_eventGuest" />
     <div>Cannot edit guest events</div>
   </div>
