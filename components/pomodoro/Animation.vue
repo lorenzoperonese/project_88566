@@ -87,7 +87,7 @@ const sauceState = computed(() => ({
   position: absolute;
   top: 40px;
   left: 20px;
-  width: 100px;
+  width: 108px;
   height: 60px;
   border: 4px solid #8b4513;
   border-radius: 0 0 50% 50%;
@@ -96,10 +96,10 @@ const sauceState = computed(() => ({
 
 .jar {
   position: absolute;
-  bottom: 0;
+  bottom: 60px;
   right: 40px;
   width: 140px;
-  height: 200px;
+  height: 160px;
   background: transparent;
   border: 6px solid #ccc;
   border-radius: 10px;
@@ -165,7 +165,7 @@ const sauceState = computed(() => ({
 }
 
 .tomato4 {
-  left: 60px;
+  left: 65px;
 }
 
 @keyframes rollTomato {
