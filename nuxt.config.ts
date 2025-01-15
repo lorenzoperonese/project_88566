@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@sidebase/nuxt-auth',
     '@nuxtjs/mdc',
-    '@vueuse/nuxt',
+    '@vite-pwa/nuxt',
     '@vueuse/nuxt'
   ],
   runtimeConfig: {
@@ -79,6 +79,27 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
+    }
+  },
+  pwa: {
+    manifest: {
+      name: 'Selfie',
+      description: 'Calendar, Notes, Chat and more in one app',
+      theme_color: '#4DBA87',
+      icons: [
+        {
+          src: './public/favicon.png',
+          sizes: '32x32',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/'
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
     }
   }
 })

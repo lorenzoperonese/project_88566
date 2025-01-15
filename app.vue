@@ -19,6 +19,7 @@ if (window.Notification.permission === 'granted') {
 </script>
 
 <template>
+  <NuxtPwaManifest />
   <div class="h-full">
     <NuxtLayout>
       <NuxtPage />
