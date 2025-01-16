@@ -279,12 +279,12 @@ function addGuest(g: string) {
 </script>
 
 <template>
-  <div class="">
+  <div v-if="modal">
     <h1 class="text-xl font-bold">
-      {{ $props.event ? 'Modify event' : 'Add event' }}
+      {{ $props.isEventNew ? 'Add event' : 'Modify event' }}
     </h1>
-    <form class="flex flex-col gap-2" @submit.prevent="">
-      <div class="form-control">
+    <form class="mt-4 flex flex-col gap-2" @submit.prevent="">
+      <div class="form-control flex flex-row items-center gap-4">
         <div class="label">
           <label class="label-text">Title</label>
         </div>
@@ -297,20 +297,36 @@ function addGuest(g: string) {
         />
       </div>
 
-      <div class="form-control">
+      <div class="form-control flex flex-row items-center gap-4">
         <div class="label">
           <label class="label-text">Start</label>
         </div>
-        <input v-model="_startDate" class="input input-bordered" type="date" />
-        <input v-model="_startTime" class="input input-bordered" type="time" />
+        <input
+          v-model="_startDate"
+          class="input input-bordered w-full"
+          type="date"
+        />
+        <input
+          v-model="_startTime"
+          class="input input-bordered w-full"
+          type="time"
+        />
       </div>
 
-      <div class="form-control">
+      <div class="form-control flex flex-row items-center gap-4">
         <div class="label">
           <label class="label-text">End</label>
         </div>
-        <input v-model="_endDate" class="input input-bordered" type="date" />
-        <input v-model="_endTime" class="input input-bordered" type="time" />
+        <input
+          v-model="_endDate"
+          class="input input-bordered w-full"
+          type="date"
+        />
+        <input
+          v-model="_endTime"
+          class="input input-bordered w-full"
+          type="time"
+        />
       </div>
 
       <div class="form-control">
@@ -332,7 +348,7 @@ function addGuest(g: string) {
         <textarea
           v-model="_note"
           class="textarea textarea-bordered w-full placeholder:text-gray-600"
-          placeholder="Bio"
+          placeholder="Add any additional details..."
         ></textarea>
       </div>
 
@@ -342,109 +358,8 @@ function addGuest(g: string) {
         </div>
         <input v-model="_category" class="input input-bordered" type="string" />
       </div>
-
-      <div class="form-control">
-        <div class="label">
-          <label class="label-text">Resource</label>
-        </div>
-        <select v-model="_resource" class="select select-bordered">
-          <option value="null">None</option>
-          <option v-for="r in fResourcesList" :value="r.name">
-            {{ r.name }}
-          </option>
-        </select>
-      </div>
-
-      <div v-if="!modal">
-        <div class="flex flex-col gap-2">
-          <CalendarRepetition
-            :start-day="_startDate"
-            :end-day="_endDate"
-            :repetition="_repetition"
-            @save="addRepetition"
-          />
-          <pre>{{ _repetitionSummary }}</pre>
-        </div>
-
-        <div>
-          <CalendarNotification
-            :notifications="_notifications"
-            @close="_showNotifications = false"
-            @save="addNotifications"
-          />
-          <pre>{{ _notificationsSummary }}</pre>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <div class="flex">
-            <div class="form-control w-full">
-              <div class="label">
-                <label class="label-text">Guests</label>
-              </div>
-              <div class="flex gap-2">
-                <input
-                  v-model="_guest"
-                  type="text"
-                  class="input input-sm input-bordered flex-1 md:input-md"
-                />
-                <div class="flex items-center">
-                  <button
-                    class="btn btn-info btn-sm md:btn-md"
-                    @click="addGuest(_guest)"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-for="(g, index) in _guestsAccepted" :key="index">
-            <div class="items flex items-center justify-between">
-              <span>{{ g.username }}</span>
-              <button
-                class="btn btn-outline btn-error btn-sm"
-                @click="_guestsAccepted.splice(_guestsAccepted.indexOf(g), 1)"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-
-          <div v-for="(g, index) in _guestsWaiting" :key="index">
-            <div class="items flex items-center justify-between">
-              <span class="text-yellow-400">{{ g.username }}</span>
-              <button
-                class="btn btn-outline btn-error btn-sm"
-                @click="_guestsWaiting.splice(_guestsWaiting.indexOf(g), 1)"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-evenly">
+      <div class="mt-2 flex flex-row justify-center">
         <NuxtLink
-          v-if="$props.isEventNew && !$props.modal"
-          :to="{ name: 'calendar' }"
-          class="btn btn-neutral w-2/5"
-          @click="close"
-        >
-          Close
-        </NuxtLink>
-
-        <button
-          v-if="!$props.isEventNew && !$props.modal"
-          class="btn btn-error w-2/5"
-          @click="deleteEvent()"
-        >
-          Delete event
-        </button>
-
-        <NuxtLink
-          v-if="modal"
           :to="{
             path: '/calendar/e/add',
             query: {
@@ -465,6 +380,262 @@ function addGuest(g: string) {
 
         <button class="btn btn-success w-2/5" @click="saveEvent()">
           {{ $props.isEventNew ? 'Add event' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </div>
+  <div v-else class="mx-auto mt-4 max-w-7xl rounded-lg bg-base-300 p-8">
+    <h1 class="mb-8 text-center text-3xl font-bold">
+      {{ $props.isEventNew ? 'Add event' : 'Modify Event' }}
+    </h1>
+
+    <form class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8" @submit.prevent="">
+      <!-- Left Column -->
+      <div class="space-y-2">
+        <!-- Title Section -->
+        <div
+          class="flex items-center gap-4 rounded-xl border border-white p-4 shadow-sm"
+        >
+          <label class="whitespace-nowrap text-sm font-semibold"
+            >Event Title</label
+          >
+          <input
+            v-model="_title"
+            type="text"
+            placeholder="Enter a descriptive title"
+            class="input w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+            required
+          />
+        </div>
+
+        <!-- DateTime Section -->
+        <div class="space-y-4 rounded-xl border border-white p-4 shadow-sm">
+          <div class="items-center gap-4 lg:flex">
+            <label class="whitespace-nowrap text-sm font-semibold"
+              >Start Date & Time</label
+            >
+            <div class="flex w-full gap-3">
+              <input
+                v-model="_startDate"
+                type="date"
+                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+              />
+              <input
+                v-model="_startTime"
+                type="time"
+                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+              />
+            </div>
+          </div>
+
+          <div class="items-center gap-4 lg:flex">
+            <label class="whitespace-nowrap text-sm font-semibold"
+              >End Date & Time</label
+            >
+            <div class="flex w-full gap-3">
+              <input
+                v-model="_endDate"
+                type="date"
+                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+              />
+              <input
+                v-model="_endTime"
+                type="time"
+                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="space-y-4 rounded-xl border border-white p-4 shadow-sm">
+          <div class="flex items-center gap-4">
+            <label class="whitespace-nowrap text-sm font-semibold"
+              >Location</label
+            >
+            <input
+              v-model="_location"
+              type="string"
+              placeholder="Add event location"
+              class="input w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+            />
+          </div>
+        </div>
+
+        <!-- Guests -->
+        <div class="w-full rounded-xl border border-white p-4 shadow-sm">
+          <label class="mb-4 block text-sm font-semibold">Guests</label>
+          <div class="flex flex-row items-center gap-2">
+            <!-- Input con dimensione controllata -->
+            <input
+              v-model="_guest"
+              type="text"
+              placeholder="Enter guest name"
+              class="input w-0 flex-grow rounded-lg focus:ring-2 focus:ring-base-300"
+            />
+            <!-- Bottone con dimensioni proporzionate -->
+            <button
+              class="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+              @click="addGuest(_guest)"
+            >
+              Add
+            </button>
+          </div>
+
+          <div class="max-h-48 space-y-2 overflow-y-auto">
+            <div
+              v-for="(g, index) in _guestsAccepted"
+              :key="index"
+              class="flex items-center justify-between rounded-lg border border-emerald-100 bg-emerald-50 p-3"
+            >
+              <span class="font-medium text-emerald-700">{{ g.username }}</span>
+              <button
+                class="text-emerald-600 transition-colors hover:text-red-600"
+                @click="_guestsAccepted.splice(_guestsAccepted.indexOf(g), 1)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div
+              v-for="(g, index) in _guestsWaiting"
+              :key="index"
+              class="flex items-center justify-between rounded-lg border border-amber-100 bg-amber-50 p-3"
+            >
+              <span class="font-medium text-amber-700">{{ g.username }}</span>
+              <button
+                class="text-amber-600 transition-colors hover:text-red-600"
+                @click="_guestsWaiting.splice(_guestsWaiting.indexOf(g), 1)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Repetition -->
+        <div class="rounded-xl border border-white p-4 shadow-sm">
+          <CalendarRepetition
+            :start-day="_startDate"
+            :end-day="_endDate"
+            :repetition="_repetition"
+            @save="addRepetition"
+          />
+          <pre
+            v-if="_repetitionSummary !== ''"
+            class="mt-3 rounded-lg text-center text-sm"
+            >{{ _repetitionSummary }}</pre
+          >
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="mt-2 space-y-2 lg:mt-0">
+        <!-- Category -->
+        <div>
+          <div
+            class="flex items-center gap-4 rounded-xl border border-white p-4 shadow-sm"
+          >
+            <label class="whitespace-nowrap text-sm font-semibold"
+              >Category</label
+            >
+            <input
+              v-model="_category"
+              type="string"
+              placeholder="Event category"
+              class="input w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+            />
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div
+          class="flex items-center gap-4 rounded-xl border border-white p-4 shadow-sm"
+        >
+          <label class="mb-2 block text-sm font-semibold">Notes</label>
+          <textarea
+            v-model="_note"
+            rows="4"
+            placeholder="Add any additional details..."
+            class="textarea h-[13.2rem] w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+          ></textarea>
+        </div>
+
+        <!-- Resource Selection -->
+        <div class="rounded-xl border border-white p-4 shadow-sm">
+          <label class="mb-2 block text-sm font-semibold">Resource</label>
+          <select
+            v-model="_resource"
+            class="select w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
+          >
+            <option value="null">Select a resource</option>
+            <option v-for="r in fResourcesList" :value="r.name">
+              {{ r.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Notifications -->
+        <div class="rounded-xl border border-white p-4 shadow-sm">
+          <CalendarNotification
+            :notifications="_notifications"
+            @close="_showNotifications = false"
+            @save="addNotifications"
+          />
+          <pre
+            v-if="_notificationsSummary !== ''"
+            class="mt-3 rounded-lg text-center text-sm"
+            >{{ _notificationsSummary }}</pre
+          >
+        </div>
+      </div>
+
+      <!-- Footer Actions - Full Width -->
+      <div class="col-span-1 mt-4 flex justify-end gap-4 lg:col-span-2">
+        <NuxtLink
+          v-if="$props.isEventNew"
+          :to="{ name: 'calendar' }"
+          class="rounded-lg border border-gray-200 px-6 py-3 font-medium text-gray-700 hover:bg-gray-50"
+          @click="close"
+        >
+          Cancel
+        </NuxtLink>
+
+        <button
+          v-if="!$props.isEventNew"
+          class="rounded-lg bg-red-500 px-6 py-3 font-medium text-white hover:bg-red-600"
+          @click="deleteEvent()"
+        >
+          Delete Event
+        </button>
+
+        <button
+          class="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
+          @click="saveEvent()"
+        >
+          {{ $props.isEventNew ? 'Create Event' : 'Save Changes' }}
         </button>
       </div>
     </form>

@@ -25,7 +25,7 @@ const _event: EventType = {
   <CalendarEventAdder
     :event="_event"
     :is-event-new="true"
+    :modal="false"
     @close="navigateTo({ name: 'calendar' })"
-    class="w-full max-w-md p-2"
   />
 </template>

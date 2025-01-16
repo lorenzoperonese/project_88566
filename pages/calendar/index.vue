@@ -6,6 +6,8 @@ import {
   CalendarViewTasks
 } from '#components'
 
+import type { SwipeDirection } from '@vueuse/core'
+
 definePageMeta({
   layout: 'navbar'
 })
@@ -247,8 +249,6 @@ function header(): string {
     return `${months[_displayDate.value.getMonth()]} ${_displayDate.value.getFullYear()}`
   }
 }
-
-import type { SwipeDirection } from '@vueuse/core'
 const swipeEl = ref(null)
 useSwipe(swipeEl, {
   onSwipeEnd: (e: TouchEvent, direction: SwipeDirection) => {
@@ -415,10 +415,11 @@ useSwipe(swipeEl, {
     />
 
     <dialog id="modal" ref="modal" class="modal modal-bottom sm:modal-middle">
-      <div class="modal-box">
+      <div class="modal-box w-full">
         <CalendarEventAdder
           v-if="_add_element == 0"
           :modal="true"
+          :is-event-new="true"
           @close="closeModal"
         />
         <CalendarTaskAdder v-if="_add_element == 1" @close="closeModal" />
