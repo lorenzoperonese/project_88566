@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const permission = ref(window.Notification.permission)
+const permission = ref(window.Notification?.permission)
 
 async function enable() {
   try {

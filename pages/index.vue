@@ -22,9 +22,9 @@ watch(updateSettings as any, () => {
   }
 })
 
-const pushPermission = ref(window.Notification.permission)
+const pushPermission = ref(window.Notification?.permission)
 function updatePushPermission() {
-  pushPermission.value = window.Notification.permission
+  pushPermission.value = window.Notification?.permission
 }
 </script>
 

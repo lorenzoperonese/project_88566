@@ -43,7 +43,7 @@ async function login() {
 
     await setThemeFromBackend()
 
-    if (window.Notification.permission === 'granted') {
+    if (window.Notification?.permission === 'granted') {
       try {
         const subscription = await $registerPushNotifications()
         console.log('Registered:', subscription)
