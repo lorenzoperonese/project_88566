@@ -6,6 +6,7 @@ setThemeFromBackend()
 // If we drop the db, all the subscriptions for the notifications will be lost.
 // To partially solve this, if notifications are enabled, we will send the subscription to the server.
 
+/*
 const { $registerPushNotifications } = useNuxtApp()
 
 if (window.Notification.permission === 'granted') {
@@ -16,6 +17,7 @@ if (window.Notification.permission === 'granted') {
     console.error('Failed:', err)
   }
 }
+*/
 </script>
 
 <template>

@@ -84,7 +84,9 @@ export default defineNuxtConfig({
   pwa: {
     manifest: {
       name: 'Selfie',
-      description: 'Calendar, Notes, Chat and more in one app',
+      short_name: 'Selfie',
+      description:
+        'Calendar, Notes, Chat and more just in one app for students',
       theme_color: '#4DBA87',
       icons: [
         {
