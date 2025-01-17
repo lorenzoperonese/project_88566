@@ -134,6 +134,9 @@ watch(wsState.notifications, updatePending)
           <li>
             <NuxtLink :to="{ name: 'projects' }">Projects</NuxtLink>
           </li>
+          <li>
+            <NuxtLink :to="{ name: 'resources'}">Resources</NuxtLink>
+          </li>
         </ul>
       </div>
 
@@ -153,6 +156,9 @@ watch(wsState.notifications, updatePending)
         >
         <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'projects' }"
           >Projects</NuxtLink
+        >
+        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'resources' }"
+        >Resources</NuxtLink
         >
       </div>
     </div>
