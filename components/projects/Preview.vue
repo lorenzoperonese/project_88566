@@ -23,26 +23,26 @@ async function fetchProjects() {
 
 function listProjects() {
   console.log('Listing projects')
-  let el_plist = document.getElementById('preview-projects-list')
+  const el_plist = document.getElementById('preview-projects-list')
   console.log(projects)
   console.log(projects.length)
-  if (projects.length == 0) {
-    let div = document.createElement('div')
+  el_plist.innerHTML = ''
+  if (projects.length === 0) {
+    const div = document.createElement('div')
     div.innerText = 'No projects'
     div.classList.add('text-center')
     el_plist.appendChild(div)
     return
   }
 
-  el_plist.innerHTML = ''
   let i = 0
   for (const p in projects) {
     if (i >= $props.settings.projectsLimit) {
       break
     }
 
-    let project = projects[p]
-    let link = document.createElement('a')
+    const project = projects[p]
+    const link = document.createElement('a')
     link.href = `/projects/${project.id}`
     link.innerText = project.title
     link.classList.add(
@@ -74,8 +74,8 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex w-full flex-col gap-2"
     id="preview-projects-list"
+    class="flex w-full flex-col gap-2"
     @click.stop
   >
     <!--
