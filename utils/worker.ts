@@ -15,6 +15,14 @@ const check = () => {
 async function registerServiceWorker() {
   console.log('Registering service worker')
 
+  // Check for an existing service worker
+  const existingRegistration =
+    await navigator.serviceWorker.getRegistration(WORKER_URL)
+  if (existingRegistration) {
+    console.log('Unregistering existing service worker:', existingRegistration)
+    await existingRegistration.unregister()
+  }
+
   const swRegistration = await navigator.serviceWorker.register(WORKER_URL)
   return swRegistration
 }
