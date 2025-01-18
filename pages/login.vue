@@ -51,7 +51,7 @@ async function login() {
         console.error('Failed:', err)
       }
     }
-  } catch (err: Error) {
+  } catch (err: any) {
     console.error(err)
     _error.value = err.response._data.err
   }
@@ -59,66 +59,76 @@ async function login() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-base-200">
-    <div class="card w-96 bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title text-base md:text-xl">Login</h2>
-        <form @click.prevent="">
+  <div
+    class="flex min-h-screen items-center justify-center bg-gradient-to-br from-base-300 to-base-200 p-4"
+  >
+    <div class="card w-full max-w-md bg-base-100 shadow-2xl">
+      <div class="card-body space-y-6">
+        <div class="space-y-2 text-center">
+          <h2 class="text-2xl font-bold">Welcome Back</h2>
+          <p class="text-sm text-base-content/70">
+            Sign in to your Selfie account
+          </p>
+        </div>
+
+        <form class="space-y-5" @submit.prevent="login">
           <div class="form-control">
-            <label for="input-mail" class="label">
-              <span class="label-text text-xs md:text-base">
-                Username or mail
-              </span>
+            <label class="label">
+              <span class="label-text font-medium">Username</span>
             </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
+            <div class="relative">
               <input
-                id="input-text"
                 v-model="_username"
                 type="text"
-                class="X-required grow text-xs invalid:text-error md:text-base"
-                placeholder="Enter Username"
+                class="X-required input input-bordered w-full bg-base-100 pl-4 pr-4 transition-colors focus:border-primary"
+                placeholder="Enter your username"
               />
             </div>
           </div>
 
           <div class="form-control">
-            <label for="input-password" class="label">
-              <span class="label-text text-xs md:text-base"> Password </span>
+            <label class="label">
+              <span class="label-text font-medium">Password</span>
             </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
+            <div class="relative">
               <input
-                id="input-password"
                 v-model="_password"
                 type="password"
-                class="X-required grow text-xs invalid:text-error md:text-base"
-                placeholder="Enter password"
+                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
+                placeholder="Enter your password"
               />
             </div>
           </div>
 
-          <div class="mt-5 text-error">
+          <div
+            v-if="_error"
+            class="rounded-lg bg-error/10 p-3 text-sm text-error"
+          >
             {{ _error }}
           </div>
 
-          <div class="form-control mt-6">
-            <button class="btn btn-primary text-base md:text-lg" @click="login">
-              Login
-            </button>
-          </div>
+          <button
+            type="submit"
+            class="btn btn-primary w-full text-lg font-semibold transition-all hover:brightness-105"
+          >
+            Sign In
+          </button>
         </form>
 
-        <div class="divider text-xs md:text-base">OR</div>
-        <div class="text-center">
-          <p class="text-xs md:text-base">Don't have an account?</p>
+        <div class="my-6 flex items-center gap-4">
+          <div class="h-px flex-1 bg-base-content/10"></div>
+          <span class="text-sm text-base-content/70">OR</span>
+          <div class="h-px flex-1 bg-base-content/10"></div>
+        </div>
+
+        <div class="space-y-2 text-center">
+          <p class="text-base-content/70">Don't have an account?</p>
           <NuxtLink
             to="/register"
-            class="link link-primary text-xs md:text-base"
-            >Sign up now</NuxtLink
+            class="inline-block font-medium text-primary hover:underline"
           >
+            Create an account
+          </NuxtLink>
         </div>
       </div>
     </div>
