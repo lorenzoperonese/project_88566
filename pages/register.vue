@@ -69,11 +69,6 @@ function validate() {
 
   let ok = true
 
-  //if (passwd1.value.length < 8) {
-  //  e = 'Insert a password of at least 8 character'
-  //  ok = false
-  //} else
-
   if (passwd1.value != passwd2.value) {
     $toast.error('Passwords do not match')
     ok = false
@@ -87,85 +82,91 @@ function validate() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-base-200">
-    <div class="card w-96 bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title text-base md:text-xl">Register</h2>
-        <form @click.prevent="">
+  <div
+    class="flex min-h-screen items-center justify-center bg-gradient-to-br from-base-200 to-base-300 p-4"
+  >
+    <div class="card w-full max-w-md bg-base-100 shadow-2xl">
+      <div class="card-body space-y-6">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold text-base-content">
+            Create Your Account
+          </h2>
+          <p class="mt-2 text-sm text-base-content/70">
+            Join our community today
+          </p>
+        </div>
+
+        <form class="space-y-5" @submit.prevent="register">
           <div class="form-control">
-            <label for="input-mail" class="label">
-              <span class="label-text text-xs md:text-base"> Username </span>
+            <label class="label">
+              <span class="label-text font-medium">Username</span>
             </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
+            <div class="relative">
               <input
-                id="input-username"
                 v-model="username"
                 type="text"
-                class="X-required grow text-xs invalid:text-error md:text-base"
+                class="X-required input input-bordered w-full bg-base-100 pl-4 pr-4 transition-colors focus:border-primary"
                 :placeholder="usernamePlaceholders[placeholderIndex]"
               />
             </div>
           </div>
 
-          <div class="form-control mt-5">
-            <label for="input-password1" class="label">
-              <span class="label-text text-xs md:text-base"> Password </span>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Password</span>
             </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
-              <input
-                id="input-password1"
-                v-model="passwd1"
-                type="password"
-                class="X-required grow text-xs invalid:text-error md:text-base"
-                placeholder="Choose a password"
-              />
-            </div>
-            <label for="input-password2" class="label">
-              <span class="label-text text-xs md:text-base">
-                Confirm Password
-              </span>
-            </label>
-            <div
-              class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
-            >
-              <input
-                id="input-password2"
-                v-model="passwd2"
-                type="password"
-                class="X-required grow text-xs invalid:text-error md:text-base"
-                placeholder="Confirm password"
-              />
-            </div>
+            <input
+              v-model="passwd1"
+              type="password"
+              class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
+              placeholder="Choose a password"
+            />
+          </div>
 
-            <div class="form-control mt-5">
-              <label for="input-name" class="label">
-                <span class="label-text text-xs md:text-base"> Full Name </span>
-              </label>
-              <div
-                class="input input-bordered flex items-center gap-2 has-[:invalid]:border-error"
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Confirm Password</span>
+            </label>
+            <input
+              v-model="passwd2"
+              type="password"
+              class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
+              placeholder="Confirm your password"
+            />
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Full Name</span>
+              <span class="label-text-alt text-base-content/70"
+                >(Optional)</span
               >
-                <input
-                  id="input-name"
-                  v-model="name"
-                  type="text"
-                  class="grow text-xs invalid:text-error md:text-base"
-                  placeholder="Alex"
-                />
-              </div>
-            </div>
+            </label>
+            <input
+              v-model="name"
+              type="text"
+              class="input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
+              placeholder="Alex Smith"
+            />
           </div>
 
           <div class="form-control mt-6">
             <button
-              class="btn btn-secondary text-base md:text-lg"
+              class="btn btn-primary w-full text-lg font-semibold transition-all hover:brightness-105"
               @click="register"
             >
-              Register
+              Create Account
             </button>
+          </div>
+
+          <div class="text-center text-sm text-base-content/70">
+            Already have an account?
+            <NuxtLink
+              to="/login"
+              class="font-medium text-primary hover:underline"
+            >
+              Sign in
+            </NuxtLink>
           </div>
         </form>
       </div>
