@@ -48,6 +48,7 @@ function notificationLink(
     default:
       break
   }
+  readNotification(id)
 }
 
 watch(wsState.notifications, fetchNotifications)
