@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useSound } from '@vueuse/sound'
 
+import { watch } from 'vue'
+
 const $props = defineProps({
   timer: { type: Object as PropType<Timer>, required: true }
 })
@@ -47,8 +49,6 @@ watch(_cycleCounter, () => {
   }
 })
 
-import { watch } from 'vue'
-
 watch(
   () => $props.timer,
   (newVal) => {
@@ -78,11 +78,18 @@ function start(recalculate = true) {
     playMusic(_pomodoroSettings.value.musicSound)
   }
 
-  localStorage.setItem('pomodoro-status', 'running')
   if (_study.value < 1 || _break.value < 1 || _cycles.value < 1) {
     $toast.error('Valori non validi')
     return
   }
+  localStorage.setItem('study_time', _study.value.toString())
+  localStorage.setItem('break_time', _break.value.toString())
+  localStorage.setItem('cycles_tot', _cycles.value.toString())
+  localStorage.setItem('pomodoro-status', 'running')
+  localStorage.setItem(
+    'cycle',
+    ((_cycleCounter.value - 1) * 2 + (isStudying.value ? 1 : 2)).toString()
+  )
   $emit('start')
   _counting.value = true
   if (!_paused.value && recalculate) calculateTime()
@@ -118,6 +125,13 @@ function start(recalculate = true) {
         }
         if (!isStudying.value) _cycleCounter.value++
         isStudying.value = !isStudying.value
+        localStorage.setItem(
+          'cycle',
+          (
+            (_cycleCounter.value - 1) * 2 +
+            (isStudying.value ? 1 : 2)
+          ).toString()
+        )
         calculateTime()
       }
     }
@@ -133,6 +147,10 @@ function stop() {
     stopMusic(_pomodoroSettings.value.musicSound)
   }
   localStorage.setItem('pomodoro-status', 'stopped')
+  localStorage.removeItem('cycle')
+  localStorage.removeItem('study_time')
+  localStorage.removeItem('break_time')
+  localStorage.removeItem('cycles_tot')
   $emit('stop')
   _study.value = $props.timer.study
   _break.value = $props.timer.break
@@ -205,12 +223,21 @@ function adjustTime(value: number) {
 }
 
 onMounted(() => {
-  let status = localStorage.getItem('pomodoro-status')
+  const status = localStorage.getItem('pomodoro-status')
   if (status == 'running' || status == 'paused') {
     _counting.value = true
-    let timer = localStorage.getItem('pomodoro-timer')
+    isStudying.value = localStorage.getItem('cycle')
+      ? parseInt(localStorage.getItem('cycle')!) % 2 == 1
+      : true
+    _cycleCounter.value = Math.ceil(
+      parseInt(localStorage.getItem('cycle')!) / 2
+    )
+    _study.value = parseInt(localStorage.getItem('study_time')!)
+    _break.value = parseInt(localStorage.getItem('break_time')!)
+    _cycles.value = parseInt(localStorage.getItem('cycles_tot')!)
+    const timer = localStorage.getItem('pomodoro-timer')
     if (timer) {
-      let timerp = JSON.parse(timer)
+      const timerp = JSON.parse(timer)
       _hours.value = timerp.h
       _minutes.value = timerp.m
       _seconds.value = timerp.s
