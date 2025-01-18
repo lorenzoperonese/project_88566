@@ -7,6 +7,9 @@ const { data: pending } = await useFetch<number>('/api/notifications/number')
 const { data: session } = await useFetch<User>('/api/session')
 
 const component = ref('')
+const toggleDropdown = ref(false)
+
+const me = await getME()
 
 const avatar = computed(() => {
   let a = 'Aidan'
@@ -96,7 +99,12 @@ watch(wsState.notifications, updatePending)
   <div class="grid grid-cols-3 bg-base-300 p-2">
     <div class="lg:col-span-2">
       <div class="dropdown block lg:hidden">
-        <div tabindex="0" role="button" class="btn btn-circle btn-ghost">
+        <div
+          tabindex="0"
+          role="button"
+          class="btn btn-circle btn-ghost"
+          @click="toggleDropdown = !toggleDropdown"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -113,29 +121,30 @@ watch(wsState.notifications, updatePending)
           </svg>
         </div>
         <ul
+          v-if="toggleDropdown"
           tabindex="0"
           class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-300 p-2 shadow"
         >
-          <li>
+          <li @click="toggleDropdown = false">
             <NuxtLink to="/">Home</NuxtLink>
           </li>
-          <li>
+          <li @click="toggleDropdown = false">
             <NuxtLink :to="{ name: 'calendar' }">Calendar</NuxtLink>
           </li>
-          <li>
+          <li @click="toggleDropdown = false">
             <NuxtLink :to="{ name: 'notes' }">Note</NuxtLink>
           </li>
-          <li>
+          <li @click="toggleDropdown = false">
             <NuxtLink :to="{ name: 'pomodoro' }">Pomodoro</NuxtLink>
           </li>
-          <li>
+          <li @click="toggleDropdown = false">
             <NuxtLink :to="{ name: 'chat' }">Chat</NuxtLink>
           </li>
-          <li>
+          <li @click="toggleDropdown = false">
             <NuxtLink :to="{ name: 'projects' }">Projects</NuxtLink>
           </li>
-          <li>
-            <NuxtLink :to="{ name: 'resources'}">Resources</NuxtLink>
+          <li v-if="me.admin" @click="toggleDropdown = false">
+            <NuxtLink :to="{ name: 'resources' }">Resources</NuxtLink>
           </li>
         </ul>
       </div>
@@ -157,8 +166,11 @@ watch(wsState.notifications, updatePending)
         <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'projects' }"
           >Projects</NuxtLink
         >
-        <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'resources' }"
-        >Resources</NuxtLink
+        <NuxtLink
+          v-if="me.admin"
+          class="btn btn-ghost text-lg"
+          :to="{ name: 'resources' }"
+          >Resources</NuxtLink
         >
       </div>
     </div>
