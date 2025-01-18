@@ -28,7 +28,7 @@ const $emits = defineEmits<{
 }>()
 
 function addRoom() {
-  let receiver_id = _users.value?.find(
+  const receiver_id = _users.value?.find(
     (u) => u.username == add_room_name.value
   )?.id
 

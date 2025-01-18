@@ -31,7 +31,7 @@ async function notificatorManager() {
   console.log('Notificator manager started')
 
   // This is a global istance of the Notificator class.
-  let notificator = getNotificator()
+  const notificator = getNotificator()
 
   const loop = async () => {
     await notificatorWorker(notificator)

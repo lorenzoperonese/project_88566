@@ -321,8 +321,8 @@ useSwipe(swipeEl, {
             <li @click="_filterEvents = !_filterEvents">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterEvents"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Events
@@ -332,8 +332,8 @@ useSwipe(swipeEl, {
             <li @click="_filterTasks = !_filterTasks">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterTasks"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Tasks
@@ -343,8 +343,8 @@ useSwipe(swipeEl, {
             <li @click="_filterPomodoro = !_filterPomodoro">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterPomodoro"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Pomodoro
@@ -354,8 +354,8 @@ useSwipe(swipeEl, {
             <li @click="_filterResources = !_filterResources">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterResources"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Resources
@@ -365,8 +365,8 @@ useSwipe(swipeEl, {
             <li @click="_filterProjects = !_filterProjects">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterProjects"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Projects
@@ -376,8 +376,8 @@ useSwipe(swipeEl, {
             <li @click="_filterNotAvailable = !_filterNotAvailable">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterNotAvailable"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Not available
@@ -387,8 +387,8 @@ useSwipe(swipeEl, {
             <li @click="_filterNoteTasks = !_filterNoteTasks">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterNoteTasks"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Note tasks

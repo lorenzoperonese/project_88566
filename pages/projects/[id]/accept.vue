@@ -82,7 +82,7 @@ onMounted(async () => {
 
 <template>
   <div class="w-full max-w-md">
-    <div class="flex flex-col gap-2 p-2" id="projects_accept_ok">
+    <div id="projects_accept_ok" class="flex flex-col gap-2 p-2">
       <div>
         <h1 id="title" class="text-2xl font-bold"></h1>
         <p id="description"></p>
@@ -97,8 +97,8 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex justify-evenly">
-        <button class="btn btn-success w-2/5" id="btn-accept">Accept</button>
-        <button class="btn btn-error w-2/5" id="btn-reject">Reject</button>
+        <button id="btn-accept" class="btn btn-success w-2/5">Accept</button>
+        <button id="btn-reject" class="btn btn-error w-2/5">Reject</button>
       </div>
     </div>
     <div id="projects_accept_error_container" class="hidden flex-col gap-2 p-2">

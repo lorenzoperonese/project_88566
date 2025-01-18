@@ -36,8 +36,8 @@ const isInPast = computed(() => {
           <div v-else>{{ formatTime(task.end) }}</div>
         </div>
         <div
-          :class="{ 'hidden lg:block': $props.isResponsive }"
           v-if="$props.task.category"
+          :class="{ 'hidden lg:block': $props.isResponsive }"
         >
           🏷️ {{ $props.task.category }}
         </div>

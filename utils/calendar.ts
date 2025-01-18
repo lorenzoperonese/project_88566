@@ -55,7 +55,7 @@ function getRepetitionOccurrences(
   let currentDate = new Date(startDate)
   let occurrenceCount = 1
 
-  let maxDate = new Date(amaxDate.getTime() + dayOffset) // Look ahead by one day
+  const maxDate = new Date(amaxDate.getTime() + dayOffset) // Look ahead by one day
 
   while (currentDate <= maxDate) {
     let nextDate: Date | null = null
@@ -187,7 +187,7 @@ function doesItemOccurOnDate<T extends BaseItem>(
   )
 
   // Check if any occurrence's range includes our target date
-  let tmp = occurrences.some((occurrenceStart) => {
+  const tmp = occurrences.some((occurrenceStart) => {
     const occurrenceEnd = new Date(occurrenceStart.getTime() + duration)
     return (
       normalizedDate >= new Date(occurrenceStart.toDateString()) &&
@@ -216,7 +216,7 @@ function getItemsForDay<T extends BaseItem>(
     sortField = startField
   } = options
 
-  let tmp = items
+  const tmp = items
     .filter((item) => doesItemOccurOnDate(item, day, startField, endField))
     .sort((a, b) => (a[sortField] as number) - (b[sortField] as number))
 

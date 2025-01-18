@@ -1,11 +1,11 @@
 import { Project, ProjectTask } from '@/server/db'
-import { Types } from 'mongoose'
+import type { Types } from 'mongoose'
 
 export default defineEventHandler(async (event): Promise<ProjectTask[]> => {
   const id = getRouterParam(event, 'id')
 
   try {
-    let project = await Project.findById(id)
+    const project = await Project.findById(id)
 
     if (!project) {
       throw Error('Project not found')

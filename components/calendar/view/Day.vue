@@ -81,7 +81,7 @@ const $props = defineProps<{
         <CalendarProject
           v-for="p in getProjectsForDay($props.projects, $props.displayDate)"
           :key="p.id"
-          :pEvent="p"
+          :p-event="p"
           :today="$props.today"
           :is-responsive="false"
         />
@@ -92,7 +92,7 @@ const $props = defineProps<{
             $props.displayDate
           )"
           :key="na.id"
-          :notAvailable="na"
+          :not-available="na"
           :today="$props.today"
           :is-responsive="false"
         />
@@ -100,7 +100,7 @@ const $props = defineProps<{
         <CalendarNoteTask
           v-for="nt in getNoteTasksForDay($props.noteTasks, $props.displayDate)"
           :key="nt.id"
-          :noteTask="nt"
+          :note-task="nt"
           :today="$props.today"
           :is-responsive="false"
         />

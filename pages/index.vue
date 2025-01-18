@@ -263,8 +263,8 @@ function updatePushPermission() {
 
     <PushNotificationsAsk
       v-if="pushPermission == 'default'"
-      @update="updatePushPermission"
       class="mt-8"
+      @update="updatePushPermission"
     />
   </div>
 </template>

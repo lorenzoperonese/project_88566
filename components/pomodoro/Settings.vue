@@ -138,9 +138,9 @@ function stopSounds() {
           <label class="label cursor-pointer">
             <span class="label-text">Enable sound</span>
             <input
+              v-model="settings.enableSound"
               type="checkbox"
               class="toggle"
-              v-model="settings.enableSound"
             />
           </label>
         </div>
@@ -148,9 +148,9 @@ function stopSounds() {
           <label class="label cursor-pointer">
             <span class="label-text">Enable notifications</span>
             <input
+              v-model="settings.enableNotifications"
               type="checkbox"
               class="toggle"
-              v-model="settings.enableNotifications"
             />
           </label>
         </div>
@@ -158,7 +158,7 @@ function stopSounds() {
           <div class="label">
             <span class="label-text">Alarm sound</span>
           </div>
-          <select class="select select-bordered" v-model="settings.alarmSound">
+          <select v-model="settings.alarmSound" class="select select-bordered">
             <option value="">None</option>
             <option value="alarm">Alarm</option>
             <option value="piano-alarm-01">Piano 1</option>
@@ -169,7 +169,7 @@ function stopSounds() {
           <div class="label">
             <span class="label-text">Music</span>
           </div>
-          <select class="select select-bordered" v-model="settings.musicSound">
+          <select v-model="settings.musicSound" class="select select-bordered">
             <option value="">None</option>
             <option value="lofi-01">Lofi 1</option>
             <option value="lofi-02">Lofi 2</option>

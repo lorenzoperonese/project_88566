@@ -131,7 +131,7 @@ const calendar = computed((): CalendarCell[] => {
         :key="event.id"
         :event="event"
         :today="$props.today"
-        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
+        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
       <CalendarEvent
         v-for="event in c.eventsGuest"
@@ -139,7 +139,7 @@ const calendar = computed((): CalendarCell[] => {
         :event="event"
         :today="$props.today"
         :guest="true"
-        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
+        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
 
       <CalendarTask
@@ -161,29 +161,29 @@ const calendar = computed((): CalendarCell[] => {
         :key="resource.id"
         :resource="resource"
         :today="$props.today"
-        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
+        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
 
       <CalendarProject
         v-for="p in c.projects"
         :key="p.id"
-        :pEvent="p"
+        :p-event="p"
         :today="$props.today"
-        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
+        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
 
       <CalendarNotAvailable
         v-for="na in c.notAvailable"
         :key="na.id"
-        :notAvailable="na"
+        :not-available="na"
         :today="$props.today"
-        :displayDate="getNormalizedDate($props.displayDate, c.day, c.index)"
+        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
       />
 
       <CalendarNoteTask
         v-for="nt in c.noteTasks"
         :key="nt.id"
-        :noteTask="nt"
+        :note-task="nt"
         :today="$props.today"
       />
     </div>

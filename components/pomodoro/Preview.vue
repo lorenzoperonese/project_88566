@@ -15,9 +15,9 @@ const timeDisplay = computed(() => {
 
 onMounted(() => {
   status.value = localStorage.getItem('pomodoro-status') || 'stopped'
-  let timer = localStorage.getItem('pomodoro-timer')
+  const timer = localStorage.getItem('pomodoro-timer')
   if (timer) {
-    let timerp = JSON.parse(timer)
+    const timerp = JSON.parse(timer)
     _hours.value = timerp.h
     _minutes.value = timerp.m
     _seconds.value = timerp.s
@@ -28,8 +28,8 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-2">
     <div
-      class="text-center text-lg font-bold"
       v-if="status != 'stopped' && $props.settings.pomodoroShowTimeIfPaused"
+      class="text-center text-lg font-bold"
     >
       {{ timeDisplay }}
     </div>

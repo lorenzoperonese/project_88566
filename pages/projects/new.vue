@@ -1,12 +1,12 @@
 <template>
   <div class="w-full max-w-md p-2">
-    <h1 class="text-xl font-bold" id="main-title">Add Project</h1>
+    <h1 id="main-title" class="text-xl font-bold">Add Project</h1>
     <form class="mt-4 flex flex-col gap-4" onsubmit="event.preventDefault()">
       <div>
         <label for="title" class="label">Title</label>
         <input
-          type="text"
           id="title"
+          type="text"
           class="input input-bordered w-full"
           placeholder="Title"
         />
@@ -27,8 +27,8 @@
 
         <div class="flex justify-between gap-2">
           <input
-            type="text"
             id="guest"
+            type="text"
             class="input input-bordered w-full"
             placeholder="Guest"
           />
@@ -106,7 +106,7 @@ onMounted(async () => {
   // ------ Add guest ------
 
   function addGuest() {
-    let guest = document.getElementById('guest').value
+    const guest = document.getElementById('guest').value
     if (guest.trim() === '') {
       return
     }
@@ -145,7 +145,7 @@ onMounted(async () => {
   }
 
   function listGuests() {
-    let el_glist = document.getElementById('guest-list')
+    const el_glist = document.getElementById('guest-list')
     if (guests.length == 0) {
       el_glist.innerHTML = 'No guests'
       return
@@ -153,8 +153,8 @@ onMounted(async () => {
 
     el_glist.innerHTML = ''
     for (const g in guests) {
-      let guest = guests[g]
-      let el = document.createElement('div')
+      const guest = guests[g]
+      const el = document.createElement('div')
       el.innerHTML = `
         <div class="flex justify-between">
           <div class="flex items-center">${guest}</div>
@@ -182,7 +182,7 @@ onMounted(async () => {
   // ------ Save project ------
 
   async function save() {
-    let title = document.getElementById('title').value
+    const title = document.getElementById('title').value
     console.log('title: ', title)
 
     if (title.trim() === '') {
@@ -191,7 +191,7 @@ onMounted(async () => {
       return
     }
 
-    let description = document.getElementById('description').value
+    const description = document.getElementById('description').value
     console.log('description: ', description)
 
     if (description.trim() === '') {

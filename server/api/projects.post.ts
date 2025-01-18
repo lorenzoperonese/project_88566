@@ -1,5 +1,5 @@
 import { Project, ProjectTask, User } from '@/server/db'
-import { Types } from 'mongoose'
+import type { Types } from 'mongoose'
 
 interface InputProject {
   title: string

@@ -30,7 +30,7 @@ if (_route.query.study && _route.query.break && _route.query.cycles) {
 
 async function fetchPomodoro() {
   if (_id.value) {
-    let tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
+    const tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
     if (tmp) {
       timer.value = {
         study: tmp.study,
@@ -43,7 +43,7 @@ async function fetchPomodoro() {
 await fetchPomodoro()
 
 if (_id.value) {
-  let tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
+  const tmp = await $fetch(`/api/pomodoro-events/${_id.value}`)
   if (tmp) {
     timer.value.study = tmp.study
     timer.value.break = tmp.break
@@ -112,7 +112,7 @@ function handleCycle() {
         @cycle="handleCycle"
       />
     </div>
-    <div class="grid" v-show="!showPropose">
+    <div v-show="!showPropose" class="grid">
       <PomodoroAnimation
         class="place-self-center"
         :state="animationState"

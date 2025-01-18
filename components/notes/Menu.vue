@@ -49,7 +49,7 @@ const addCategory = () => {
       </svg>
     </label>
 
-    <div class="divider" v-show="!$props.modal"></div>
+    <div v-show="!$props.modal" class="divider"></div>
     <div class="">
       <div class="text-lg font-bold">Categories</div>
       <div class="mt-2">

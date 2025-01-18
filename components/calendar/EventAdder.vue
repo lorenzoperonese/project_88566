@@ -53,7 +53,7 @@ const fResourcesList = computed(() => {
   console.log('resources: ', resources.value)
 
   return resourceList.value.filter((r) => {
-    let tmp =
+    const tmp =
       isResourceAvailable(resources.value || [], r.name, startDate, endDate) ||
       r.name == _resource.value
     return tmp

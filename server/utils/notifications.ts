@@ -1,7 +1,6 @@
-import { User, Notification } from '@/server/db'
+import { User, Notification, PushNotification  } from '@/server/db'
 import { getIo } from '@/server/plugins/02.socket.io'
 import webpush from 'web-push'
-import { PushNotification } from '@/server/db'
 
 // Type can be 'basic', 'project-invited', 'event-invited'.
 // indetifier is the id of the project or event for the invitation.

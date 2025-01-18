@@ -2,7 +2,7 @@ import { Settings } from '@/server/db'
 
 export default defineEventHandler(async (event): Promise<Settings | null> => {
   try {
-    let body = await readBody<Settings>(event)
+    const body = await readBody<Settings>(event)
 
     if (!body) {
       setResponseStatus(event, 400)
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event): Promise<Settings | null> => {
 
     console.log('Updating settings: ', body)
 
-    let s = await Settings.findOneAndUpdate(
+    const s = await Settings.findOneAndUpdate(
       { user_id: event.context.auth.id },
       {
         home: {

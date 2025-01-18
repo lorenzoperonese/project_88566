@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (t.user_id.toString() !== event.context.auth.id) {
-      let oldT = await Task.findOneAndUpdate(
+      const oldT = await Task.findOneAndUpdate(
         {
           _id: id,
           users: { $in: [event.context.auth.id] }

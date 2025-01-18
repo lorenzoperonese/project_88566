@@ -1,5 +1,4 @@
-import { Document, Types } from 'mongoose'
-import { Schema, model } from 'mongoose'
+import type { Document, Types, Schema, model  } from 'mongoose'
 
 export interface IProjectTask extends Document {
   title: string

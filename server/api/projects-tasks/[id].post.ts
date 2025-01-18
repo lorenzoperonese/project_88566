@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get request body
-    let body = await readBody<ProjectTask>(event)
+    const body = await readBody<ProjectTask>(event)
 
     if (!body) {
       throw createError({
