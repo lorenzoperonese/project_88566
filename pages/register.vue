@@ -138,9 +138,6 @@ function validate() {
           <div class="form-control">
             <label class="label">
               <span class="label-text font-medium">Full Name</span>
-              <span class="label-text-alt text-base-content/70"
-                >(Optional)</span
-              >
             </label>
             <input
               v-model="name"
