@@ -1,4 +1,4 @@
-import { User, Notification, PushNotification  } from '@/server/db'
+import { User, Notification, PushNotification } from '@/server/db'
 import { getIo } from '@/server/plugins/02.socket.io'
 import webpush from 'web-push'
 
