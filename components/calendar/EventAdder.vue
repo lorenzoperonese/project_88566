@@ -284,7 +284,7 @@ function addGuest(g: string) {
       {{ $props.isEventNew ? 'Add event' : 'Modify event' }}
     </h1>
     <form class="mt-4 flex flex-col gap-2" @submit.prevent="">
-      <div class="form-control flex flex-row items-center gap-4">
+      <div class="form-control flex flex-row items-center gap-3">
         <div class="label">
           <label class="label-text">Title</label>
         </div>
@@ -297,36 +297,40 @@ function addGuest(g: string) {
         />
       </div>
 
-      <div class="form-control flex flex-row items-center gap-4">
+      <div class="form-control flex flex-row items-center gap-2">
         <div class="label">
           <label class="label-text">Start</label>
         </div>
-        <input
-          v-model="_startDate"
-          class="input input-bordered w-full"
-          type="date"
-        />
-        <input
-          v-model="_startTime"
-          class="input input-bordered w-full"
-          type="time"
-        />
+        <div class="flex w-full flex-row gap-1">
+          <input
+            v-model="_startDate"
+            class="input input-bordered w-full"
+            type="date"
+          />
+          <input
+            v-model="_startTime"
+            class="input input-bordered w-full"
+            type="time"
+          />
+        </div>
       </div>
 
-      <div class="form-control flex flex-row items-center gap-4">
+      <div class="form-control flex flex-row items-center gap-3">
         <div class="label">
           <label class="label-text">End</label>
         </div>
-        <input
-          v-model="_endDate"
-          class="input input-bordered w-full"
-          type="date"
-        />
-        <input
-          v-model="_endTime"
-          class="input input-bordered w-full"
-          type="time"
-        />
+        <div class="flex w-full flex-row gap-1">
+          <input
+            v-model="_endDate"
+            class="input input-bordered w-full"
+            type="date"
+          />
+          <input
+            v-model="_endTime"
+            class="input input-bordered w-full"
+            type="time"
+          />
+        </div>
       </div>
 
       <div class="form-control">
