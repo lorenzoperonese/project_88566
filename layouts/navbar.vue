@@ -60,17 +60,19 @@ async function logout() {
   localStorage.removeItem('pomodoro-status')
   localStorage.removeItem('pomodoro-timer')
 
-  const registration = await navigator.serviceWorker.ready
-  const subscription = await registration.pushManager.getSubscription()
-  if (subscription) {
-    subscription.unsubscribe()
-    try {
-      await $fetch('/api/notify', {
-        method: 'DELETE',
-        body: JSON.stringify(subscription)
-      })
-    } catch (err) {
-      console.error(err)
+  if ('serviceWorker' in navigator) {
+    const registration = await navigator.serviceWorker.ready
+    const subscription = await registration.pushManager.getSubscription()
+    if (subscription) {
+      await subscription.unsubscribe()
+      try {
+        await $fetch('/api/notify', {
+          method: 'DELETE',
+          body: JSON.stringify(subscription)
+        })
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 
