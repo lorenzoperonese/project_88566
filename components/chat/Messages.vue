@@ -107,7 +107,7 @@ function sendMessage() {
       </div>
     </div>
 
-    <div v-show="currentRoomId" class="flex justify-between gap-4 p-2">
+    <div v-show="currentRoomId" class="flex justify-between gap-4 p-2 mx-4 mb-2">
       <input
         v-model="message"
         type="text"
