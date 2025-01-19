@@ -433,7 +433,7 @@ watch(
         Ciclo {{ _cycleCounter }} - {{ isStudying ? 'Studio' : 'Pausa' }}
       </p>
       <div class="flex flex-col gap-2">
-        <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+        <div class="grid grid-cols-4 gap-2">
           <button class="btn btn-primary flex-1" @click="adjustTime(-5)">
             -5
           </button>
@@ -447,13 +447,15 @@ watch(
             +5
           </button>
         </div>
-        <button v-if="!_paused" class="btn btn-warning" @click="pause">
-          Pausa
-        </button>
-        <button v-else class="btn btn-info" @click="start()">Riprendi</button>
-        <button class="btn btn-secondary" @click="skip()">Salta</button>
-        <button class="btn btn-error" @click="stop()">Ferma</button>
-        <button class="btn btn-success" @click="restart()">Ricomincia</button>
+        <div class="grid grid-cols-2 gap-1">
+          <button v-if="!_paused" class="btn btn-warning" @click="pause">
+            Pausa
+          </button>
+          <button v-else class="btn btn-info" @click="start()">Riprendi</button>
+          <button class="btn btn-secondary" @click="skip()">Salta</button>
+          <button class="btn btn-error" @click="stop()">Ferma</button>
+          <button class="btn btn-success" @click="restart()">Ricomincia</button>
+        </div>
       </div>
     </div>
   </div>
