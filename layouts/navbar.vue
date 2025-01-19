@@ -7,7 +7,8 @@ const { data: pending } = await useFetch<number>('/api/notifications/number')
 const { data: session } = await useFetch<User>('/api/session')
 
 const component = ref('')
-const toggleDropdown = ref(false)
+const showDropdown1 = ref(false)
+const showDropdown2 = ref(false)
 
 const me = await getME()
 
@@ -105,7 +106,7 @@ watch(wsState.notifications, updatePending)
           tabindex="0"
           role="button"
           class="btn btn-circle btn-ghost"
-          @click="toggleDropdown = !toggleDropdown"
+          @click="showDropdown1 = !showDropdown1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -123,29 +124,29 @@ watch(wsState.notifications, updatePending)
           </svg>
         </div>
         <ul
-          v-if="toggleDropdown"
+          v-if="showDropdown1"
           tabindex="0"
           class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-300 p-2 shadow"
         >
-          <li @click="toggleDropdown = false">
+          <li>
             <NuxtLink to="/">Home</NuxtLink>
           </li>
-          <li @click="toggleDropdown = false">
+          <li>
             <NuxtLink :to="{ name: 'calendar' }">Calendar</NuxtLink>
           </li>
-          <li @click="toggleDropdown = false">
+          <li>
             <NuxtLink :to="{ name: 'notes' }">Note</NuxtLink>
           </li>
-          <li @click="toggleDropdown = false">
+          <li>
             <NuxtLink :to="{ name: 'pomodoro' }">Pomodoro</NuxtLink>
           </li>
-          <li @click="toggleDropdown = false">
+          <li>
             <NuxtLink :to="{ name: 'chat' }">Chat</NuxtLink>
           </li>
-          <li @click="toggleDropdown = false">
+          <li>
             <NuxtLink :to="{ name: 'projects' }">Projects</NuxtLink>
           </li>
-          <li v-if="me.admin" @click="toggleDropdown = false">
+          <li v-if="me.admin">
             <NuxtLink :to="{ name: 'resources' }">Resources</NuxtLink>
           </li>
         </ul>
@@ -193,12 +194,13 @@ watch(wsState.notifications, updatePending)
       />
 
       <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
+        <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost" @click="showDropdown2 = !showDropdown2">
           <div class="w-10 rounded-full">
             <img alt="avatar" :src="avatar" />
           </div>
         </div>
         <ul
+          v-if="showDropdown2"
           tabindex="0"
           class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-300 p-2 shadow"
         >

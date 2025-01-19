@@ -42,6 +42,8 @@ const _filterProjects = ref(true)
 const _filterNotAvailable = ref(true)
 const _filterNoteTasks = ref(true)
 
+const showDropdown = ref(false)
+
 const _fNotAvailable = computed(() => {
   if (!_notAvailable.value) return []
   return _notAvailable.value.filter((na) => na.user_id === me.id)
@@ -311,10 +313,11 @@ useSwipe(swipeEl, {
       </div>
       <div class="flex items-center justify-end">
         <div class="dropdown dropdown-end dropdown-bottom">
-          <div tabindex="0" role="button" class="btn btn-sm m-1 md:btn-md">
+          <div tabindex="0" role="button" class="btn btn-sm m-1 md:btn-md" @click="showDropdown = !showDropdown">
             Filter
           </div>
           <ul
+            v-if="showDropdown"
             tabindex="0"
             class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow *:text-xs md:*:text-base"
           >
