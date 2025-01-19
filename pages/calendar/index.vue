@@ -313,7 +313,12 @@ useSwipe(swipeEl, {
       </div>
       <div class="flex items-center justify-end">
         <div class="dropdown dropdown-end dropdown-bottom">
-          <div tabindex="0" role="button" class="btn btn-sm m-1 md:btn-md" @click="showDropdown = !showDropdown">
+          <div
+            tabindex="0"
+            role="button"
+            class="btn btn-sm m-1 md:btn-md"
+            @click="showDropdown = !showDropdown"
+          >
             Filter
           </div>
           <ul

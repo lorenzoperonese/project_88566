@@ -51,7 +51,11 @@ async function changeTheme() {
     <div class="flex justify-between">
       <span class="flex items-center"> Theme </span>
       <div class="flex justify-evenly gap-4">
-        <select v-model="theme" class="select select-bordered" @change="changeTheme">
+        <select
+          v-model="theme"
+          class="select select-bordered"
+          @change="changeTheme"
+        >
           <option v-for="t in themes" :key="t" :value="t">
             {{ t }}
           </option>

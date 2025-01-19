@@ -194,7 +194,12 @@ watch(wsState.notifications, updatePending)
       />
 
       <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost" @click="showDropdown2 = !showDropdown2">
+        <div
+          tabindex="0"
+          role="button"
+          class="avatar btn btn-circle btn-ghost"
+          @click="showDropdown2 = !showDropdown2"
+        >
           <div class="w-10 rounded-full">
             <img alt="avatar" :src="avatar" />
           </div>
