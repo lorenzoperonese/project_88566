@@ -90,8 +90,8 @@ export default defineNuxtConfig({
       theme_color: '#4DBA87',
       icons: [
         {
-          src: './public/favicon.png',
-          sizes: '32x32',
+          src: './favicon.png',
+          sizes: '100x100',
           type: 'image/png'
         }
       ]
