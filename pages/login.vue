@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { EyeIcon, EyeOffIcon } from 'lucide-vue-next'
 const { $registerPushNotifications } = useNuxtApp()
 
 // login page is in dark mode by default
@@ -34,8 +35,11 @@ const _username = ref('')
 const _password = ref('')
 const _error = ref('')
 
+const showPassword = ref(false)
+
 async function login() {
   const credentials = { username: _username.value, password: _password.value }
+  console.log('Logging in')
   try {
     await signIn(credentials, { callbackUrl: '/' })
     changeTheme()
@@ -93,10 +97,18 @@ async function login() {
             <div class="relative">
               <input
                 v-model="_password"
-                type="password"
-                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
-                placeholder="Enter your password"
+                :type="showPassword ? 'text' : 'password'"
+                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary pr-10"
+                placeholder="Choose a password"
               />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 hover:text-primary"
+                @click="showPassword = !showPassword"
+              >
+                <EyeIcon v-if="!showPassword" class="h-5 w-5" />
+                <EyeOffIcon v-else class="h-5 w-5" />
+              </button>
             </div>
           </div>
 

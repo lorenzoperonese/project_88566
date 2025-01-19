@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
 
     await s.save()
 
-    return { message: 'User created successfuly' }
+    return { message: 'User created successfully' }
   } catch (err) {
     console.error(err)
     setResponseStatus(event, 500)

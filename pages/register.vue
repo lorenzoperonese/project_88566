@@ -1,16 +1,21 @@
 <script setup lang="ts">
+import { EyeIcon, EyeOffIcon } from 'lucide-vue-next'
+
 definePageMeta({
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/'
   }
 })
+
 const { $toast } = useNuxtApp()
 
 const passwd1 = ref('')
 const passwd2 = ref('')
 const username = ref('')
 const name = ref('')
+const showPasswd1 = ref(false)
+const showPasswd2 = ref(false)
 
 const placeholderIndex = ref(0)
 const usernamePlaceholders = [
@@ -39,12 +44,15 @@ onBeforeUnmount(() => {
   clearInterval(placeholderRotationInterval)
 })
 
-async function register() {
+async function register(e: Event) {
+  e.preventDefault()
+
   if (!validate()) {
     return
   }
 
   try {
+    console.log('Registering')
     await $fetch('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({
@@ -55,6 +63,7 @@ async function register() {
     })
 
     navigateTo('/login')
+    $toast.success('Account created successfully')
   } catch (e) {
     console.error(e)
     $toast.error('Registration failed')
@@ -115,24 +124,44 @@ function validate() {
             <label class="label">
               <span class="label-text font-medium">Password</span>
             </label>
-            <input
-              v-model="passwd1"
-              type="password"
-              class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
-              placeholder="Choose a password"
-            />
+            <div class="relative">
+              <input
+                v-model="passwd1"
+                :type="showPasswd1 ? 'text' : 'password'"
+                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary pr-10"
+                placeholder="Choose a password"
+              />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 hover:text-primary"
+                @click="showPasswd1 = !showPasswd1"
+              >
+                <EyeIcon v-if="!showPasswd1" class="h-5 w-5" />
+                <EyeOffIcon v-else class="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           <div class="form-control">
             <label class="label">
               <span class="label-text font-medium">Confirm Password</span>
             </label>
-            <input
-              v-model="passwd2"
-              type="password"
-              class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary"
-              placeholder="Confirm your password"
-            />
+            <div class="relative">
+              <input
+                v-model="passwd2"
+                :type="showPasswd2 ? 'text' : 'password'"
+                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary pr-10"
+                placeholder="Choose a password"
+              />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 hover:text-primary"
+                @click="showPasswd2 = !showPasswd2"
+              >
+                <EyeIcon v-if="!showPasswd2" class="h-5 w-5" />
+                <EyeOffIcon v-else class="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           <div class="form-control">
@@ -149,8 +178,8 @@ function validate() {
 
           <div class="form-control mt-6">
             <button
+              type="submit"
               class="btn btn-primary w-full text-lg font-semibold transition-all hover:brightness-105"
-              @click="register"
             >
               Create Account
             </button>
