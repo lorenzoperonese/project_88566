@@ -87,7 +87,7 @@ export default defineNuxtConfig({
       short_name: 'Selfie',
       description:
         'Calendar, Notes, Chat and more just in one app for students',
-      theme_color: '#4DBA87',
+      theme_color: '#000000',
       icons: [
         {
           src: './favicon.png',
