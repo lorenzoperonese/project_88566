@@ -414,7 +414,12 @@ useSwipe(swipeEl, {
       :week-days="_weekDays"
     />
 
-    <dialog id="modal" ref="modal" class="modal modal-bottom sm:modal-middle" @click="closeModal">
+    <dialog
+      id="modal"
+      ref="modal"
+      class="modal modal-bottom sm:modal-middle"
+      @click="closeModal"
+    >
       <div class="modal-box w-full" @click.stop>
         <CalendarEventAdder
           v-if="_add_element == 0"

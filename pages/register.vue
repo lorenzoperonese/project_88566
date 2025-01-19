@@ -128,7 +128,7 @@ function validate() {
               <input
                 v-model="passwd1"
                 :type="showPasswd1 ? 'text' : 'password'"
-                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary pr-10"
+                class="X-required input input-bordered w-full bg-base-100 pr-10 transition-colors focus:border-primary"
                 placeholder="Choose a password"
               />
               <button
@@ -150,7 +150,7 @@ function validate() {
               <input
                 v-model="passwd2"
                 :type="showPasswd2 ? 'text' : 'password'"
-                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary pr-10"
+                class="X-required input input-bordered w-full bg-base-100 pr-10 transition-colors focus:border-primary"
                 placeholder="Choose a password"
               />
               <button

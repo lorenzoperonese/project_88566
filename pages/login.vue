@@ -98,7 +98,7 @@ async function login() {
               <input
                 v-model="_password"
                 :type="showPassword ? 'text' : 'password'"
-                class="X-required input input-bordered w-full bg-base-100 transition-colors focus:border-primary pr-10"
+                class="X-required input input-bordered w-full bg-base-100 pr-10 transition-colors focus:border-primary"
                 placeholder="Choose a password"
               />
               <button
