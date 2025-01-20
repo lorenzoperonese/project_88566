@@ -6,6 +6,9 @@ definePageMeta({
 
 const { $toast } = useNuxtApp()
 
+// Brutale ma ogni tanto il websocket non viene autenticato
+wsSendAuth()
+
 const current_room_id = ref<string | undefined>()
 
 const { getSession } = useAuth()
