@@ -27,9 +27,9 @@ const _filteredNotes = computed(() => {
 
 provide('notesCategories', _notesCategories)
 
-function addNote(n: Note) {
+async function addNote(n: Note) {
   try {
-    $fetch('/api/notes', {
+    await $fetch('/api/notes', {
       method: 'POST',
       body: JSON.stringify(n)
     })
@@ -40,9 +40,9 @@ function addNote(n: Note) {
   fetchNotes()
 }
 
-function addCategory(c: NoteCategory) {
+async function addCategory(c: NoteCategory) {
   try {
-    $fetch('/api/notes-categories', {
+    await $fetch('/api/notes-categories', {
       method: 'POST',
       body: JSON.stringify(c)
     })
