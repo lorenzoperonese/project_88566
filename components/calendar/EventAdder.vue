@@ -299,7 +299,7 @@ function addGuest(g: string) {
               v-model="_title"
               id="title"
               type="text"
-              class="input input-bordered w-full rounded-lg px-4 py-2"
+              class="input input-bordered w-full rounded-lg px-4 py-2 placeholder:text-gray-600"
               placeholder="Event title"
               required
             />
@@ -357,7 +357,7 @@ function addGuest(g: string) {
               v-model="_location"
               id="location"
               type="text"
-              class="input input-bordered w-full rounded-lg px-4 py-2"
+              class="input input-bordered w-full rounded-lg px-4 py-2 placeholder:text-gray-600"
               placeholder="Add location"
             />
           </div>
@@ -368,7 +368,7 @@ function addGuest(g: string) {
               v-model="_category"
               id="category"
               type="text"
-              class="input input-bordered w-full rounded-lg px-4 py-2"
+              class="input input-bordered w-full rounded-lg px-4 py-2 placeholder:text-gray-600"
               placeholder="Add category"
             />
           </div>
@@ -379,6 +379,7 @@ function addGuest(g: string) {
               v-model="_resource"
               id="resource"
               class="input input-bordered w-full rounded-lg px-4 py-2"
+              :class="{ 'text-gray-600': _resource == 'null' }"
             >
               <option value="null">None</option>
               <option v-for="r in fResourcesList" :key="r.name" :value="r.name">
@@ -394,7 +395,7 @@ function addGuest(g: string) {
           <textarea
             v-model="_note"
             id="note"
-            class="textarea textarea-bordered min-h-[80px] w-full rounded-lg px-4 py-2"
+            class="textarea textarea-bordered min-h-[80px] w-full rounded-lg px-4 py-2 placeholder:text-gray-600"
             placeholder="Add description or notes"
           ></textarea>
         </div>
@@ -436,7 +437,7 @@ function addGuest(g: string) {
                 <input
                   v-model="_guest"
                   type="text"
-                  class="input input-bordered w-full flex-wrap rounded-lg"
+                  class="input input-bordered w-full flex-wrap rounded-lg placeholder:text-gray-600"
                   placeholder="Add guest username"
                 />
                 <button class="btn btn-neutral" @click="addGuest(_guest)">

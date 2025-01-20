@@ -140,9 +140,10 @@ function addGuest() {
         </div>
         <input
           v-model="_title"
-          class="input input-bordered"
+          class="input input-bordered placeholder:text-gray-600"
           :disabled="!isMyNote"
           type="text"
+          placeholder="Title"
           required
         />
       </div>
@@ -173,7 +174,8 @@ function addGuest() {
         </div>
         <textarea
           v-model="_note"
-          class="textarea textarea-bordered w-full"
+          class="textarea textarea-bordered w-full placeholder:text-gray-600"
+          placeholder="Write your notes here"
           :disabled="!isMyNote"
         >
         </textarea>
@@ -206,7 +208,7 @@ function addGuest() {
             v-model="_guest"
             type="text"
             placeholder="username"
-            class="input input-bordered w-1/2"
+            class="input input-bordered w-1/2 placeholder:text-gray-600"
           />
           <button class="btn btn-neutral" @click="addGuest">Add</button>
         </div>

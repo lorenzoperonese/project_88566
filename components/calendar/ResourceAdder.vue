@@ -91,7 +91,11 @@ function deleteResource() {
         <div class="label">
           <label class="label-text">Resource name</label>
         </div>
-        <select v-model="_resouceName" class="select select-bordered">
+        <select
+          v-model="_resouceName"
+          class="select select-bordered"
+          :class="{ 'text-gray-600': _resouceName == 'null' }"
+        >
           <option value="null">None</option>
           <option v-for="r in resouceList" :value="r.name">{{ r.name }}</option>
         </select>
@@ -139,8 +143,8 @@ function deleteResource() {
         </div>
         <textarea
           v-model="_note"
-          class="textarea textarea-bordered w-full"
-          placeholder="Bio"
+          class="textarea textarea-bordered w-full placeholder:text-gray-600"
+          placeholder="Write your notes here"
         ></textarea>
       </div>
 

@@ -77,7 +77,8 @@ function deleteTask() {
         </div>
         <input
           v-model="_title"
-          class="input input-bordered"
+          class="input input-bordered placeholder:text-gray-600"
+          placeholder="Title"
           type="text"
           required
         />

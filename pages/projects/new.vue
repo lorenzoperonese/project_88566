@@ -7,7 +7,7 @@
         <input
           id="title"
           type="text"
-          class="input input-bordered w-full"
+          class="input input-bordered w-full placeholder:text-gray-600"
           placeholder="Title"
         />
       </div>
@@ -16,8 +16,8 @@
         <label for="description" class="label">Description</label>
         <textarea
           id="description"
-          class="textarea textarea-bordered w-full"
-          placeholder="Description"
+          class="textarea textarea-bordered w-full placeholder:text-gray-600"
+          placeholder="A small description about the project"
         ></textarea>
       </div>
 
@@ -29,7 +29,7 @@
           <input
             id="guest"
             type="text"
-            class="input input-bordered w-full"
+            class="input input-bordered w-full placeholder:text-gray-600"
             placeholder="Guest"
           />
           <button id="add-guest" class="btn btn-outline btn-info">Add</button>
