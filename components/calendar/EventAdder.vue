@@ -388,6 +388,7 @@ function addGuest(g: string) {
       </div>
     </form>
   </div>
+
   <div v-else class="mx-auto mt-4 max-w-7xl rounded-lg bg-base-300 p-8">
     <h1 class="mb-8 text-center text-3xl font-bold">
       {{ $props.isEventNew ? 'Add event' : 'Modify Event' }}
@@ -398,7 +399,7 @@ function addGuest(g: string) {
       <div class="space-y-2">
         <!-- Title Section -->
         <div
-          class="flex items-center gap-4 rounded-xl border border-white p-4 shadow-sm"
+          class="flex items-center gap-4 rounded-xl border border-neutral p-4 shadow-sm"
         >
           <label class="whitespace-nowrap text-sm font-semibold"
             >Event Title</label
@@ -413,7 +414,7 @@ function addGuest(g: string) {
         </div>
 
         <!-- DateTime Section -->
-        <div class="space-y-4 rounded-xl border border-white p-4 shadow-sm">
+        <div class="space-y-4 rounded-xl border border-neutral p-4 shadow-sm">
           <div class="items-center gap-4 lg:flex">
             <label class="whitespace-nowrap text-sm font-semibold"
               >Start Date & Time</label
@@ -452,7 +453,7 @@ function addGuest(g: string) {
         </div>
 
         <!-- Location -->
-        <div class="space-y-4 rounded-xl border border-white p-4 shadow-sm">
+        <div class="space-y-4 rounded-xl border border-neutral p-4 shadow-sm">
           <div class="flex items-center gap-4">
             <label class="whitespace-nowrap text-sm font-semibold"
               >Location</label
@@ -467,7 +468,7 @@ function addGuest(g: string) {
         </div>
 
         <!-- Guests -->
-        <div class="w-full rounded-xl border border-white p-4 shadow-sm">
+        <div class="w-full rounded-xl border border-neutral p-4 shadow-sm">
           <label class="mb-4 block text-sm font-semibold">Guests</label>
           <div class="flex flex-row items-center gap-2">
             <!-- Input con dimensione controllata -->
@@ -478,12 +479,7 @@ function addGuest(g: string) {
               class="input w-0 flex-grow rounded-lg focus:ring-2 focus:ring-base-300"
             />
             <!-- Bottone con dimensioni proporzionate -->
-            <button
-              class="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
-              @click="addGuest(_guest)"
-            >
-              Add
-            </button>
+            <button class="btn btn-info" @click="addGuest(_guest)">Add</button>
           </div>
 
           <div class="max-h-48 space-y-2 overflow-y-auto">
@@ -540,7 +536,7 @@ function addGuest(g: string) {
         </div>
 
         <!-- Repetition -->
-        <div class="rounded-xl border border-white p-4 shadow-sm">
+        <div class="rounded-xl border border-neutral p-4 shadow-sm">
           <CalendarRepetition
             :start-day="_startDate"
             :end-day="_endDate"
@@ -560,7 +556,7 @@ function addGuest(g: string) {
         <!-- Category -->
         <div>
           <div
-            class="flex items-center gap-4 rounded-xl border border-white p-4 shadow-sm"
+            class="flex items-center gap-4 rounded-xl border border-neutral p-4 shadow-sm"
           >
             <label class="whitespace-nowrap text-sm font-semibold"
               >Category</label
@@ -576,7 +572,7 @@ function addGuest(g: string) {
 
         <!-- Notes -->
         <div
-          class="flex items-center gap-4 rounded-xl border border-white p-4 shadow-sm"
+          class="flex items-center gap-4 rounded-xl border border-neutral p-4 shadow-sm"
         >
           <label class="mb-2 block text-sm font-semibold">Notes</label>
           <textarea
@@ -588,7 +584,7 @@ function addGuest(g: string) {
         </div>
 
         <!-- Resource Selection -->
-        <div class="rounded-xl border border-white p-4 shadow-sm">
+        <div class="rounded-xl border border-neutral p-4 shadow-sm">
           <label class="mb-2 block text-sm font-semibold">Resource</label>
           <select
             v-model="_resource"
@@ -602,7 +598,7 @@ function addGuest(g: string) {
         </div>
 
         <!-- Notifications -->
-        <div class="rounded-xl border border-white p-4 shadow-sm">
+        <div class="rounded-xl border border-neutral p-4 shadow-sm">
           <CalendarNotification
             :notifications="_notifications"
             @close="_showNotifications = false"
@@ -621,7 +617,7 @@ function addGuest(g: string) {
         <NuxtLink
           v-if="$props.isEventNew"
           :to="{ name: 'calendar' }"
-          class="rounded-lg border border-gray-200 px-6 py-3 font-medium text-gray-700 hover:bg-gray-50"
+          class="btn btn-neutral"
           @click="close"
         >
           Cancel
@@ -635,10 +631,7 @@ function addGuest(g: string) {
           Delete Event
         </button>
 
-        <button
-          class="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
-          @click="saveEvent()"
-        >
+        <button class="btn btn-info" @click="saveEvent()">
           {{ $props.isEventNew ? 'Create Event' : 'Save Changes' }}
         </button>
       </div>
