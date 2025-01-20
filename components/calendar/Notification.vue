@@ -26,6 +26,7 @@ function repetitions(n: number) {
 }
 
 const errorMessage = ref('')
+const modal = useTemplateRef('notification_modal')
 
 function validate(notification: Notify): boolean {
   if (notification.advance < 1) return false
@@ -48,9 +49,10 @@ function save() {
   }
   if (errorMessage.value) return
   $emit('save', _notifications.value)
+  if (modal.value) {
+    modal.value.close() // Close the modal after saving
+  }
 }
-
-const modal = useTemplateRef('notification_modal')
 
 function showModal() {
   _notifications.value = structuredClone(toRaw($props.notifications))
@@ -60,6 +62,9 @@ function showModal() {
 }
 
 function cancel() {
+  if (modal.value) {
+    modal.value.close() // Close the modal when canceling
+  }
   $emit('close')
 }
 
@@ -83,23 +88,29 @@ function removeRepetition(notification: Notify) {
       Notifications
     </button>
     <dialog ref="notification_modal" class="modal">
-      <div class="modal-box flex h-3/4 flex-col overflow-clip">
+      <div
+        class="modal-box flex h-full max-h-[90vh] w-full flex-col overflow-clip p-4 md:h-3/4"
+      >
         <div>
-          <h2 class="mb-4 text-2xl font-bold">Notifications</h2>
-          <div class="h-96 overflow-scroll">
+          <h2 class="mb-4 text-center text-xl font-bold md:text-2xl">
+            Notifications
+          </h2>
+          <div class="h-[70vh] overflow-y-auto p-2 md:h-[58vh]">
             <div class="space-y-4">
               <div
                 v-for="(notification, index) in _notifications"
                 :key="index"
-                class="rounded border p-4"
+                class="rounded border p-4 shadow-sm"
               >
-                <div class="mb-2 flex items-center space-x-2">
+                <div
+                  class="mb-2 flex flex-wrap items-center space-y-2 md:space-x-2 md:space-y-0"
+                >
                   <input
                     v-model="notification.advance"
                     type="number"
                     min="1"
                     required
-                    class="input input-bordered w-20 text-center"
+                    class="input input-bordered w-full max-w-[5rem] text-center md:w-20"
                   />
                   <SelectDrop
                     v-model="notification.period"
@@ -107,7 +118,7 @@ function removeRepetition(notification: Notify) {
                   />
                   <span>before</span>
                   <button
-                    class="btn btn-square btn-outline btn-error"
+                    class="btn btn-square btn-outline btn-error ml-auto"
                     @click="_notifications.splice(index, 1)"
                   >
                     <svg
@@ -130,7 +141,7 @@ function removeRepetition(notification: Notify) {
                 <!-- Repetition Controls -->
                 <div v-if="!notification.repeat" class="mt-2">
                   <button
-                    class="btn btn-outline btn-xs"
+                    class="btn btn-outline btn-xs w-full md:w-auto"
                     @click="addRepetition(notification)"
                   >
                     Add Repetition
@@ -138,7 +149,9 @@ function removeRepetition(notification: Notify) {
                 </div>
 
                 <div v-if="notification.repeat" class="mt-2 space-y-2">
-                  <div class="flex items-center space-x-2">
+                  <div
+                    class="flex flex-wrap items-center space-y-2 md:space-x-2 md:space-y-0"
+                  >
                     <div class="form-control">
                       <label class="label cursor-pointer space-x-2">
                         <span class="label-text">Repeat until response</span>
@@ -153,25 +166,27 @@ function removeRepetition(notification: Notify) {
 
                   <div
                     v-if="!notification.repeat.untilResponse"
-                    class="flex items-center space-x-2"
+                    class="flex flex-wrap items-center space-y-2 md:space-x-2 md:space-y-0"
                   >
                     <span>Repeat</span>
                     <input
                       v-model="notification.repeat.count"
                       type="number"
                       min="1"
-                      class="input input-sm input-bordered w-20 text-center"
+                      class="input input-sm input-bordered w-full max-w-[5rem] text-center md:w-20"
                     />
                     <span>times</span>
                   </div>
 
-                  <div class="flex items-center space-x-2">
+                  <div
+                    class="flex flex-wrap items-center space-y-2 md:space-x-2 md:space-y-0"
+                  >
                     <span>Every</span>
                     <input
                       v-model="notification.repeat.interval"
                       type="number"
                       min="1"
-                      class="input input-sm input-bordered w-20 text-center"
+                      class="input input-sm input-bordered w-full max-w-[5rem] text-center md:w-20"
                     />
                     <SelectDrop
                       v-model="notification.repeat.intervalUnit"
@@ -180,7 +195,7 @@ function removeRepetition(notification: Notify) {
                   </div>
 
                   <button
-                    class="btn btn-outline btn-error btn-xs"
+                    class="btn btn-outline btn-error btn-xs w-full md:w-auto"
                     @click="removeRepetition(notification)"
                   >
                     Remove Repetition
@@ -190,25 +205,22 @@ function removeRepetition(notification: Notify) {
             </div>
           </div>
 
-          <div class="mb-4 mt-4 flex items-center space-x-2">
+          <p v-if="errorMessage" class="mb-4 text-center text-red-500">
+            {{ errorMessage }}
+          </p>
+        </div>
+
+        <div class="mt-3">
+          <div class="flex flex-row justify-between">
+            <button class="btn" @click="cancel">Close</button>
             <button
               class="btn btn-outline btn-info"
               @click="_notifications.push({ advance: 1, period: 2 })"
             >
               Add Notification
             </button>
-          </div>
-
-          <p v-if="errorMessage" class="mb-4 text-red-500">
-            {{ errorMessage }}
-          </p>
-        </div>
-
-        <div class="modal-action mt-auto">
-          <form method="dialog" class="flex w-full justify-between">
-            <button class="btn" @click="cancel">Close</button>
             <button class="btn btn-secondary" @click="save">Save</button>
-          </form>
+          </div>
         </div>
       </div>
     </dialog>

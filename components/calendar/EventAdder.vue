@@ -279,261 +279,294 @@ function addGuest(g: string) {
 </script>
 
 <template>
-  <div class="w-full max-w-4xl mx-auto p-4">
+  <div class="mx-auto w-full max-w-4xl p-4">
     <!-- Card Wrapper -->
-    <div :class="!modal ? 'card shadow-lg bg-base-300 p-6' : ''">
+    <div :class="!modal ? 'card bg-base-300 p-6 shadow-lg' : ''">
       <!-- Header -->
-    <h1 class="font-bold" :class="{'text center text-4xl mb-2': !modal, 'text-xl': modal}">
-      {{ $props.isEventNew ? 'Add event' : 'Modify event' }}
-    </h1>
+      <h1
+        class="font-bold"
+        :class="{ 'text center mb-2 text-4xl': !modal, 'text-xl': modal }"
+      >
+        {{ $props.isEventNew ? 'Add event' : 'Modify event' }}
+      </h1>
 
-    <form @submit.prevent="" class="space-y-4">
-      <!-- Title Section -->
-      <div class="space-y-2">
-        <Label for="title" class="label-text ">Title</Label>
-        <div class="relative">
-          <input
-            v-model="_title"
-            id="title"
-            type="text"
-            class="w-full px-4 py-2 rounded-lg input  input-bordered"
-            placeholder="Event title"
-            required
-          />
-        </div>
-      </div>
-
-      <!-- Date and Time Section -->
-      <div class="grid gap-6" :class="{'grid-cols-1': modal, 'md:grid-cols-2': !modal}">
-        <!-- Start Date/Time -->
+      <form @submit.prevent="" class="space-y-4">
+        <!-- Title Section -->
         <div class="space-y-2">
-          <Label class="label-text ">Start</Label>
-          <div class="grid grid-cols-2 gap-3">
+          <Label for="title" class="label-text">Title</Label>
+          <div class="relative">
             <input
-              v-model="_startDate"
-              type="date"
-              class="px-4 py-2 rounded-lg input input-bordered text-center"
-            />
-            <input
-              v-model="_startTime"
-              type="time"
-              class="px-4 py-2 rounded-lg input input-bordered text-center"
+              v-model="_title"
+              id="title"
+              type="text"
+              class="input input-bordered w-full rounded-lg px-4 py-2"
+              placeholder="Event title"
+              required
             />
           </div>
         </div>
 
-        <!-- End Date/Time -->
-        <div class="space-y-2">
-          <Label class="label-text ">End</Label>
-          <div class="grid grid-cols-2 gap-3">
-            <input
-              v-model="_endDate"
-              type="date"
-              class="px-4 py-2 rounded-lg input input-bordered text-center"
-            />
-            <input
-              v-model="_endTime"
-              type="time"
-              class="px-4 py-2 rounded-lg input input-bordered text-center"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Location and Category Section -->
-      <div class="grid md:grid-cols-2 gap-6" :class="{'md:grid-cols-3': !modal}">
-        <div class="space-y-2">
-          <Label for="location" class="label-text ">Location</Label>
-          <input
-            v-model="_location"
-            id="location"
-            type="text"
-            class="w-full px-4 py-2 rounded-lg input input-bordered"
-            placeholder="Add location"
-          />
-        </div>
-
-        <div class="space-y-2">
-          <Label for="category" class="label-text ">Category</Label>
-          <input
-            v-model="_category"
-            id="category"
-            type="text"
-            class="w-full px-4 py-2 rounded-lg input  input-bordered"
-            placeholder="Add category"
-          />
-        </div>
-        <!-- Resource Section -->
-        <div class="space-y-2" v-if="!modal">
-          <Label for="resource" class="label-text ">Resource</Label>
-          <select
-            v-model="_resource"
-            id="resource"
-            class="w-full px-4 py-2 rounded-lg input  input-bordered"
-          >
-            <option value="null">None</option>
-            <option v-for="r in fResourcesList" :key="r.name" :value="r.name">
-              {{ r.name }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Note Section -->
-      <div class="space-y-2">
-        <Label for="note" class="label-text ">Note</Label>
-        <textarea
-          v-model="_note"
-          id="note"
-          class="w-full min-h-[80px] px-4 py-2 rounded-lg textarea textarea-bordered"
-          placeholder="Add description or notes"
-        ></textarea>
-      </div>
-
-      <!-- Additional Options (Only shown in full page) -->
-      <div v-if="!modal" class="space-y-6">
-        <div class="grid md:grid-cols-2">
-        <!-- Repetition Component -->
-        <div class="rounded-lg p-2">
-          <CalendarRepetition
-            :start-day="_startDate"
-            :end-day="_endDate"
-            :repetition="_repetition"
-            @save="addRepetition"
-          />
-          <pre class="mt-1 text-sm text-center text-wrap">{{ _repetitionSummary }}</pre>
-        </div>
-
-        <!-- Notifications Component -->
-        <div class="rounded-lg p-2">
-          <CalendarNotification
-            :notifications="_notifications"
-            @close="_showNotifications = false"
-            @save="addNotifications"
-          />
-          <pre class="mt-1 text-sm text-center text-wrap">{{ _notificationsSummary }}</pre>
-        </div>
-      </div>
-
-        <!-- Guests Section -->
-        <div class="space-y-4">
+        <!-- Date and Time Section -->
+        <div
+          class="grid gap-6"
+          :class="{ 'grid-cols-1': modal, 'md:grid-cols-2': !modal }"
+        >
+          <!-- Start Date/Time -->
           <div class="space-y-2">
-            <Label class="label-text ">Guests</Label>
-            <div class="flex gap-2">
+            <Label class="label-text">Start</Label>
+            <div class="grid grid-cols-2 gap-3">
               <input
-                v-model="_guest"
-                type="text"
-                class="flex-wrap w-full rounded-lg input input-bordered"
-                placeholder="Add guest username"
+                v-model="_startDate"
+                type="date"
+                class="input input-bordered rounded-lg px-4 py-2 text-center"
               />
-              <button
-                class="btn btn-neutral"
-                @click="addGuest(_guest)"
-              >
-                Add
-              </button>
+              <input
+                v-model="_startTime"
+                type="time"
+                class="input input-bordered rounded-lg px-4 py-2 text-center"
+              />
             </div>
           </div>
 
-          <!-- Guest Lists -->
-          <div class="grid grid-cols-1 md:grid-cols-2 space-y-2 md:space-y-0">
-            <ul class="flex gap-1 flex-wrap justify-center">
-              <li v-if="_guestsWaiting.length == 0" class="text-center text-warning">No guests waiting</li>
-              <li
-                v-for="g in _guestsWaiting"
-                :key="g.id"
-                class="inline-flex items-center rounded-full bg-warning/20 px-3 py-1 font-medium text-warning">
-                <span>{{ g.username }}</span>
-                <button
-                  @click="_guestsWaiting = _guestsWaiting.filter(u => u.id !== g.id)"
-                  class="bg-transparent text-red-500 hover:text-red-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </button>
-              </li>
-            </ul>
-
-            <ul class="flex gap-1 flex-wrap justify-center">
-              <li v-if="_guestsAccepted.length == 0" class="text-center text-success">No guests accepted</li>
-              <li
-                v-for="g in _guestsAccepted"
-                :key="g.id"
-                class="inline-flex items-center rounded-full bg-success/20 px-3 py-1 font-medium text-success">
-                <span>{{ g.username }}</span>
-                <button
-                  @click="_guestsAccepted = _guestsAccepted.filter(u => u.id !== g.id)"
-                  class="bg-transparent text-red-500 hover:text-red-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </button>
-              </li>
-            </ul>
+          <!-- End Date/Time -->
+          <div class="space-y-2">
+            <Label class="label-text">End</Label>
+            <div class="grid grid-cols-2 gap-3">
+              <input
+                v-model="_endDate"
+                type="date"
+                class="input input-bordered rounded-lg px-4 py-2 text-center"
+              />
+              <input
+                v-model="_endTime"
+                type="time"
+                class="input input-bordered rounded-lg px-4 py-2 text-center"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Action Buttons -->
-      <div class="flex justify-end gap-4 pt-2">
-        <NuxtLink
-          v-if="$props.isEventNew && !$props.modal"
-          :to="{ name: 'calendar' }"
-          class="btn btn-neutral"
+        <!-- Location and Category Section -->
+        <div
+          class="grid gap-6 md:grid-cols-2"
+          :class="{ 'md:grid-cols-3': !modal }"
         >
-          Cancel
-        </NuxtLink>
+          <div class="space-y-2">
+            <Label for="location" class="label-text">Location</Label>
+            <input
+              v-model="_location"
+              id="location"
+              type="text"
+              class="input input-bordered w-full rounded-lg px-4 py-2"
+              placeholder="Add location"
+            />
+          </div>
 
-        <button
-          v-if="!$props.isEventNew && !$props.modal"
-          class="btn btn-error"
-          @click="deleteEvent()"
-        >
-          Delete
-        </button>
+          <div class="space-y-2">
+            <Label for="category" class="label-text">Category</Label>
+            <input
+              v-model="_category"
+              id="category"
+              type="text"
+              class="input input-bordered w-full rounded-lg px-4 py-2"
+              placeholder="Add category"
+            />
+          </div>
+          <!-- Resource Section -->
+          <div class="space-y-2" v-if="!modal">
+            <Label for="resource" class="label-text">Resource</Label>
+            <select
+              v-model="_resource"
+              id="resource"
+              class="input input-bordered w-full rounded-lg px-4 py-2"
+            >
+              <option value="null">None</option>
+              <option v-for="r in fResourcesList" :key="r.name" :value="r.name">
+                {{ r.name }}
+              </option>
+            </select>
+          </div>
+        </div>
 
-        <NuxtLink
-          v-if="modal"
-          :to="{
-            path: '/calendar/e/add',
-            query: {
-              title: _title,
-              start_date: _startDate,
-              start_time: _startTime,
-              end_date: _endDate,
-              end_time: _endTime,
-              location: _location,
-              note: _note,
-              category: _category
-            }
-          }"
-          class="btn btn-neutral"
-        >
-          More options
-        </NuxtLink>
+        <!-- Note Section -->
+        <div class="space-y-2">
+          <Label for="note" class="label-text">Note</Label>
+          <textarea
+            v-model="_note"
+            id="note"
+            class="textarea textarea-bordered min-h-[80px] w-full rounded-lg px-4 py-2"
+            placeholder="Add description or notes"
+          ></textarea>
+        </div>
 
-        <button
-          class="btn btn-success"
-          @click="saveEvent()"
-        >
-          {{ $props.isEventNew ? 'Create event' : 'Save changes' }}
-        </button>
-      </div>
-    </form>
-  </div>
+        <!-- Additional Options (Only shown in full page) -->
+        <div v-if="!modal" class="space-y-6">
+          <div class="grid md:grid-cols-2">
+            <!-- Repetition Component -->
+            <div class="rounded-lg p-2">
+              <CalendarRepetition
+                :start-day="_startDate"
+                :end-day="_endDate"
+                :repetition="_repetition"
+                @save="addRepetition"
+              />
+              <pre class="mt-1 text-wrap text-center text-sm">{{
+                _repetitionSummary
+              }}</pre>
+            </div>
+
+            <!-- Notifications Component -->
+            <div class="rounded-lg p-2">
+              <CalendarNotification
+                :notifications="_notifications"
+                @close="_showNotifications = false"
+                @save="addNotifications"
+              />
+              <pre class="mt-1 text-wrap text-center text-sm">{{
+                _notificationsSummary
+              }}</pre>
+            </div>
+          </div>
+
+          <!-- Guests Section -->
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <Label class="label-text">Guests</Label>
+              <div class="flex gap-2">
+                <input
+                  v-model="_guest"
+                  type="text"
+                  class="input input-bordered w-full flex-wrap rounded-lg"
+                  placeholder="Add guest username"
+                />
+                <button class="btn btn-neutral" @click="addGuest(_guest)">
+                  Add
+                </button>
+              </div>
+            </div>
+
+            <!-- Guest Lists -->
+            <div class="grid grid-cols-1 space-y-2 md:grid-cols-2 md:space-y-0">
+              <ul class="flex flex-wrap justify-center gap-1">
+                <li
+                  v-if="_guestsWaiting.length == 0"
+                  class="text-center text-warning"
+                >
+                  No guests waiting
+                </li>
+                <li
+                  v-for="g in _guestsWaiting"
+                  :key="g.id"
+                  class="inline-flex items-center gap-1 rounded-full bg-warning/20 px-3 py-1 font-medium text-warning"
+                >
+                  <span>{{ g.username }}</span>
+                  <button
+                    @click="
+                      _guestsWaiting = _guestsWaiting.filter(
+                        (u) => u.id !== g.id
+                      )
+                    "
+                    class="bg-transparent text-red-500 hover:text-red-600"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+
+              <ul class="flex flex-wrap justify-center gap-1">
+                <li
+                  v-if="_guestsAccepted.length == 0"
+                  class="text-center text-success"
+                >
+                  No guests accepted
+                </li>
+                <li
+                  v-for="g in _guestsAccepted"
+                  :key="g.id"
+                  class="inline-flex items-center gap-1 rounded-full bg-success/20 px-3 py-1 font-medium text-success"
+                >
+                  <span>{{ g.username }}</span>
+                  <button
+                    @click="
+                      _guestsAccepted = _guestsAccepted.filter(
+                        (u) => u.id !== g.id
+                      )
+                    "
+                    class="bg-transparent text-red-500 hover:text-red-600"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end gap-4 pt-2">
+          <NuxtLink
+            v-if="$props.isEventNew && !$props.modal"
+            :to="{ name: 'calendar' }"
+            class="btn btn-neutral"
+          >
+            Cancel
+          </NuxtLink>
+
+          <button
+            v-if="!$props.isEventNew && !$props.modal"
+            class="btn btn-error"
+            @click="deleteEvent()"
+          >
+            Delete
+          </button>
+
+          <NuxtLink
+            v-if="modal"
+            :to="{
+              path: '/calendar/e/add',
+              query: {
+                title: _title,
+                start_date: _startDate,
+                start_time: _startTime,
+                end_date: _endDate,
+                end_time: _endTime,
+                location: _location,
+                note: _note,
+                category: _category
+              }
+            }"
+            class="btn btn-neutral"
+          >
+            More options
+          </NuxtLink>
+
+          <button class="btn btn-success" @click="saveEvent()">
+            {{ $props.isEventNew ? 'Create event' : 'Save changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>

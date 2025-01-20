@@ -263,7 +263,7 @@ function notifyMessage(i: Notify) {
         </div>
         <div
           v-for="notification in $props.event.notify"
-          class="mr-2 inline-flex rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+          class="mb-1 mr-2 inline-flex rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
         >
           {{ notifyMessage(notification) }}
         </div>
