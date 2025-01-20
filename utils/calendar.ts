@@ -344,3 +344,115 @@ export function isUserAvailable(
     )
   })
 }
+
+// Interfaccia comune per tutti i tipi di evento del calendario
+export interface CalendarItem {
+  id: string
+  start?: number
+  end?: number
+  date?: number
+  allday?: boolean
+  type: 'event' | 'guest-event' | 'task' | 'pomodoro' | 'resource' | 'project' | 'not-available' | 'note-task'
+  originalItem: EventType | Task | PomodoroEvent | Resource | ProjectEvent | NotAvailable | NoteTask
+}
+
+function convertToCalendarItem(
+  item: EventType | Task | PomodoroEvent | Resource | ProjectEvent | NotAvailable | NoteTask,
+  type: CalendarItem['type']
+): CalendarItem {
+  const calendarItem: CalendarItem = {
+    id: item.id,
+    type,
+    originalItem: item
+  }
+
+  if ('start' in item) {
+    calendarItem.start = item.start
+  }
+  if ('end' in item) {
+    calendarItem.end = item.end
+  }
+  if ('date' in item) {
+    calendarItem.start = item.date
+    calendarItem.end = item.date
+  }
+  if(type === 'pomodoro' || type === 'note-task' || type === 'project') {
+    calendarItem.allday = true
+  }
+  return calendarItem
+}
+
+export function getAllItemsForDay(
+  displayDate: Date,
+  {
+    events,
+    eventsGuest,
+    tasks,
+    pomodoro,
+    resources,
+    projects,
+    notAvailable,
+    noteTasks
+  }: {
+    events: EventType[] | null
+    eventsGuest: EventType[] | null
+    tasks: Task[] | null
+    pomodoro: PomodoroEvent[] | null
+    resources: Resource[] | null
+    projects: ProjectEvent[] | null
+    notAvailable: NotAvailable[] | null
+    noteTasks: NoteTask[] | null
+  }
+): CalendarItem[] {
+  const allItems: CalendarItem[] = []
+
+  if (events) {
+    getEventsForDay(events, displayDate).forEach(event => {
+      allItems.push(convertToCalendarItem(event, 'event'))
+    })
+  }
+  if (eventsGuest) {
+    getEventsForDay(eventsGuest, displayDate).forEach(event => {
+      allItems.push(convertToCalendarItem(event, 'guest-event'))
+    })
+  }
+  if (tasks) {
+    getTasksForDay(tasks, displayDate).forEach(task => {
+      allItems.push(convertToCalendarItem(task, 'task'))
+    })
+  }
+  if (pomodoro) {
+    getPomodorosForDay(pomodoro, displayDate).forEach(pom => {
+      allItems.push(convertToCalendarItem(pom, 'pomodoro'))
+    })
+  }
+  if (resources) {
+    getResourcesForDay(resources, displayDate).forEach(resource => {
+      allItems.push(convertToCalendarItem(resource, 'resource'))
+    })
+  }
+  if (projects) {
+    getProjectsForDay(projects, displayDate).forEach(project => {
+      allItems.push(convertToCalendarItem(project, 'project'))
+    })
+  }
+  if (notAvailable) {
+    getNotAvailableForDay(notAvailable, displayDate).forEach(na => {
+      allItems.push(convertToCalendarItem(na, 'not-available'))
+    })
+  }
+  if (noteTasks) {
+    getNoteTasksForDay(noteTasks, displayDate).forEach(nt => {
+      allItems.push(convertToCalendarItem(nt, 'note-task'))
+    })
+  }
+
+  return allItems.sort((a, b) => {
+    if (a.allday && !b.allday) return -1
+    if (!a.allday && b.allday) return 1
+
+    const aTime = a.start || a.end || 0
+    const bTime = b.start || b.end || 0
+    return aTime - bTime
+  })
+}

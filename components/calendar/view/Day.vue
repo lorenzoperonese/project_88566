@@ -29,81 +29,57 @@ const $props = defineProps<{
           'bg-base-200': isToday($props.displayDate, $props.today)
         }"
       >
-        <CalendarEvent
-          v-for="event in getEventsForDay($props.events, $props.displayDate)"
-          :key="event.id"
-          :event="event"
-          :today="$props.today"
-          :is-responsive="false"
-        />
-        <CalendarEvent
-          v-for="event in getEventsForDay(
-            $props.eventsGuest,
-            $props.displayDate
-          )"
-          :key="event.id"
-          :event="event"
-          :today="$props.today"
-          :guest="true"
-          :is-responsive="false"
-        />
-
-        <CalendarTask
-          v-for="task in getTasksForDay($props.tasks, $props.displayDate)"
-          :key="task.id"
-          :task="task"
-          :today="$props.today"
-          :is-responsive="false"
-        />
-
-        <CalendarPomodoro
-          v-for="pomodoro in getPomodorosForDay(
-            $props.pomodoro,
-            $props.displayDate
-          )"
-          :key="pomodoro.id"
-          :pomodoro="pomodoro"
-          :today="$props.today"
-          :is-responsive="false"
-        />
-
-        <CalendarResource
-          v-for="resource in getResourcesForDay(
-            $props.resources,
-            $props.displayDate
-          )"
-          :key="resource.id"
-          :resource="resource"
-          :today="$props.today"
-          :is-responsive="false"
-        />
-
-        <CalendarProject
-          v-for="p in getProjectsForDay($props.projects, $props.displayDate)"
-          :key="p.id"
-          :p-event="p"
-          :today="$props.today"
-          :is-responsive="false"
-        />
-
-        <CalendarNotAvailable
-          v-for="na in getNotAvailableForDay(
-            $props.notAvailable,
-            $props.displayDate
-          )"
-          :key="na.id"
-          :not-available="na"
-          :today="$props.today"
-          :is-responsive="false"
-        />
-
-        <CalendarNoteTask
-          v-for="nt in getNoteTasksForDay($props.noteTasks, $props.displayDate)"
-          :key="nt.id"
-          :note-task="nt"
-          :today="$props.today"
-          :is-responsive="false"
-        />
+        <template v-for="item in getAllItemsForDay($props.displayDate, $props)" :key="item.id">
+          <CalendarEvent
+            v-if="item.type === 'event'"
+            :event="item.originalItem as EventType"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+          <CalendarEvent
+            v-else-if="item.type === 'guest-event'"
+            :event="item.originalItem as EventType"
+            :today="$props.today"
+            :guest="true"
+            :is-responsive="false"
+          />
+          <CalendarTask
+            v-else-if="item.type === 'task'"
+            :task="item.originalItem as Task"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+          <CalendarPomodoro
+            v-else-if="item.type === 'pomodoro'"
+            :pomodoro="item.originalItem as PomodoroEvent"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+          <CalendarResource
+            v-else-if="item.type === 'resource'"
+            :resource="item.originalItem as Resource"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+          <CalendarProject
+            v-else-if="item.type === 'project'"
+            :p-event="item.originalItem as ProjectEvent"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+          <CalendarNotAvailable
+            v-else-if="item.type === 'not-available'"
+            :not-available="item.originalItem as NotAvailable"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+          <CalendarNoteTask
+            v-else-if="item.type === 'note-task'"
+            :note-task="item.originalItem as NoteTask"
+            :today="$props.today"
+            :is-responsive="false"
+          />
+        </template>
       </div>
     </div>
   </div>

@@ -45,14 +45,7 @@ const _days = computed(() => {
 interface CalendarCell {
   index: number
   day: number
-  events: EventType[]
-  eventsGuest: EventType[]
-  tasks: Task[]
-  pomodoros: PomodoroEvent[]
-  resources: Resource[]
-  projects: ProjectEvent[]
-  notAvailable: NotAvailable[]
-  noteTasks: NoteTask[]
+  items: CalendarItem[]
 }
 
 const calendar = computed((): CalendarCell[] => {
@@ -68,19 +61,22 @@ const calendar = computed((): CalendarCell[] => {
     result.push({
       index,
       day: _days.value[index],
-      events: getEventsForDay($props.events, normalizedDate),
-      eventsGuest: getEventsForDay($props.eventsGuest, normalizedDate),
-      tasks: getTasksForDay($props.tasks, normalizedDate),
-      pomodoros: getPomodorosForDay($props.pomodoro, normalizedDate),
-      resources: getResourcesForDay($props.resources, normalizedDate),
-      projects: getProjectsForDay($props.projects, normalizedDate),
-      notAvailable: getNotAvailableForDay($props.notAvailable, normalizedDate),
-      noteTasks: getNoteTasksForDay($props.noteTasks, normalizedDate)
+      items: getAllItemsForDay(normalizedDate, {
+        events: $props.events,
+        eventsGuest: $props.eventsGuest,
+        tasks: $props.tasks,
+        pomodoro: $props.pomodoro,
+        resources: $props.resources,
+        projects: $props.projects,
+        notAvailable: $props.notAvailable,
+        noteTasks: $props.noteTasks
+      })
     })
   }
   return result
 })
 </script>
+
 
 <template>
   <div class="grid grid-cols-7 bg-base-200 md:gap-1 md:p-2">
@@ -126,66 +122,54 @@ const calendar = computed((): CalendarCell[] => {
         </div>
       </div>
 
-      <CalendarEvent
-        v-for="event in c.events"
-        :key="event.id"
-        :event="event"
-        :today="$props.today"
-        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
-      />
-      <CalendarEvent
-        v-for="event in c.eventsGuest"
-        :key="event.id"
-        :event="event"
-        :today="$props.today"
-        :guest="true"
-        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
-      />
-
-      <CalendarTask
-        v-for="task in c.tasks"
-        :key="task.id"
-        :task="task"
-        :today="$props.today"
-      />
-
-      <CalendarPomodoro
-        v-for="pomodoro in c.pomodoros"
-        :key="pomodoro.id"
-        :pomodoro="pomodoro"
-        :today="$props.today"
-      />
-
-      <CalendarResource
-        v-for="resource in c.resources"
-        :key="resource.id"
-        :resource="resource"
-        :today="$props.today"
-        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
-      />
-
-      <CalendarProject
-        v-for="p in c.projects"
-        :key="p.id"
-        :p-event="p"
-        :today="$props.today"
-        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
-      />
-
-      <CalendarNotAvailable
-        v-for="na in c.notAvailable"
-        :key="na.id"
-        :not-available="na"
-        :today="$props.today"
-        :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
-      />
-
-      <CalendarNoteTask
-        v-for="nt in c.noteTasks"
-        :key="nt.id"
-        :note-task="nt"
-        :today="$props.today"
-      />
+      <template v-for="item in c.items" :key="item.id">
+        <CalendarEvent
+          v-if="item.type === 'event'"
+          :event="item.originalItem as EventType"
+          :today="$props.today"
+          :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
+        />
+        <CalendarEvent
+          v-else-if="item.type === 'guest-event'"
+          :event="item.originalItem as EventType"
+          :today="$props.today"
+          :guest="true"
+          :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
+        />
+        <CalendarTask
+          v-else-if="item.type === 'task'"
+          :task="item.originalItem as Task"
+          :today="$props.today"
+        />
+        <CalendarPomodoro
+          v-else-if="item.type === 'pomodoro'"
+          :pomodoro="item.originalItem as PomodoroEvent"
+          :today="$props.today"
+        />
+        <CalendarResource
+          v-else-if="item.type === 'resource'"
+          :resource="item.originalItem as Resource"
+          :today="$props.today"
+          :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
+        />
+        <CalendarProject
+          v-else-if="item.type === 'project'"
+          :p-event="item.originalItem as ProjectEvent"
+          :today="$props.today"
+          :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
+        />
+        <CalendarNotAvailable
+          v-else-if="item.type === 'not-available'"
+          :not-available="item.originalItem as NotAvailable"
+          :today="$props.today"
+          :display-date="getNormalizedDate($props.displayDate, c.day, c.index)"
+        />
+        <CalendarNoteTask
+          v-else-if="item.type === 'note-task'"
+          :note-task="item.originalItem as NoteTask"
+          :today="$props.today"
+        />
+      </template>
     </div>
   </div>
 </template>
