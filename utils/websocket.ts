@@ -13,11 +13,10 @@ export const wsState = reactive({
 })
 
 export const socket = io({
-  auth: {
-    token: token.value
+  auth: (cb) => {
+    cb({ token: token.value }) // Gets fresh token value each time
   }
 })
-
 socket.on('connect', () => {
   wsState.connected = true
 })
