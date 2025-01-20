@@ -50,7 +50,7 @@ async function handleDeny() {
 <template>
   <div
     v-if="show"
-    class="fixed bottom-4 right-4 w-full max-w-sm transform overflow-hidden rounded-lg bg-base-300 shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
+    class="fixed bottom-4 right-4 w-full max-w-xs transform overflow-hidden rounded-lg bg-base-300 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 md:max-w-sm"
   >
     <div class="p-4">
       <div class="mb-4 flex items-center justify-between">
