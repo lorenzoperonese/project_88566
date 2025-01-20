@@ -5,7 +5,7 @@ const me = await getME()
 const { $toast } = useNuxtApp()
 
 const $props = defineProps({
-  state: { type: String as PropType<String>, default: 'private' }
+  state: { type: String as PropType<string>, default: 'private' }
 })
 
 const _state = ref<string>($props.state.toString())
@@ -128,10 +128,10 @@ function save() {
             </div>
             <div class="flex gap-2">
               <input
+                v-model="guest"
                 type="text"
                 placeholder="username"
                 class="input input-bordered"
-                v-model="guest"
               />
               <button class="btn btn-success" @click.prevent="addGuest">
                 Add

@@ -71,21 +71,21 @@ const $props = defineProps<{
         <CalendarProject
           v-for="p in getProjectsForDay($props.projects, day)"
           :key="p.id"
-          :pEvent="p"
+          :p-event="p"
           :today="$props.today"
         />
 
         <CalendarNotAvailable
           v-for="na in getNotAvailableForDay($props.notAvailable, day)"
           :key="na.id"
-          :notAvailable="na"
+          :not-available="na"
           :today="$props.today"
         />
 
         <CalendarNoteTask
           v-for="nt in getNoteTasksForDay($props.noteTasks, day)"
           :key="nt.id"
-          :noteTask="nt"
+          :note-task="nt"
           :today="$props.today"
         />
       </div>

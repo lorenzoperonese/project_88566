@@ -154,27 +154,27 @@ function delTodo(t: NoteTodo) {
             class="flex flex-wrap justify-evenly gap-2 border-b border-b-neutral-800 last:border-none"
           >
             <input
+              v-model="t.title"
               class="input input-sm flex-1 text-xs md:input-md placeholder:text-gray-600"
               type="text"
               placeholder="Todo..."
-              v-model="t.title"
             />
             <input
+              v-model="t.date"
               class="input input-sm input-bordered text-xs md:input-md"
               type="date"
-              v-model="t.date"
             />
             <input
+              v-model="t.time"
               class="input input-sm input-bordered text-xs md:input-md"
               type="time"
-              v-model="t.time"
             />
             <div class="form-control">
               <label class="label cursor-pointer">
                 <span class="label-text mr-2">Completed</span>
                 <input
-                  type="checkbox"
                   v-model="t.done"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                   @click.stop=""
                 />

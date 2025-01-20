@@ -1,4 +1,4 @@
-import webpush from 'web-push'
+import type webpush from 'web-push'
 import { PushNotification } from '@/server/db'
 
 export default defineEventHandler(async (event) => {

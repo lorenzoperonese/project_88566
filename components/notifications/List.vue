@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { $toast } = useNuxtApp()
 import { wsState } from '@/utils/websocket'
+const { $toast } = useNuxtApp()
 
 const $emits = defineEmits<{
   (e: 'update'): void
@@ -48,6 +48,7 @@ function notificationLink(
     default:
       break
   }
+  readNotification(id)
 }
 
 watch(wsState.notifications, fetchNotifications)
@@ -74,8 +75,8 @@ async function readNotification(id: string) {
         class="flex justify-between"
       >
         <li
-          @click="notificationLink(n.id, n.type, n.identifier)"
           class="flex-1"
+          @click="notificationLink(n.id, n.type, n.identifier)"
         >
           <a
             class="flex max-w-64 flex-col md:max-w-72"

@@ -61,9 +61,9 @@ async function deleteResource(id: string) {
     <div class="mt-5">
       <div class="form-control max-w-sm gap-y-2">
         <input
+          v-model="newResource"
           class="input input-bordered"
           type="text"
-          v-model="newResource"
           placeholder="New resource"
         />
         <button class="btn btn-secondary" @click="addResource">Add</button>

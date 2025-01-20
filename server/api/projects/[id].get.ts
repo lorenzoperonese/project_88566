@@ -11,7 +11,7 @@ type PopulatedProject = FlattenMaps<
   }
 >
 
-export default defineEventHandler(async (event): Promise<Project | Object> => {
+export default defineEventHandler(async (event): Promise<Project | object> => {
   try {
     const id = getRouterParam(event, 'id')
     if (!id) {

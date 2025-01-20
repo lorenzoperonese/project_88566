@@ -7,6 +7,10 @@ const { data: pending } = await useFetch<number>('/api/notifications/number')
 const { data: session } = await useFetch<User>('/api/session')
 
 const component = ref('')
+const showDropdown1 = ref(false)
+const showDropdown2 = ref(false)
+
+const me = await getME()
 
 const avatar = computed(() => {
   let a = 'Aidan'
@@ -57,17 +61,19 @@ async function logout() {
   localStorage.removeItem('pomodoro-status')
   localStorage.removeItem('pomodoro-timer')
 
-  const registration = await navigator.serviceWorker.ready
-  const subscription = await registration.pushManager.getSubscription()
-  if (subscription) {
-    subscription.unsubscribe()
-    try {
-      await $fetch('/api/notify', {
-        method: 'DELETE',
-        body: JSON.stringify(subscription)
-      })
-    } catch (err) {
-      console.error(err)
+  if ('serviceWorker' in navigator) {
+    const registration = await navigator.serviceWorker.ready
+    const subscription = await registration.pushManager.getSubscription()
+    if (subscription) {
+      await subscription.unsubscribe()
+      try {
+        await $fetch('/api/notify', {
+          method: 'DELETE',
+          body: JSON.stringify(subscription)
+        })
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 
@@ -96,7 +102,12 @@ watch(wsState.notifications, updatePending)
   <div class="grid grid-cols-3 bg-base-300 p-2">
     <div class="lg:col-span-2">
       <div class="dropdown block lg:hidden">
-        <div tabindex="0" role="button" class="btn btn-circle btn-ghost">
+        <div
+          tabindex="0"
+          role="button"
+          class="btn btn-circle btn-ghost"
+          @click="showDropdown1 = !showDropdown1"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -113,6 +124,7 @@ watch(wsState.notifications, updatePending)
           </svg>
         </div>
         <ul
+          v-if="showDropdown1"
           tabindex="0"
           class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-300 p-2 shadow"
         >
@@ -134,6 +146,9 @@ watch(wsState.notifications, updatePending)
           <li>
             <NuxtLink :to="{ name: 'projects' }">Projects</NuxtLink>
           </li>
+          <li v-if="me.admin">
+            <NuxtLink :to="{ name: 'resources' }">Resources</NuxtLink>
+          </li>
         </ul>
       </div>
 
@@ -154,6 +169,12 @@ watch(wsState.notifications, updatePending)
         <NuxtLink class="btn btn-ghost text-lg" :to="{ name: 'projects' }"
           >Projects</NuxtLink
         >
+        <NuxtLink
+          v-if="me.admin"
+          class="btn btn-ghost text-lg"
+          :to="{ name: 'resources' }"
+          >Resources</NuxtLink
+        >
       </div>
     </div>
     <div class="flex justify-center lg:hidden">
@@ -173,12 +194,18 @@ watch(wsState.notifications, updatePending)
       />
 
       <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
+        <div
+          tabindex="0"
+          role="button"
+          class="avatar btn btn-circle btn-ghost"
+          @click="showDropdown2 = !showDropdown2"
+        >
           <div class="w-10 rounded-full">
             <img alt="avatar" :src="avatar" />
           </div>
         </div>
         <ul
+          v-if="showDropdown2"
           tabindex="0"
           class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-300 p-2 shadow"
         >

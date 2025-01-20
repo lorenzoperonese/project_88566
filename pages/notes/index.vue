@@ -162,19 +162,19 @@ const hideMobileCategories = () => {
         style="height: calc(100vh - var(--navbar-height))"
       >
         <NotesAdder
-          class="flex-1"
           v-show="!_mobileSearching"
+          class="flex-1"
           :categories="_notesCategories"
           @save="addNote"
         />
 
         <div>
           <input
-            type="text"
+            v-show="_mobileSearching"
             v-model="_search"
+            type="text"
             placeholder="Search..."
             class="input input-bordered w-full p-2 placeholder:text-gray-600"
-            v-show="_mobileSearching"
           />
         </div>
 
@@ -183,7 +183,7 @@ const hideMobileCategories = () => {
           class=""
           @delete="deleteNote"
           @duplicate="duplicate"
-          @mobileSearch="_mobileSearching = !_mobileSearching"
+          @mobile-search="_mobileSearching = !_mobileSearching"
           @mobile-categories="_mobileCategories = !_mobileCategories"
         />
       </div>

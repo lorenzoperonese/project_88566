@@ -86,8 +86,8 @@ onMounted(async () => {
 
     // Header
 
-    let min = new Date(Math.min(...tasks.map((task) => task.start)))
-    let max = new Date(Math.max(...tasks.map((task) => task.end)))
+    const min = new Date(Math.min(...tasks.map((task) => task.start)))
+    const max = new Date(Math.max(...tasks.map((task) => task.end)))
 
     const nDays = (max - min) / (1000 * 60 * 60 * 24) + 1
 
@@ -213,7 +213,7 @@ onMounted(async () => {
       taskDiv2.appendChild(taksDiv2Description)
 
       const taskDiv2Person = document.createElement('div')
-      let __users = await allUsers()
+      const __users = await allUsers()
       taskDiv2Person.textContent = __users.find(
         (user) => user.id === task.user_id
       ).name
@@ -264,7 +264,7 @@ onMounted(async () => {
   // ------ Task modal ------
 
   async function allUsers() {
-    let users = []
+    const users = []
 
     project.guests.waiting.forEach((user) => {
       users.push(user)
@@ -285,8 +285,8 @@ onMounted(async () => {
   }
 
   async function inserUsersIntoSelect() {
-    let select = document.getElementById('task-modal-select-user')
-    let users = await allUsers()
+    const select = document.getElementById('task-modal-select-user')
+    const users = await allUsers()
 
     select.innerHTML = users
       .map((user) => {
@@ -335,13 +335,13 @@ onMounted(async () => {
   async function saveTask() {
     console.log('Saving task')
     const title = document.getElementById('task-modal-title').value
-    let description = document.getElementById('task-modal-description').value
+    const description = document.getElementById('task-modal-description').value
     const phase = document.getElementById('task-modal-phase').value
     const state = document.getElementById('task-modal-state').value
     const start = document.getElementById('task-modal-start').value
     const end = document.getElementById('task-modal-end').value
-    let input = document.getElementById('task-modal-input').value
-    let output = document.getElementById('task-modal-output').value
+    const input = document.getElementById('task-modal-input').value
+    const output = document.getElementById('task-modal-output').value
     console.log('Saving task 2')
     const dependency = document.getElementById(
       'task-modal-select-depends'
@@ -440,7 +440,7 @@ onMounted(async () => {
 
   // ------ Edit Task modal ------
   function editTask(id) {
-    let t = tasks.find((task) => task.id === id)
+    const t = tasks.find((task) => task.id === id)
     console.log('Want to edit', t)
 
     document.getElementById('task-modal-title').value = t.title
@@ -506,7 +506,7 @@ onMounted(async () => {
     document.getElementById('task-modal-subtasks-list').innerHTML = ''
 
     for (const t of tmpSubtasks) {
-      let div = document.createElement('div')
+      const div = document.createElement('div')
       div.innerHTML = `
         <div class="flex gap-2 justify-between">
           <div>
@@ -642,7 +642,7 @@ onMounted(async () => {
 
   function insetColorLegend() {
     const el = document.getElementById('color-legend')
-    for (let state of taskStates) {
+    for (const state of taskStates) {
       const div = document.createElement('div')
       div.classList.add('flex')
       div.classList.add('items-center')
@@ -738,7 +738,7 @@ function dispatchEvent() {
       </div>
 
       <div class="flex flex-col gap-2 md:flex-row">
-        <div class="form-control bordered invisible" id="select-linear-order">
+        <div id="select-linear-order" class="form-control bordered invisible">
           <select class="select select-bordered w-full max-w-xs">
             <option value="date">Date</option>
             <option value="person">Person</option>
@@ -747,8 +747,8 @@ function dispatchEvent() {
 
         <div class="form-control bordered">
           <select
-            class="select select-bordered w-full max-w-xs"
             id="select-gannt-linear"
+            class="select select-bordered w-full max-w-xs"
           >
             <option value="gannt">Gannt</option>
             <option value="linear">Linear</option>
@@ -759,20 +759,20 @@ function dispatchEvent() {
 
     <div class="rounded bg-base-200 p-2">
       <div id="view-gannt">
-        <div class="grid gap-1 overflow-x-auto" id="tasks-grid"></div>
+        <div id="tasks-grid" class="grid gap-1 overflow-x-auto"></div>
       </div>
 
       <div id="view-linear" class="hidden">
         <div
-          class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
           id="tasks-linear"
+          class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
         ></div>
       </div>
 
       <div class="mt-5 flex flex-col justify-between gap-4 md:flex-row">
         <button
-          class="btn btn-outline btn-primary btn-sm md:btn-md"
           id="btn-add-task"
+          class="btn btn-outline btn-primary btn-sm md:btn-md"
         >
           Add task
         </button>
@@ -829,8 +829,8 @@ function dispatchEvent() {
               <label for="task-modal-state" class="label-text">State</label>
             </div>
             <select
-              class="select select-bordered select-sm w-full max-w-xs md:select-md"
               id="task-modal-state"
+              class="select select-bordered select-sm w-full max-w-xs md:select-md"
             >
               <option value="unavailable">Unavailable</option>
               <option value="todo">Pending</option>
@@ -901,8 +901,8 @@ function dispatchEvent() {
               >
             </div>
             <select
-              class="select select-bordered select-sm w-full max-w-xs md:select-md"
               id="task-modal-select-depends"
+              class="select select-bordered select-sm w-full max-w-xs md:select-md"
             >
               <!-- NEED TO FILL -->
             </select>
@@ -914,8 +914,8 @@ function dispatchEvent() {
             </div>
             <div class="flex justify-between">
               <select
-                class="select select-bordered select-sm w-full max-w-xs md:select-md"
                 id="task-modal-select-translation"
+                class="select select-bordered select-sm w-full max-w-xs md:select-md"
               >
                 <option value="true">Translation</option>
                 <option value="false">Contractions</option>
@@ -925,9 +925,9 @@ function dispatchEvent() {
                 <label class="label cursor-pointer">
                   <span class="label-text mr-4">Milestone</span>
                   <input
+                    id="task-modal-checkbox-milestone"
                     type="checkbox"
                     class="checkbox checkbox-sm md:checkbox-md"
-                    id="task-modal-checkbox-milestone"
                   />
                 </label>
               </div>
@@ -941,8 +941,8 @@ function dispatchEvent() {
               >
             </div>
             <select
-              class="select select-bordered select-sm w-full max-w-xs md:select-md"
               id="task-modal-select-user"
+              class="select select-bordered select-sm w-full max-w-xs md:select-md"
             >
               <!-- NEED TO FILL -->
             </select>
@@ -959,19 +959,19 @@ function dispatchEvent() {
               class="flex flex-col gap-2"
             ></div>
             <div
-              class="mt-2 flex justify-between gap-2"
               id="task-modal-subtasks-adder"
+              class="mt-2 flex justify-between gap-2"
             >
               <input
+                id="task-modal-subtasks-input"
                 type="text"
                 placeholder="Subtask..."
                 class="input input-sm input-bordered flex-1 text-sm md:input-md placeholder:text-gray-600"
-                id="task-modal-subtasks-input"
               />
               <button
+                id="btn-add-subtask"
                 class="btn btn-primary btn-sm md:btn-md"
                 type="button"
-                id="btn-add-subtask"
               >
                 Add subtask task
               </button>
@@ -985,14 +985,14 @@ function dispatchEvent() {
             <button class="btn btn-sm md:btn-md">Close</button>
           </form>
           <button
-            class="btn btn-error btn-sm invisible md:btn-md"
             id="task-modal-delete"
+            class="btn btn-error btn-sm invisible md:btn-md"
           >
             Delete
           </button>
           <button
-            class="btn btn-success btn-sm invisible md:btn-md"
             id="task-modal-save"
+            class="btn btn-success btn-sm invisible md:btn-md"
           >
             Save
           </button>
@@ -1001,9 +1001,9 @@ function dispatchEvent() {
     </dialog>
 
     <TmButton
+      id="projects-tm-btn"
       class="fixed bottom-4 left-4"
       @update="dispatchEvent()"
-      id="projects-tm-btn"
     />
   </div>
 </template>

@@ -143,9 +143,9 @@ function removeRepetition(notification: Notify) {
                       <label class="label cursor-pointer space-x-2">
                         <span class="label-text">Repeat until response</span>
                         <input
+                          v-model="notification.repeat.untilResponse"
                           type="checkbox"
                           class="checkbox checkbox-sm"
-                          v-model="notification.repeat.untilResponse"
                         />
                       </label>
                     </div>

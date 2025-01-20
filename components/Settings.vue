@@ -58,8 +58,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show calendar preview</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.showCalendar"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -67,8 +67,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show notes preview</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.showNotes"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -76,8 +76,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show pomodoro preview</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.showPomodoro"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -85,8 +85,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show chat preview</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.showChat"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -94,8 +94,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show projects preview</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.showProjects"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -104,8 +104,8 @@ watch(
           <span class="label-text">Calendar filter</span>
         </div>
         <select
-          class="select select-bordered"
           v-model="localSettings.home.calendarFilter"
+          class="select select-bordered"
         >
           <option value="all">All</option>
           <option value="events">Events only</option>
@@ -116,8 +116,8 @@ watch(
           <span class="label-text">Notes filter</span>
         </div>
         <select
-          class="select select-bordered"
           v-model="localSettings.home.notesFilter"
+          class="select select-bordered"
         >
           <option value="all">All</option>
           <option value="private">Private notes only</option>
@@ -128,8 +128,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show pomodoro time if paused</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.pomodoroShowTimeIfPaused"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -137,8 +137,8 @@ watch(
         <label class="label cursor-pointer">
           <span class="label-text">Show chat Hub</span>
           <input
-            type="checkbox"
             v-model="localSettings.home.chatShowHub"
+            type="checkbox"
             class="checkbox"
           />
         </label>
@@ -147,9 +147,9 @@ watch(
           <span class="label-text">Chat Limit</span>
         </div>
         <input
+          v-model="localSettings.home.chatLimit"
           type="number"
           min="1"
-          v-model="localSettings.home.chatLimit"
           class="input input-bordered w-full max-w-xs invalid:border-error invalid:text-error"
         />
 
@@ -157,9 +157,9 @@ watch(
           <span class="label-text">Projects Limit</span>
         </div>
         <input
+          v-model="localSettings.home.projectsLimit"
           type="number"
           min="1"
-          v-model="localSettings.home.projectsLimit"
           class="input input-bordered w-full max-w-xs invalid:border-error invalid:text-error"
         />
       </div>

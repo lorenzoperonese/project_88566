@@ -24,7 +24,7 @@ const $props = defineProps<{
 
         <template v-for="nt in $props.noteTasks" :key="nt.id">
           <CalendarNoteTask
-            :noteTask="nt"
+            :note-task="nt"
             :today="$props.today"
             :full-date="true"
             :is-responsive="false"

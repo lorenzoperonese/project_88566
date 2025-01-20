@@ -26,10 +26,10 @@ function rejectEvent() {
 </script>
 
 <template>
-  <div class="w-full max-w-md p-2">
-    <div v-if="_eventGuest" class="flex flex-col gap-2">
+  <div class="w-full">
+    <div v-if="_eventGuest" class="flex flex-col bg-base-200 p-2">
       <CalendarShowEvent :event="_eventGuest" />
-      <div class="flex justify-evenly">
+      <div class="mx-auto flex w-1/2 justify-evenly">
         <button class="btn btn-error w-2/5" @click="rejectEvent">Reject</button>
         <button class="btn btn-success w-2/5" @click="acceptEvent">
           Accept

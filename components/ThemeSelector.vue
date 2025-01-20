@@ -37,9 +37,9 @@ const themes = [
   'nord',
   'sunset'
 ]
+
 async function changeTheme() {
   document.documentElement.setAttribute('data-theme', theme.value)
-
   await $fetch('/api/session', {
     method: 'PUT',
     body: JSON.stringify({ theme: theme.value })
@@ -51,8 +51,12 @@ async function changeTheme() {
     <div class="flex justify-between">
       <span class="flex items-center"> Theme </span>
       <div class="flex justify-evenly gap-4">
-        <select v-model="theme" class="select select-bordered">
-          <option v-for="t in themes" :key="t" :value="t" @click="changeTheme">
+        <select
+          v-model="theme"
+          class="select select-bordered"
+          @change="changeTheme"
+        >
+          <option v-for="t in themes" :key="t" :value="t">
             {{ t }}
           </option>
         </select>

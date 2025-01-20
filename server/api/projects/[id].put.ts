@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
       throw Error('Id not found')
     }
 
-    let body = await readBody<PutProjectEvent>(event)
+    const body = await readBody<PutProjectEvent>(event)
 
     if (!body) {
       throw createError({
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    let og = await Project.findById(project_id)
+    const og = await Project.findById(project_id)
 
     if (!og) {
       throw createError({
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
 
     const users_ids: Types.ObjectId[] = []
     for (const i in body.guests) {
-      let u = await User.findOne({ username: body.guests[i] })
+      const u = await User.findOne({ username: body.guests[i] })
       if (!u) {
         throw createError({
           statusCode: 404,

@@ -6,6 +6,8 @@ import {
   CalendarViewTasks
 } from '#components'
 
+import type { SwipeDirection } from '@vueuse/core'
+
 definePageMeta({
   layout: 'navbar'
 })
@@ -39,6 +41,8 @@ const _filterResources = ref(false)
 const _filterProjects = ref(true)
 const _filterNotAvailable = ref(true)
 const _filterNoteTasks = ref(true)
+
+const showDropdown = ref(false)
 
 const _fNotAvailable = computed(() => {
   if (!_notAvailable.value) return []
@@ -247,8 +251,6 @@ function header(): string {
     return `${months[_displayDate.value.getMonth()]} ${_displayDate.value.getFullYear()}`
   }
 }
-
-import type { SwipeDirection } from '@vueuse/core'
 const swipeEl = ref(null)
 useSwipe(swipeEl, {
   onSwipeEnd: (e: TouchEvent, direction: SwipeDirection) => {
@@ -311,18 +313,24 @@ useSwipe(swipeEl, {
       </div>
       <div class="flex items-center justify-end">
         <div class="dropdown dropdown-end dropdown-bottom">
-          <div tabindex="0" role="button" class="btn btn-sm m-1 md:btn-md">
+          <div
+            tabindex="0"
+            role="button"
+            class="btn btn-sm m-1 md:btn-md"
+            @click="showDropdown = !showDropdown"
+          >
             Filter
           </div>
           <ul
+            v-if="showDropdown"
             tabindex="0"
             class="menu dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow *:text-xs md:*:text-base"
           >
             <li @click="_filterEvents = !_filterEvents">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterEvents"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Events
@@ -332,8 +340,8 @@ useSwipe(swipeEl, {
             <li @click="_filterTasks = !_filterTasks">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterTasks"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Tasks
@@ -343,8 +351,8 @@ useSwipe(swipeEl, {
             <li @click="_filterPomodoro = !_filterPomodoro">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterPomodoro"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Pomodoro
@@ -354,8 +362,8 @@ useSwipe(swipeEl, {
             <li @click="_filterResources = !_filterResources">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterResources"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Resources
@@ -365,8 +373,8 @@ useSwipe(swipeEl, {
             <li @click="_filterProjects = !_filterProjects">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterProjects"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Projects
@@ -376,8 +384,8 @@ useSwipe(swipeEl, {
             <li @click="_filterNotAvailable = !_filterNotAvailable">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterNotAvailable"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Not available
@@ -387,8 +395,8 @@ useSwipe(swipeEl, {
             <li @click="_filterNoteTasks = !_filterNoteTasks">
               <a>
                 <input
-                  type="checkbox"
                   v-model="_filterNoteTasks"
+                  type="checkbox"
                   class="checkbox checkbox-sm md:checkbox-md"
                 />
                 Note tasks
@@ -414,11 +422,17 @@ useSwipe(swipeEl, {
       :week-days="_weekDays"
     />
 
-    <dialog id="modal" ref="modal" class="modal modal-bottom sm:modal-middle">
-      <div class="modal-box">
+    <dialog
+      id="modal"
+      ref="modal"
+      class="modal modal-bottom sm:modal-middle"
+      @click="closeModal"
+    >
+      <div class="modal-box w-full" @click.stop>
         <CalendarEventAdder
           v-if="_add_element == 0"
           :modal="true"
+          :is-event-new="true"
           @close="closeModal"
         />
         <CalendarTaskAdder v-if="_add_element == 1" @close="closeModal" />

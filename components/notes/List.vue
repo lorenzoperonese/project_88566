@@ -47,8 +47,8 @@ const sortedNotes = computed(() => {
           <span class="label-text">Sorting: </span>
         </div>
         <select
-          class="select select-bordered select-xs md:select-md"
           v-model="sorting"
+          class="select select-bordered select-xs md:select-md"
         >
           <option value="0">Alphabetical</option>
           <option value="1">Modification date</option>
@@ -61,8 +61,8 @@ const sortedNotes = computed(() => {
           <span class="label-text">State: </span>
         </div>
         <select
-          class="select select-bordered select-xs md:select-md"
           v-model="state"
+          class="select select-bordered select-xs md:select-md"
         >
           <option value="all">All</option>
           <option value="private">Private</option>

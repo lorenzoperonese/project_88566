@@ -2,7 +2,7 @@ import { Settings } from '@/server/db'
 
 export default defineEventHandler(async (event): Promise<Settings | null> => {
   try {
-    let s = await Settings.findOne({ user_id: event.context.auth.id })
+    const s = await Settings.findOne({ user_id: event.context.auth.id })
 
     if (!s) {
       setResponseStatus(event, 404)

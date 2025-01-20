@@ -16,7 +16,7 @@ export function getIo(): Server {
   return globalIo
 }
 
-let authSockets = new Set<string>()
+const authSockets = new Set<string>()
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine()
@@ -26,7 +26,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   io.bind(engine)
 
   io.on('connection', async (socket) => {
-    let [isAuth, user_id] = await isAuthenticated(socket.handshake.auth.token)
+    const [isAuth, user_id] = await isAuthenticated(socket.handshake.auth.token)
     if (isAuth) {
       socket.join(user_id)
       authSockets.add(user_id)
@@ -48,12 +48,12 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         await sendChatMessage(message.roomId, message.content, message.senderId)
         callback({ type: 'success', message: 'Message sent' })
 
-        let receiver_id = await getReceiverFromRoom(message.roomId)
+        const receiver_id = await getReceiverFromRoom(message.roomId)
 
         if (authSockets.has(receiver_id)) {
           io.to(receiver_id).emit('chat_message', message)
         } else {
-          let u = await User.findOne({ _id: receiver_id })
+          const u = await User.findOne({ _id: receiver_id })
           if (!u) throw new Error('User not found')
 
           const p = {
@@ -89,7 +89,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     })
 
     socket.on('auth', async (token) => {
-      let [isAuth, user_id] = await isAuthenticated(token)
+      const [isAuth, user_id] = await isAuthenticated(token)
       if (isAuth) {
         socket.join(user_id)
         authSockets.add(socket.id)
@@ -129,7 +129,7 @@ async function isAuthenticated(s: string): Promise<[boolean, string]> {
     return [false, '']
   }
 
-  let token = s.split(' ')[1]
+  const token = s.split(' ')[1]
   console.log('Token:', token)
 
   const session = await getAuthSession(token)

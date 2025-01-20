@@ -52,7 +52,7 @@ onMounted(async () => {
 
   function listProjects() {
     console.log('Listing projects')
-    let el_plist = document.getElementById('project-list')
+    const el_plist = document.getElementById('project-list')
     if (projects.length == 0) {
       el_plist.innerHTML = 'No projects'
       return
@@ -60,8 +60,8 @@ onMounted(async () => {
 
     el_plist.innerHTML = ''
     for (const p in projects) {
-      let project = projects[p]
-      let el = document.createElement('div')
+      const project = projects[p]
+      const el = document.createElement('div')
       const desc =
         project.description.length > 103
           ? project.description.substring(0, 100) + '...'
@@ -119,7 +119,7 @@ onMounted(async () => {
   let projectID = null
 
   function editProject(id) {
-    let p = projects.find((p) => p.id == id)
+    const p = projects.find((p) => p.id == id)
     document.getElementById('title').value = p.title
     document.getElementById('description').value = p.description
 
@@ -129,15 +129,15 @@ onMounted(async () => {
   }
 
   async function saveEdit() {
-    let title = document.getElementById('title').value
-    let description = document.getElementById('description').value
+    const title = document.getElementById('title').value
+    const description = document.getElementById('description').value
 
     if (!title || !description) {
       $toast.error('Title and description are required')
       return
     }
 
-    let p = projects.find((p) => p.id == projectID)
+    const p = projects.find((p) => p.id == projectID)
     p.title = title
     p.description = description
 
@@ -201,9 +201,9 @@ onMounted(async () => {
               <span class="label-text" for="title">Title</span>
             </label>
             <input
+              id="title"
               type="text"
               placeholder="Title"
-              id="title"
               class="input input-bordered"
             />
           </div>
@@ -213,8 +213,8 @@ onMounted(async () => {
               <span class="label-text" for="description">Description</span>
             </label>
             <textarea
-              placeholder="Description"
               id="description"
+              placeholder="Description"
               class="textarea textarea-bordered"
             ></textarea>
           </div>
@@ -225,10 +225,10 @@ onMounted(async () => {
             <!-- if there is a button in form, it will close the modal -->
             <button class="btn">Close</button>
           </form>
-          <button class="btn btn-info" id="more-options-project-btn">
+          <button id="more-options-project-btn" class="btn btn-info">
             More Options
           </button>
-          <button class="btn btn-success" id="save-project-btn">Save</button>
+          <button id="save-project-btn" class="btn btn-success">Save</button>
         </div>
       </div>
     </dialog>

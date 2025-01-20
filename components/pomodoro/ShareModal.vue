@@ -4,9 +4,9 @@ const { data: _users } = await useFetch<User[]>('/api/users')
 const { $toast } = useNuxtApp()
 
 const $props = defineProps({
-  study: { type: Number as PropType<Number>, default: 30 },
-  break: { type: Number as PropType<Number>, default: 5 },
-  cycles: { type: Number as PropType<Number>, default: 5 }
+  study: { type: Number as PropType<number>, default: 30 },
+  break: { type: Number as PropType<number>, default: 5 },
+  cycles: { type: Number as PropType<number>, default: 5 }
 })
 
 const modal = useTemplateRef('share-pomodoro-modal')
@@ -66,7 +66,7 @@ function share() {
             <div class="label">
               <label class="label-text">User</label>
             </div>
-            <input type="text" class="input input-bordered" v-model="_user" />
+            <input v-model="_user" type="text" class="input input-bordered" />
           </div>
 
           <div class="modal-action">

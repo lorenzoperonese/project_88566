@@ -56,9 +56,9 @@ async function handleDeny() {
       <div class="mb-4 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <svg
+            id="_x32_"
             class="h-6 w-6 fill-info"
             version="1.1"
-            id="_x32_"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             viewBox="0 0 512 512"
@@ -86,9 +86,9 @@ async function handleDeny() {
           <h2 class="text-xl font-semibold">Enable Notifications</h2>
         </div>
         <button
-          @click="handleDeny"
           class="transition-colors duration-200"
           aria-label="Close notification"
+          @click="handleDeny"
         ></button>
       </div>
       <p class="mb-4">
@@ -96,8 +96,8 @@ async function handleDeny() {
         information.
       </p>
       <div class="flex justify-between space-x-2">
-        <button @click="handleDeny" class="btn btn-neutral">Maybe Later</button>
-        <button @click="handleAllow" class="btn btn-info">Allow</button>
+        <button class="btn btn-neutral" @click="handleDeny">Maybe Later</button>
+        <button class="btn btn-info" @click="handleAllow">Allow</button>
       </div>
     </div>
   </div>

@@ -22,7 +22,7 @@ export async function updateTasks(): Promise<void> {
     let message = `Task "${t.title}" has been postponed to the next day`
     if (t.postponed) message += ` ${t.postponed + 1} times`
 
-    let users = t.users.map((u) => u.toString())
+    const users = t.users.map((u) => u.toString())
     users.push(t.user_id.toString())
 
     const n = {
@@ -128,9 +128,9 @@ export async function updateNotesTasks(): Promise<void> {
 
   const notes = await Note.find(filter)
   for (const nt of notes) {
-    let message = `Tasks in note "${nt.title}" were been postponed to the next day`
+    const message = `Tasks in note "${nt.title}" were been postponed to the next day`
 
-    let users = nt.shared_with.map((u) => u.toString())
+    const users = nt.shared_with.map((u) => u.toString())
     users.push(nt.user_id.toString())
 
     const n = {
@@ -353,7 +353,7 @@ export class Notificator {
     event_id: string,
     currentTime: number
   ): void {
-    let state = this.getNotificationState(notification_id)
+    const state = this.getNotificationState(notification_id)
 
     if (state) {
       state.last_sent = currentTime

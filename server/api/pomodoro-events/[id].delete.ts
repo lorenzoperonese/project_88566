@@ -1,6 +1,6 @@
 import { PomodoroEvent } from '@/server/db'
 
-export default defineEventHandler(async (event): Promise<Object> => {
+export default defineEventHandler(async (event): Promise<object> => {
   try {
     const id = getRouterParam(event, 'id')
 

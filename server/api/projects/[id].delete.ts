@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       return
     }
 
-    let fp = await Project.findById(id)
+    const fp = await Project.findById(id)
 
     if (!fp) {
       setResponseStatus(event, 404)
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Find project by ID
-    let p = await Project.findOneAndDelete({
+    const p = await Project.findOneAndDelete({
       _id: id,
       user_id: event.context.auth.id
     })

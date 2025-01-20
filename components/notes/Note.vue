@@ -69,8 +69,8 @@ const fBody = computed(() => {
               <MDC :value="fBody" />
             </div>
             <div
-              class="divider"
               v-show="$props.note.todos && $props.note.todos.length > 0"
+              class="divider"
             ></div>
             <div>
               <div v-for="t in $props.note.todos" class="flex gap-4">
@@ -83,8 +83,8 @@ const fBody = computed(() => {
           </NuxtLink>
         </div>
         <div
-          class="divider md:hidden"
           v-show="$props.note.todos && $props.note.todos.length > 0"
+          class="divider md:hidden"
         ></div>
         <div class="flex flex-row flex-wrap justify-evenly gap-2 md:flex-col">
           <button

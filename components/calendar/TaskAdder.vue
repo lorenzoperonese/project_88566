@@ -203,10 +203,10 @@ function addGuest() {
         </div>
         <div class="flex gap-4" :class="{ hidden: !isMyNote }">
           <input
+            v-model="_guest"
             type="text"
             placeholder="username"
             class="input input-bordered w-1/2"
-            v-model="_guest"
           />
           <button class="btn btn-neutral" @click="addGuest">Add</button>
         </div>
