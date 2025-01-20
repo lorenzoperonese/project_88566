@@ -429,6 +429,14 @@ useSwipe(swipeEl, {
       @click="closeModal"
     >
       <div class="modal-box w-full" @click.stop>
+        <form method="dialog" class="md:hidden">
+          <button
+            @click="closeModal"
+            class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+          >
+            ✕
+          </button>
+        </form>
         <CalendarEventAdder
           v-if="_add_element == 0"
           :modal="true"
