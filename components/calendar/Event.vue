@@ -16,6 +16,9 @@ const isInPast = computed(() => {
 })
 
 const timeFrame = computed(() => {
+  if($props.event.start % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23
+    && $props.event.end % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23 - 1)
+    return 'All day'
   const s = new Date($props.event.start)
   const e = new Date($props.event.end)
   if (

@@ -43,6 +43,7 @@ const _notifications = ref<Notify[]>([])
 const _guestsWaiting = ref<User[]>([])
 const _guestsAccepted = ref<User[]>([])
 const _guest = ref('')
+const _allday = ref(false)
 
 const fResourcesList = computed(() => {
   if (!resourceList.value) return []
@@ -66,6 +67,8 @@ if ($props.event) {
   _startTime.value = formatTime($props.event.start)
   _endDate.value = formatDate($props.event.end)
   _endTime.value = formatTime($props.event.end)
+  _allday.value = $props.event.start % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23
+    && $props.event.end % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23 - 1
   _location.value = $props.event.location || null
   _note.value = $props.event.note || null
   _category.value = $props.event.category || 'Not categorized'
@@ -173,6 +176,11 @@ async function saveEvent() {
   }
   if (e.category.length == 0) {
     e.category = 'Not categorized'
+  }
+  if(_allday.value) {
+    // crea le date senza l'ora, da mezzanotte alle 23,59
+    e.start = new Date(_startDate.value).getTime() - 1000 * 60 * 60
+    e.end = new Date(_endDate.value).getTime() + 1000 * 60 * 60 * 23 - 1
   }
 
   if (!$props.isEventNew && $props.event) {
@@ -309,7 +317,7 @@ function addGuest(g: string) {
         <!-- Date and Time Section -->
         <div
           class="grid gap-6"
-          :class="{ 'grid-cols-1': modal, 'md:grid-cols-2': !modal }"
+          :class="{ 'grid-cols-1': modal && !_allday, 'md:grid-cols-2': !modal || _allday }"
         >
           <!-- Start Date/Time -->
           <div class="space-y-2">
@@ -319,8 +327,10 @@ function addGuest(g: string) {
                 v-model="_startDate"
                 type="date"
                 class="input input-bordered rounded-lg px-4 py-2 text-center"
+                :class="{ 'col-span-2': _allday }"
               />
               <input
+                v-if="!_allday"
                 v-model="_startTime"
                 type="time"
                 class="input input-bordered rounded-lg px-4 py-2 text-center"
@@ -336,8 +346,10 @@ function addGuest(g: string) {
                 v-model="_endDate"
                 type="date"
                 class="input input-bordered rounded-lg px-4 py-2 text-center"
+                :class="{ 'col-span-2': _allday }"
               />
               <input
+                v-if="!_allday"
                 v-model="_endTime"
                 type="time"
                 class="input input-bordered rounded-lg px-4 py-2 text-center"
@@ -345,6 +357,20 @@ function addGuest(g: string) {
             </div>
           </div>
         </div>
+
+        <!-- All Day Section -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <input
+              v-model="_allday"
+              type="checkbox"
+              class="checkbox"
+            />
+            <!-- attiva la checkbox al click sul testo -->
+            <span @click="_allday = ! _allday" class="cursor-pointer">Event lasts all day</span>
+          </div>
+        </div>
+
 
         <!-- Location and Category Section -->
         <div
