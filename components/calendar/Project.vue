@@ -28,7 +28,6 @@ const isInPast = computed(() => {
         <div :class="{ 'hidden lg:block': $props.isResponsive }">
           {{ pEvent.project_name }}
         </div>
-        <div>{{ formatTime(pEvent.start) }} - {{ formatTime(pEvent.end) }}</div>
       </div>
     </div>
   </NuxtLink>
