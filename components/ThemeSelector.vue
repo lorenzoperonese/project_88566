@@ -40,6 +40,7 @@ const themes = [
 
 async function changeTheme() {
   document.documentElement.setAttribute('data-theme', theme.value)
+  localStorage.setItem('theme', theme.value)
   await $fetch('/api/session', {
     method: 'PUT',
     body: JSON.stringify({ theme: theme.value })

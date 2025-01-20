@@ -3,8 +3,9 @@ import { ref } from 'vue'
 import { EyeIcon, EyeOffIcon } from 'lucide-vue-next'
 const { $registerPushNotifications } = useNuxtApp()
 
+const theme = localStorage.getItem('theme')
 // login page is in dark mode by default
-document.documentElement.setAttribute('data-theme', 'dark')
+document.documentElement.setAttribute('data-theme', theme || 'dark')
 const { status, signIn } = useAuth()
 
 function changeTheme() {
@@ -18,6 +19,7 @@ function changeTheme() {
     .then((data) => {
       if (data) {
         const theme = data.theme
+        localStorage.setItem('theme', theme)
         document.documentElement.setAttribute('data-theme', theme)
       }
     })
