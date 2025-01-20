@@ -1,7 +1,9 @@
 import { io } from 'socket.io-client'
 import { reactive } from 'vue'
 
-const { token } = useAuth()
+const { token: t } = useAuth()
+
+let token = t.value as String
 
 export const wsState = reactive({
   connected: false,
@@ -14,7 +16,7 @@ export const wsState = reactive({
 
 export const socket = io({
   auth: (cb) => {
-    cb({ token: token.value }) // Gets fresh token value each time
+    cb({ token: token }) // Gets fresh token value each time
   }
 })
 socket.on('connect', () => {
@@ -50,5 +52,7 @@ export function wsSendMessage(message: any) {
 }
 
 export function wsSendAuth() {
-  socket.emit('auth', token.value)
+  const { token: t } = useAuth()
+  token = t.value as String
+  socket.emit('auth', token)
 }
