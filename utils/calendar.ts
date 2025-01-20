@@ -352,12 +352,34 @@ export interface CalendarItem {
   end?: number
   date?: number
   allday?: boolean
-  type: 'event' | 'guest-event' | 'task' | 'pomodoro' | 'resource' | 'project' | 'not-available' | 'note-task'
-  originalItem: EventType | Task | PomodoroEvent | Resource | ProjectEvent | NotAvailable | NoteTask
+  type:
+    | 'event'
+    | 'guest-event'
+    | 'task'
+    | 'pomodoro'
+    | 'resource'
+    | 'project'
+    | 'not-available'
+    | 'note-task'
+  originalItem:
+    | EventType
+    | Task
+    | PomodoroEvent
+    | Resource
+    | ProjectEvent
+    | NotAvailable
+    | NoteTask
 }
 
 function convertToCalendarItem(
-  item: EventType | Task | PomodoroEvent | Resource | ProjectEvent | NotAvailable | NoteTask,
+  item:
+    | EventType
+    | Task
+    | PomodoroEvent
+    | Resource
+    | ProjectEvent
+    | NotAvailable
+    | NoteTask,
   type: CalendarItem['type']
 ): CalendarItem {
   const calendarItem: CalendarItem = {
@@ -376,7 +398,7 @@ function convertToCalendarItem(
     calendarItem.start = item.date
     calendarItem.end = item.date
   }
-  if(type === 'pomodoro' || type === 'note-task' || type === 'project') {
+  if (type === 'pomodoro' || type === 'note-task' || type === 'project') {
     calendarItem.allday = true
   }
   return calendarItem
@@ -407,42 +429,42 @@ export function getAllItemsForDay(
   const allItems: CalendarItem[] = []
 
   if (events) {
-    getEventsForDay(events, displayDate).forEach(event => {
+    getEventsForDay(events, displayDate).forEach((event) => {
       allItems.push(convertToCalendarItem(event, 'event'))
     })
   }
   if (eventsGuest) {
-    getEventsForDay(eventsGuest, displayDate).forEach(event => {
+    getEventsForDay(eventsGuest, displayDate).forEach((event) => {
       allItems.push(convertToCalendarItem(event, 'guest-event'))
     })
   }
   if (tasks) {
-    getTasksForDay(tasks, displayDate).forEach(task => {
+    getTasksForDay(tasks, displayDate).forEach((task) => {
       allItems.push(convertToCalendarItem(task, 'task'))
     })
   }
   if (pomodoro) {
-    getPomodorosForDay(pomodoro, displayDate).forEach(pom => {
+    getPomodorosForDay(pomodoro, displayDate).forEach((pom) => {
       allItems.push(convertToCalendarItem(pom, 'pomodoro'))
     })
   }
   if (resources) {
-    getResourcesForDay(resources, displayDate).forEach(resource => {
+    getResourcesForDay(resources, displayDate).forEach((resource) => {
       allItems.push(convertToCalendarItem(resource, 'resource'))
     })
   }
   if (projects) {
-    getProjectsForDay(projects, displayDate).forEach(project => {
+    getProjectsForDay(projects, displayDate).forEach((project) => {
       allItems.push(convertToCalendarItem(project, 'project'))
     })
   }
   if (notAvailable) {
-    getNotAvailableForDay(notAvailable, displayDate).forEach(na => {
+    getNotAvailableForDay(notAvailable, displayDate).forEach((na) => {
       allItems.push(convertToCalendarItem(na, 'not-available'))
     })
   }
   if (noteTasks) {
-    getNoteTasksForDay(noteTasks, displayDate).forEach(nt => {
+    getNoteTasksForDay(noteTasks, displayDate).forEach((nt) => {
       allItems.push(convertToCalendarItem(nt, 'note-task'))
     })
   }

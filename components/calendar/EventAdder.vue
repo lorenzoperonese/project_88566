@@ -67,8 +67,9 @@ if ($props.event) {
   _startTime.value = formatTime($props.event.start)
   _endDate.value = formatDate($props.event.end)
   _endTime.value = formatTime($props.event.end)
-  _allday.value = $props.event.start % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23
-    && $props.event.end % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23 - 1
+  _allday.value =
+    $props.event.start % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23 &&
+    $props.event.end % (1000 * 60 * 60 * 24) == 1000 * 60 * 60 * 23 - 1
   _location.value = $props.event.location || null
   _note.value = $props.event.note || null
   _category.value = $props.event.category || 'Not categorized'
@@ -177,7 +178,7 @@ async function saveEvent() {
   if (e.category.length == 0) {
     e.category = 'Not categorized'
   }
-  if(_allday.value) {
+  if (_allday.value) {
     // crea le date senza l'ora, da mezzanotte alle 23,59
     e.start = new Date(_startDate.value).getTime() - 1000 * 60 * 60
     e.end = new Date(_endDate.value).getTime() + 1000 * 60 * 60 * 23 - 1
@@ -317,7 +318,10 @@ function addGuest(g: string) {
         <!-- Date and Time Section -->
         <div
           class="grid gap-6"
-          :class="{ 'grid-cols-1': modal && !_allday, 'md:grid-cols-2': !modal || _allday }"
+          :class="{
+            'grid-cols-1': modal && !_allday,
+            'md:grid-cols-2': !modal || _allday
+          }"
         >
           <!-- Start Date/Time -->
           <div class="space-y-2">
@@ -361,16 +365,13 @@ function addGuest(g: string) {
         <!-- All Day Section -->
         <div class="space-y-2">
           <div class="flex items-center gap-2">
-            <input
-              v-model="_allday"
-              type="checkbox"
-              class="checkbox"
-            />
+            <input v-model="_allday" type="checkbox" class="checkbox" />
             <!-- attiva la checkbox al click sul testo -->
-            <span @click="_allday = ! _allday" class="cursor-pointer">Event lasts all day</span>
+            <span @click="_allday = !_allday" class="cursor-pointer"
+              >Event lasts all day</span
+            >
           </div>
         </div>
-
 
         <!-- Location and Category Section -->
         <div

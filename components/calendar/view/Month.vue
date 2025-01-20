@@ -77,7 +77,6 @@ const calendar = computed((): CalendarCell[] => {
 })
 </script>
 
-
 <template>
   <div class="grid grid-cols-7 bg-base-200 md:gap-1 md:p-2">
     <div

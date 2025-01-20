@@ -29,7 +29,10 @@ const $props = defineProps<{
           'bg-base-200': isToday($props.displayDate, $props.today)
         }"
       >
-        <template v-for="item in getAllItemsForDay($props.displayDate, $props)" :key="item.id">
+        <template
+          v-for="item in getAllItemsForDay($props.displayDate, $props)"
+          :key="item.id"
+        >
           <CalendarEvent
             v-if="item.type === 'event'"
             :event="item.originalItem as EventType"
