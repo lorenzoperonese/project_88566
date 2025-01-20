@@ -142,7 +142,7 @@ function close() {
 <template>
   <div>
     <button
-      class="btn btn-outline btn-primary w-full"
+      class="btn btn-outline btn-secondary w-full"
       onclick="repetition_modal.showModal()"
     >
       Repetitions

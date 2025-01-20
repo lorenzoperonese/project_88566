@@ -79,7 +79,7 @@ function removeRepetition(notification: Notify) {
 
 <template>
   <div>
-    <button class="btn btn-outline btn-secondary w-full" @click="showModal">
+    <button class="btn btn-outline btn-accent w-full" @click="showModal">
       Notifications
     </button>
     <dialog ref="notification_modal" class="modal">

@@ -279,91 +279,235 @@ function addGuest(g: string) {
 </script>
 
 <template>
-  <div v-if="modal">
-    <h1 class="text-xl font-bold">
+  <div class="w-full max-w-4xl mx-auto p-4">
+    <!-- Card Wrapper -->
+    <div :class="!modal ? 'card shadow-lg bg-base-300 p-6' : ''">
+      <!-- Header -->
+    <h1 class="font-bold" :class="{'text center text-4xl mb-2': !modal, 'text-xl': modal}">
       {{ $props.isEventNew ? 'Add event' : 'Modify event' }}
     </h1>
-    <form class="mt-4 flex flex-col gap-2" @submit.prevent="">
-      <div class="form-control flex flex-row items-center gap-3">
-        <div class="label">
-          <label class="label-text">Title</label>
-        </div>
-        <input
-          v-model="_title"
-          type="text"
-          placeholder="Title"
-          class="input input-bordered w-full max-w-md placeholder:text-gray-600"
-          required
-        />
-      </div>
 
-      <div class="form-control flex flex-row items-center gap-2">
-        <div class="label">
-          <label class="label-text">Start</label>
-        </div>
-        <div class="flex w-full flex-row gap-1">
+    <form @submit.prevent="" class="space-y-4">
+      <!-- Title Section -->
+      <div class="space-y-2">
+        <Label for="title" class="label-text ">Title</Label>
+        <div class="relative">
           <input
-            v-model="_startDate"
-            class="input input-bordered w-full"
-            type="date"
-          />
-          <input
-            v-model="_startTime"
-            class="input input-bordered w-full"
-            type="time"
+            v-model="_title"
+            id="title"
+            type="text"
+            class="w-full px-4 py-2 rounded-lg input  input-bordered"
+            placeholder="Event title"
+            required
           />
         </div>
       </div>
 
-      <div class="form-control flex flex-row items-center gap-3">
-        <div class="label">
-          <label class="label-text">End</label>
+      <!-- Date and Time Section -->
+      <div class="grid gap-6" :class="{'grid-cols-1': modal, 'md:grid-cols-2': !modal}">
+        <!-- Start Date/Time -->
+        <div class="space-y-2">
+          <Label class="label-text ">Start</Label>
+          <div class="grid grid-cols-2 gap-3">
+            <input
+              v-model="_startDate"
+              type="date"
+              class="px-4 py-2 rounded-lg input input-bordered text-center"
+            />
+            <input
+              v-model="_startTime"
+              type="time"
+              class="px-4 py-2 rounded-lg input input-bordered text-center"
+            />
+          </div>
         </div>
-        <div class="flex w-full flex-row gap-1">
-          <input
-            v-model="_endDate"
-            class="input input-bordered w-full"
-            type="date"
-          />
-          <input
-            v-model="_endTime"
-            class="input input-bordered w-full"
-            type="time"
-          />
+
+        <!-- End Date/Time -->
+        <div class="space-y-2">
+          <Label class="label-text ">End</Label>
+          <div class="grid grid-cols-2 gap-3">
+            <input
+              v-model="_endDate"
+              type="date"
+              class="px-4 py-2 rounded-lg input input-bordered text-center"
+            />
+            <input
+              v-model="_endTime"
+              type="time"
+              class="px-4 py-2 rounded-lg input input-bordered text-center"
+            />
+          </div>
         </div>
       </div>
 
-      <div class="form-control">
-        <div class="label">
-          <label class="label-text">Location</label>
+      <!-- Location and Category Section -->
+      <div class="grid md:grid-cols-2 gap-6" :class="{'md:grid-cols-3': !modal}">
+        <div class="space-y-2">
+          <Label for="location" class="label-text ">Location</Label>
+          <input
+            v-model="_location"
+            id="location"
+            type="text"
+            class="w-full px-4 py-2 rounded-lg input input-bordered"
+            placeholder="Add location"
+          />
         </div>
-        <input
-          v-model="_location"
-          class="input input-bordered placeholder:text-gray-600"
-          type="string"
-          placeholder="Location"
-        />
+
+        <div class="space-y-2">
+          <Label for="category" class="label-text ">Category</Label>
+          <input
+            v-model="_category"
+            id="category"
+            type="text"
+            class="w-full px-4 py-2 rounded-lg input  input-bordered"
+            placeholder="Add category"
+          />
+        </div>
+        <!-- Resource Section -->
+        <div class="space-y-2" v-if="!modal">
+          <Label for="resource" class="label-text ">Resource</Label>
+          <select
+            v-model="_resource"
+            id="resource"
+            class="w-full px-4 py-2 rounded-lg input  input-bordered"
+          >
+            <option value="null">None</option>
+            <option v-for="r in fResourcesList" :key="r.name" :value="r.name">
+              {{ r.name }}
+            </option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-control">
-        <div class="label">
-          <label class="label-text">Note</label>
-        </div>
+      <!-- Note Section -->
+      <div class="space-y-2">
+        <Label for="note" class="label-text ">Note</Label>
         <textarea
           v-model="_note"
-          class="textarea textarea-bordered w-full placeholder:text-gray-600"
-          placeholder="Add any additional details..."
+          id="note"
+          class="w-full min-h-[80px] px-4 py-2 rounded-lg textarea textarea-bordered"
+          placeholder="Add description or notes"
         ></textarea>
       </div>
 
-      <div class="form-control">
-        <div class="label">
-          <label class="label-text">Category</label>
+      <!-- Additional Options (Only shown in full page) -->
+      <div v-if="!modal" class="space-y-6">
+        <div class="grid md:grid-cols-2">
+        <!-- Repetition Component -->
+        <div class="rounded-lg p-2">
+          <CalendarRepetition
+            :start-day="_startDate"
+            :end-day="_endDate"
+            :repetition="_repetition"
+            @save="addRepetition"
+          />
+          <pre class="mt-1 text-sm text-center text-wrap">{{ _repetitionSummary }}</pre>
         </div>
-        <input v-model="_category" class="input input-bordered" type="string" />
+
+        <!-- Notifications Component -->
+        <div class="rounded-lg p-2">
+          <CalendarNotification
+            :notifications="_notifications"
+            @close="_showNotifications = false"
+            @save="addNotifications"
+          />
+          <pre class="mt-1 text-sm text-center text-wrap">{{ _notificationsSummary }}</pre>
+        </div>
       </div>
-      <div class="mt-2 flex flex-row justify-center">
+
+        <!-- Guests Section -->
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <Label class="label-text ">Guests</Label>
+            <div class="flex gap-2">
+              <input
+                v-model="_guest"
+                type="text"
+                class="flex-wrap w-full rounded-lg input input-bordered"
+                placeholder="Add guest username"
+              />
+              <button
+                class="btn btn-neutral"
+                @click="addGuest(_guest)"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+          <!-- Guest Lists -->
+          <div class="grid grid-cols-1 md:grid-cols-2 space-y-2 md:space-y-0">
+            <ul class="flex gap-1 flex-wrap justify-center">
+              <li v-if="_guestsWaiting.length == 0" class="text-center text-warning">No guests waiting</li>
+              <li
+                v-for="g in _guestsWaiting"
+                :key="g.id"
+                class="inline-flex items-center rounded-full bg-warning/20 px-3 py-1 font-medium text-warning">
+                <span>{{ g.username }}</span>
+                <button
+                  @click="_guestsWaiting = _guestsWaiting.filter(u => u.id !== g.id)"
+                  class="bg-transparent text-red-500 hover:text-red-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="flex gap-1 flex-wrap justify-center">
+              <li v-if="_guestsAccepted.length == 0" class="text-center text-success">No guests accepted</li>
+              <li
+                v-for="g in _guestsAccepted"
+                :key="g.id"
+                class="inline-flex items-center rounded-full bg-success/20 px-3 py-1 font-medium text-success">
+                <span>{{ g.username }}</span>
+                <button
+                  @click="_guestsAccepted = _guestsAccepted.filter(u => u.id !== g.id)"
+                  class="bg-transparent text-red-500 hover:text-red-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end gap-4 pt-2">
         <NuxtLink
+          v-if="$props.isEventNew && !$props.modal"
+          :to="{ name: 'calendar' }"
+          class="btn btn-neutral"
+        >
+          Cancel
+        </NuxtLink>
+
+        <button
+          v-if="!$props.isEventNew && !$props.modal"
+          class="btn btn-error"
+          @click="deleteEvent()"
+        >
+          Delete
+        </button>
+
+        <NuxtLink
+          v-if="modal"
           :to="{
             path: '/calendar/e/add',
             query: {
@@ -377,264 +521,19 @@ function addGuest(g: string) {
               category: _category
             }
           }"
-          class="btn btn-neutral w-2/5"
+          class="btn btn-neutral"
         >
           More options
         </NuxtLink>
 
-        <button class="btn btn-success w-2/5" @click="saveEvent()">
-          {{ $props.isEventNew ? 'Add event' : 'Save' }}
+        <button
+          class="btn btn-success"
+          @click="saveEvent()"
+        >
+          {{ $props.isEventNew ? 'Create event' : 'Save changes' }}
         </button>
       </div>
     </form>
   </div>
-
-  <div v-else class="mx-auto mt-4 max-w-7xl rounded-lg bg-base-300 p-8">
-    <h1 class="mb-8 text-center text-3xl font-bold">
-      {{ $props.isEventNew ? 'Add event' : 'Modify Event' }}
-    </h1>
-
-    <form class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8" @submit.prevent="">
-      <!-- Left Column -->
-      <div class="space-y-2">
-        <!-- Title Section -->
-        <div
-          class="flex items-center gap-4 rounded-xl border border-neutral p-4 shadow-sm"
-        >
-          <label class="whitespace-nowrap text-sm font-semibold"
-            >Event Title</label
-          >
-          <input
-            v-model="_title"
-            type="text"
-            placeholder="Enter a descriptive title"
-            class="input w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-            required
-          />
-        </div>
-
-        <!-- DateTime Section -->
-        <div class="space-y-4 rounded-xl border border-neutral p-4 shadow-sm">
-          <div class="items-center gap-4 lg:flex">
-            <label class="whitespace-nowrap text-sm font-semibold"
-              >Start Date & Time</label
-            >
-            <div class="flex w-full gap-3">
-              <input
-                v-model="_startDate"
-                type="date"
-                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-              />
-              <input
-                v-model="_startTime"
-                type="time"
-                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-              />
-            </div>
-          </div>
-
-          <div class="items-center gap-4 lg:flex">
-            <label class="whitespace-nowrap text-sm font-semibold"
-              >End Date & Time</label
-            >
-            <div class="flex w-full gap-3">
-              <input
-                v-model="_endDate"
-                type="date"
-                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-              />
-              <input
-                v-model="_endTime"
-                type="time"
-                class="input flex-1 rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Location -->
-        <div class="space-y-4 rounded-xl border border-neutral p-4 shadow-sm">
-          <div class="flex items-center gap-4">
-            <label class="whitespace-nowrap text-sm font-semibold"
-              >Location</label
-            >
-            <input
-              v-model="_location"
-              type="string"
-              placeholder="Add event location"
-              class="input w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-            />
-          </div>
-        </div>
-
-        <!-- Guests -->
-        <div class="w-full rounded-xl border border-neutral p-4 shadow-sm">
-          <label class="mb-4 block text-sm font-semibold">Guests</label>
-          <div class="flex flex-row items-center gap-2">
-            <!-- Input con dimensione controllata -->
-            <input
-              v-model="_guest"
-              type="text"
-              placeholder="Enter guest name"
-              class="input w-0 flex-grow rounded-lg focus:ring-2 focus:ring-base-300"
-            />
-            <!-- Bottone con dimensioni proporzionate -->
-            <button class="btn btn-info" @click="addGuest(_guest)">Add</button>
-          </div>
-
-          <div class="max-h-48 space-y-2 overflow-y-auto">
-            <div
-              v-for="(g, index) in _guestsAccepted"
-              :key="index"
-              class="flex items-center justify-between rounded-lg border border-emerald-100 bg-emerald-50 p-3"
-            >
-              <span class="font-medium text-emerald-700">{{ g.username }}</span>
-              <button
-                class="text-emerald-600 transition-colors hover:text-red-600"
-                @click="_guestsAccepted.splice(_guestsAccepted.indexOf(g), 1)"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div
-              v-for="(g, index) in _guestsWaiting"
-              :key="index"
-              class="flex items-center justify-between rounded-lg border border-amber-100 bg-amber-50 p-3"
-            >
-              <span class="font-medium text-amber-700">{{ g.username }}</span>
-              <button
-                class="text-amber-600 transition-colors hover:text-red-600"
-                @click="_guestsWaiting.splice(_guestsWaiting.indexOf(g), 1)"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Repetition -->
-        <div class="rounded-xl border border-neutral p-4 shadow-sm">
-          <CalendarRepetition
-            :start-day="_startDate"
-            :end-day="_endDate"
-            :repetition="_repetition"
-            @save="addRepetition"
-          />
-          <pre
-            v-if="_repetitionSummary !== ''"
-            class="mt-3 rounded-lg text-center text-sm"
-            >{{ _repetitionSummary }}</pre
-          >
-        </div>
-      </div>
-
-      <!-- Right Column -->
-      <div class="mt-2 space-y-2 lg:mt-0">
-        <!-- Category -->
-        <div>
-          <div
-            class="flex items-center gap-4 rounded-xl border border-neutral p-4 shadow-sm"
-          >
-            <label class="whitespace-nowrap text-sm font-semibold"
-              >Category</label
-            >
-            <input
-              v-model="_category"
-              type="string"
-              placeholder="Event category"
-              class="input w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-            />
-          </div>
-        </div>
-
-        <!-- Notes -->
-        <div
-          class="flex items-center gap-4 rounded-xl border border-neutral p-4 shadow-sm"
-        >
-          <label class="mb-2 block text-sm font-semibold">Notes</label>
-          <textarea
-            v-model="_note"
-            rows="4"
-            placeholder="Add any additional details..."
-            class="textarea h-[13.2rem] w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-          ></textarea>
-        </div>
-
-        <!-- Resource Selection -->
-        <div class="rounded-xl border border-neutral p-4 shadow-sm">
-          <label class="mb-2 block text-sm font-semibold">Resource</label>
-          <select
-            v-model="_resource"
-            class="select w-full rounded-lg border-0 px-4 py-3 focus:ring-2 focus:ring-base-300"
-          >
-            <option value="null">Select a resource</option>
-            <option v-for="r in fResourcesList" :value="r.name">
-              {{ r.name }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Notifications -->
-        <div class="rounded-xl border border-neutral p-4 shadow-sm">
-          <CalendarNotification
-            :notifications="_notifications"
-            @close="_showNotifications = false"
-            @save="addNotifications"
-          />
-          <pre
-            v-if="_notificationsSummary !== ''"
-            class="mt-3 rounded-lg text-center text-sm"
-            >{{ _notificationsSummary }}</pre
-          >
-        </div>
-      </div>
-
-      <!-- Footer Actions - Full Width -->
-      <div class="col-span-1 mt-4 flex justify-end gap-4 lg:col-span-2">
-        <NuxtLink
-          v-if="$props.isEventNew"
-          :to="{ name: 'calendar' }"
-          class="btn btn-neutral"
-          @click="close"
-        >
-          Cancel
-        </NuxtLink>
-
-        <button
-          v-if="!$props.isEventNew"
-          class="rounded-lg bg-red-500 px-6 py-3 font-medium text-white hover:bg-red-600"
-          @click="deleteEvent()"
-        >
-          Delete Event
-        </button>
-
-        <button class="btn btn-info" @click="saveEvent()">
-          {{ $props.isEventNew ? 'Create Event' : 'Save Changes' }}
-        </button>
-      </div>
-    </form>
   </div>
 </template>
