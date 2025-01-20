@@ -8,8 +8,6 @@ export default defineEventHandler(async (event): Promise<ChatRoom[]> => {
       }>({ path: 'receiverId' })
       .exec()
 
-    console.log(rooms)
-
     return rooms.map((room) => ({
       id: room._id.toString(),
       roomName: room.roomName.toString(),

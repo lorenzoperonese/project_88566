@@ -17,6 +17,7 @@ export function getIo(): Server {
 }
 
 const authSockets = new Set<string>()
+const userSocketMap = new Map<string, Set<string>>()
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine()
@@ -29,20 +30,37 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     const [isAuth, user_id] = await isAuthenticated(socket.handshake.auth.token)
     if (isAuth) {
       socket.join(user_id)
-      authSockets.add(user_id)
+      authSockets.add(socket.id)
+
+      if (!userSocketMap.has(user_id)) {
+        userSocketMap.set(user_id, new Set())
+      }
+      userSocketMap.get(user_id)!.add(socket.id)
     }
+
+    io.on('disconnect', () => {
+      authSockets.delete(socket.id)
+
+      for (const [userId, socketIds] of userSocketMap.entries()) {
+        if (socketIds.has(socket.id)) {
+          socketIds.delete(socket.id)
+          if (socketIds.size === 0) {
+            userSocketMap.delete(userId)
+          }
+          break
+        }
+      }
+    })
 
     socket.on('error', (err) => {
       if (err && err.message === 'unauthorized event') {
         socket.disconnect()
-        authSockets.delete(user_id)
+        authSockets.delete(socket.id)
       }
     })
 
     socket.on('chat_message', async (message, callback) => {
       if (!authSockets.has(socket.id)) throw new Error('Not authorized')
-
-      console.log('Chat Message:', message)
 
       try {
         await sendChatMessage(message.roomId, message.content, message.senderId)
@@ -50,7 +68,9 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
         const receiver_id = await getReceiverFromRoom(message.roomId)
 
-        if (authSockets.has(receiver_id)) {
+        const receiverSockets = userSocketMap.get(receiver_id)
+        console.log('Receiver sockets:', receiverSockets)
+        if (receiverSockets && receiverSockets.size > 0) {
           io.to(receiver_id).emit('chat_message', message)
         } else {
           const u = await User.findOne({ _id: receiver_id })
@@ -93,6 +113,11 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
       if (isAuth) {
         socket.join(user_id)
         authSockets.add(socket.id)
+
+        if (!userSocketMap.has(user_id)) {
+          userSocketMap.set(user_id, new Set())
+        }
+        userSocketMap.get(user_id)!.add(socket.id)
       }
     })
   })
@@ -134,8 +159,10 @@ async function isAuthenticated(s: string): Promise<[boolean, string]> {
 
   const session = await getAuthSession(token)
   if (!session || isAuthSessionExpired(session)) {
+    console.log('Session not found or expired')
     return [false, '']
   }
 
+  console.log('Session found')
   return [true, session.user_id]
 }
