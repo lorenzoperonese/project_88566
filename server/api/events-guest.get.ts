@@ -1,7 +1,16 @@
+import type { IEvent, IUser } from '@/server/db'
 import { Event } from '@/server/db'
-import type { Types } from 'mongoose'
+import type { FlattenMaps, Types } from 'mongoose'
 
 type StatusFilter = 'waiting' | 'accepted'
+type PopulatedEvent = FlattenMaps<
+  Omit<IEvent, 'guests'> & {
+    guests: {
+      waiting: FlattenMaps<IUser>[]
+      accepted: FlattenMaps<IUser>[]
+    }
+  }
+>
 
 export default defineEventHandler(async (event): Promise<EventType[]> => {
   try {
@@ -10,22 +19,25 @@ export default defineEventHandler(async (event): Promise<EventType[]> => {
 
     switch (status) {
       case 'waiting':
-        query = { 'guests.waiting.id': event.context.auth.id }
+        query = { 'guests.waiting': event.context.auth.id }
         break
       case 'accepted':
-        query = { 'guests.accepted.id': event.context.auth.id }
+        query = { 'guests.accepted': event.context.auth.id }
         break
       default:
         query = {
           $or: [
-            { 'guests.waiting.id': event.context.auth.id },
-            { 'guests.accepted.id': event.context.auth.id }
+            { 'guests.waiting': event.context.auth.id },
+            { 'guests.accepted': event.context.auth.id }
           ]
         }
         break
     }
 
     const events = await Event.find(query)
+      .populate<{ 'guests.waiting': IUser[] }>('guests.waiting')
+      .populate<{ 'guests.accepted': IUser[] }>('guests.accepted')
+      .lean<PopulatedEvent[]>()
 
     return events.map((n) => ({
       id: (n._id as Types.ObjectId).toString(),

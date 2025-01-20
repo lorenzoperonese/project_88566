@@ -1,4 +1,4 @@
-import { Project, ProjectTask, User } from '@/server/db'
+import { Project, User } from '@/server/db'
 import type { Types } from 'mongoose'
 
 interface InputProject {
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
 
     for (const g in guests_ids) {
       try {
-        sendNotification(
+        await sendNotification(
           'Project invitation',
           `You have been invited to project ${project.title}`,
           guests_ids[g].toString(),

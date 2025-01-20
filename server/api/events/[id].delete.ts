@@ -34,11 +34,11 @@ export default defineEventHandler(async (event) => {
     })
 
     if (n.guests?.waiting) {
-      n.guests.waiting.forEach((u: User) => {
+      n.guests.waiting.forEach((guestId) => {
         sendNotification(
           `A pending event you were invited to has been deleted by the host`,
           `${n.title}, ${new Date(n.start).toLocaleDateString()}`,
-          u.id,
+          guestId.toString(),
           'event-deleted',
           id
         )
@@ -46,11 +46,11 @@ export default defineEventHandler(async (event) => {
     }
 
     if (n.guests?.accepted) {
-      n.guests.accepted.forEach((u: User) => {
+      n.guests.accepted.forEach((guestId) => {
         sendNotification(
           `An event you were invited to has been deleted by the host`,
           `${n.title}, ${new Date(n.start).toLocaleDateString()}`,
-          u.id,
+          guestId.toString(),
           'event-deleted',
           id
         )

@@ -1,9 +1,27 @@
 import { Event, User, Resource, ResourceList } from '@/server/db'
 import { sendNotification } from '@/server/utils/notifications'
+import type { Types } from 'mongoose'
+
+interface InputEvent {
+  id: string
+  title: string
+  start: number
+  end: number
+  location: string | null
+  note: string | null
+  category: string
+  resource?: string | null
+  repetition: Repetition | null
+  notify: Notify[]
+  guests: {
+    waiting: string[]
+    accepted: string[]
+  }
+}
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readBody<EventType>(event)
+    const body = await readBody<InputEvent>(event)
 
     const validationChecks = [
       {
@@ -73,6 +91,20 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    const guests_ids: Types.ObjectId[] = []
+
+    for (const g in body.guests.waiting) {
+      const u = await User.findOne({ username: body.guests.waiting[g] })
+      if (!u) {
+        throw createError({
+          statusCode: 404,
+          message: `User ${body.guests.waiting[g]} not found`
+        })
+      }
+
+      guests_ids.push(u.id)
+    }
+
     const newEvent = new Event({
       title: body.title.trim(),
       start: new Date(body.start),
@@ -83,11 +115,13 @@ export default defineEventHandler(async (event) => {
       repetition: body.repetition,
       notify: body.notify || [],
       guests: {
-        waiting: body.guests.waiting,
+        waiting: guests_ids,
         accepted: []
       },
       user_id: event.context.auth.id
     })
+
+    console.log('newEvent:', newEvent)
 
     if (body.resource) {
       // Add resouce event to resources
@@ -103,15 +137,17 @@ export default defineEventHandler(async (event) => {
 
     // Send notifications to all guests
 
-    const notificationPromises = body.guests.waiting.map((user: User) =>
+    const notificationPromises = guests_ids.map((id) =>
       sendNotification(
         `Event invitation`,
         `You have been invited to an event by ${sender.username}: ${newEvent.title}, ${new Date(newEvent.start).toLocaleDateString()}`,
-        user.id,
+        id.toString(),
         'event-invited',
         newEvent.id
       )
     )
+
+    console.log('newEvent.id:', newEvent.id)
 
     await Promise.all([newEvent.save(), ...notificationPromises])
 

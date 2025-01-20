@@ -146,7 +146,7 @@ async function saveEvent() {
   ).getTime()
   const endDate = new Date(_endDate.value + ' ' + _endTime.value).getTime()
 
-  const e: EventType = {
+  const e = {
     id: '0',
     title: _title.value,
     start: startDate,
@@ -158,9 +158,9 @@ async function saveEvent() {
     repetition: _repetition.value || null,
     notify: _notifications.value,
     guests: {
-      accepted: _guestsAccepted.value,
-      waiting: _guestsWaiting.value
-    } as Guest
+      accepted: _guestsAccepted.value.map((u) => u.username),
+      waiting: _guestsWaiting.value.map((u) => u.username)
+    }
   }
 
   if (e.title.trim() === '') {

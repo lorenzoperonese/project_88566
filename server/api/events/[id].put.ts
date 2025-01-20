@@ -1,5 +1,23 @@
-import { Event, Resource } from '@/server/db'
+import { Event, Resource, User } from '@/server/db'
 import { sendNotification } from '@/server/utils/notifications'
+import type { Types } from 'mongoose'
+
+interface InputEvent {
+  id: string
+  title: string
+  start: number
+  end: number
+  location: string | null
+  note: string | null
+  category: string
+  resource?: string | null
+  repetition: Repetition | null
+  notify: Notify[]
+  guests: {
+    waiting: string[]
+    accepted: string[]
+  }
+}
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
@@ -14,7 +32,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const body = await readBody<EventType>(event)
+    const body = await readBody<InputEvent>(event)
     console.log('Update request body:', body)
 
     const requiredFields = [
@@ -70,9 +88,9 @@ export default defineEventHandler(async (event) => {
     }
 
     const invalidNewAcceptedGuests = body.guests.accepted.filter(
-      (newGuest: User) =>
+      (newId) =>
         !currentEvent.guests.accepted.some(
-          (currentGuest: User) => currentGuest.id === newGuest.id
+          (currentId) => currentId.toString() === newId.toString()
         )
     )
 
@@ -82,6 +100,33 @@ export default defineEventHandler(async (event) => {
         code: 'INVALID_GUESTS',
         error: 'Accepted guests must be a subset of the current accepted guests'
       }
+    }
+
+    const guests_ids_wait: Types.ObjectId[] = []
+    const guests_ids_acc: Types.ObjectId[] = []
+
+    for (const g in body.guests.waiting) {
+      const u = await User.findOne({ username: body.guests.waiting[g] })
+      if (!u) {
+        throw createError({
+          statusCode: 404,
+          message: `User ${body.guests.waiting[g]} not found`
+        })
+      }
+
+      guests_ids_wait.push(u.id)
+    }
+
+    for (const g in body.guests.accepted) {
+      const u = await User.findOne({ username: body.guests.accepted[g] })
+      if (!u) {
+        throw createError({
+          statusCode: 404,
+          message: `User ${body.guests.accepted[g]} not found`
+        })
+      }
+
+      guests_ids_acc.push(u.id)
     }
 
     await Event.findOneAndUpdate(
@@ -99,7 +144,10 @@ export default defineEventHandler(async (event) => {
           category: body.category,
           repetition: body.repetition,
           notify: body.notify,
-          guests: body.guests
+          guests: {
+            waiting: guests_ids_wait,
+            accepted: guests_ids_acc
+          }
         }
       }
     ).exec()
@@ -116,45 +164,48 @@ export default defineEventHandler(async (event) => {
     const guestChanges = {
       waiting: {
         removed: currentEvent.guests.waiting.filter(
-          (x: User) => !body.guests.waiting.some((y: User) => y.id === x.id)
+          (x) => !body.guests.waiting.some((y) => y.toString() === x.toString())
         ),
-        added: body.guests.waiting.filter(
-          (x: User) =>
-            !currentEvent.guests.waiting.some((y: User) => y.id === x.id)
+        added: guests_ids_wait.filter(
+          (x) =>
+            !currentEvent.guests.waiting.some(
+              (y) => y.toString() === x.toString()
+            )
         )
       },
       accepted: {
         removed: currentEvent.guests.accepted.filter(
-          (x: User) => !body.guests.accepted.some((y: User) => y.id === x.id)
+          (x) =>
+            !body.guests.accepted.some((y) => y.toString() === x.toString())
         )
       }
     }
 
-    guestChanges.waiting.removed.forEach((user: User) => {
+    guestChanges.waiting.removed.forEach((guestId) => {
       sendNotification(
         'You have been removed from a pending event',
         `${body.title}, ${new Date(body.start).toLocaleDateString()}`,
-        user.id,
+        guestId.toString(),
         'event-removed',
         id
       )
     })
 
-    guestChanges.waiting.added.forEach((user: User) => {
+    guestChanges.waiting.added.forEach((guestId) => {
       sendNotification(
         'Event invitation',
         `You have been invited to a new event: ${body.title}, ${new Date(body.start).toLocaleDateString()}`,
-        user.id,
+        guestId.toString(),
         'event-invited',
         id
       )
     })
 
-    guestChanges.accepted.removed.forEach((user: User) => {
+    guestChanges.accepted.removed.forEach((guestId) => {
       sendNotification(
         'You have been removed from an event',
         `${body.title}, ${new Date(body.start).toLocaleDateString()}`,
-        user.id,
+        guestId.toString(),
         'event-removed',
         id
       )

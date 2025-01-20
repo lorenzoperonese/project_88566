@@ -11,16 +11,16 @@ export default defineEventHandler(async (event) => {
 
     const n = await Event.findOne({
       _id: id,
-      'guests.waiting.id': event.context.auth.id
+      'guests.waiting': event.context.auth.id
     }).select('user_id title guests')
     if (!n) {
       throw Error('Guest event not found. ID: ' + id)
     }
     const data = n.guests.waiting.filter(
-      (n) => n.id === event.context.auth.id
+      (n) => n.toString() === event.context.auth.id.toString()
     )[0]
     n.guests.waiting = n.guests.waiting.filter(
-      (n) => n.id !== event.context.auth.id
+      (n) => n.toString() !== event.context.auth.id.toString()
     )
     n.guests.accepted.push(data)
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     )
 
     await sendNotification(
-      `${data.name} has accepted your invitation to ${n.title}`,
+      `${event.context.auth.username} has accepted your invitation to ${n.title}`,
       'prova',
       n.user_id.toString(),
       'event-accept',

@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     }
     const n = await Event.findOne({
       _id: id,
-      'guests.waiting.id': event.context.auth.id
+      'guests.waiting': event.context.auth.id
     }).select('user_id title guests')
 
     if (!n) {
@@ -19,16 +19,16 @@ export default defineEventHandler(async (event) => {
     await Event.findOneAndUpdate(
       {
         _id: id,
-        'guests.waiting.id': event.context.auth.id
+        'guests.waiting': event.context.auth.id
       },
       {
         $pull: {
-          'guests.waiting': { id: event.context.auth.id }
+          'guests.waiting': event.context.auth.id
         }
       }
     )
     await sendNotification(
-      `${n.guests.waiting.filter((e) => e.id === event.context.auth.id)[0].name} has rejected your invitation to ${n.title}`,
+      `${event.context.auth.username} has rejected your invitation to ${n.title}`,
       'prova',
       n.user_id.toString(),
       'event-reject',
