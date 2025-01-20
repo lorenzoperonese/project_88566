@@ -10,7 +10,8 @@ const { data: _notifications } =
   await useFetch<Notification[]>('/api/notifications')
 
 const _notifications_unread = computed(() => {
-  if (_notifications.value) return _notifications.value.filter((n) => !n.read)
+  if (_notifications.value)
+    return _notifications.value.filter((n) => !n.read).reverse()
   else return []
 })
 
