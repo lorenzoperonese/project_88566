@@ -38,7 +38,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
       userSocketMap.get(user_id)!.add(socket.id)
     }
 
-    io.on('disconnect', () => {
+    socket.on('disconnect', () => {
       authSockets.delete(socket.id)
 
       for (const [userId, socketIds] of userSocketMap.entries()) {
