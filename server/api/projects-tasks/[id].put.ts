@@ -136,8 +136,7 @@ export default defineEventHandler(async (event) => {
 
     await ProjectTask.findOneAndUpdate(
       {
-        _id: body.id,
-        user_id: event.context.auth.id
+        _id: body.id
       },
       {
         title: body.title,

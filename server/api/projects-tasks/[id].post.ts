@@ -51,8 +51,6 @@ export default defineEventHandler(async (event) => {
       body.phase = 'pending'
     }
 
-    body.user_id = event.context.auth.id
-
     if (!body.start) {
       throw createError({
         statusCode: 400,

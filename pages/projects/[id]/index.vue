@@ -310,6 +310,8 @@ onMounted(async () => {
     if (tasks.length === 0) {
       select.disabled = true
       return
+    } else {
+      select.disabled = false
     }
 
     // Add all task options
@@ -545,6 +547,7 @@ onMounted(async () => {
       document.getElementById('task-modal-select-translation').disabled = false
     }
     document.getElementById('task-modal-checkbox-milestone').checked = false
+    document.getElementById('task-modal-select-user').value = me.id
     document.getElementById('task_modal').showModal()
   }
   document.getElementById('btn-add-task').addEventListener('click', addTask)
