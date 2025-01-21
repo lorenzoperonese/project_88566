@@ -133,8 +133,6 @@ onMounted(async () => {
       }
     })
 
-    console.log('sorted tasks', sTasks)
-
     sTasks.forEach(async (task) => {
       // --- Grid ---
       if (currentPhase !== task.phase) {
@@ -259,7 +257,6 @@ onMounted(async () => {
   displayProject()
   await fetchTasks()
   displayTasks()
-  console.log('project: ', project)
 
   // ------ Task modal ------
 
@@ -333,7 +330,6 @@ onMounted(async () => {
   let taskID = null
 
   async function saveTask() {
-    console.log('Saving task')
     const title = document.getElementById('task-modal-title').value
     const description = document.getElementById('task-modal-description').value
     const phase = document.getElementById('task-modal-phase').value
@@ -342,7 +338,6 @@ onMounted(async () => {
     const end = document.getElementById('task-modal-end').value
     const input = document.getElementById('task-modal-input').value
     const output = document.getElementById('task-modal-output').value
-    console.log('Saving task 2')
     const dependency = document.getElementById(
       'task-modal-select-depends'
     ).value
@@ -441,7 +436,6 @@ onMounted(async () => {
   // ------ Edit Task modal ------
   function editTask(id) {
     const t = tasks.find((task) => task.id === id)
-    console.log('Want to edit', t)
 
     document.getElementById('task-modal-title').value = t.title
     document.getElementById('task-modal-description').value = t.description
@@ -517,7 +511,6 @@ onMounted(async () => {
         </div>
       `
       div.getElementsByTagName('button')[0].addEventListener('click', () => {
-        console.log('Deleted subtask', t)
         tmpSubtasks = tmpSubtasks.filter((subtask) => subtask !== t)
         div.remove()
       })

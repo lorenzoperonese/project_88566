@@ -13,7 +13,6 @@ const today_events = computed(() => {
   const tmp = _events.value.filter(
     (e) => new Date(e.start).toDateString() === today.toDateString()
   )
-  console.log(tmp)
   return tmp
 })
 
@@ -23,7 +22,6 @@ const today_tasks = computed(() => {
   const tmp = _tasks.value.filter(
     (t) => new Date(t.end).toDateString() === today.toDateString()
   )
-  console.log(tmp)
   return tmp
 })
 

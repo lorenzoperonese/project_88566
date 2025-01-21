@@ -9,7 +9,6 @@ const _id = _route.params.id
 
 const { data: _resource } = await useFetch<Resource>(`/api/resources/${_id}`)
 
-console.log(_resource.value)
 async function update() {
   const tmp = await $fetch(`/api/resources/${_id}`)
   _resource.value = tmp as Resource

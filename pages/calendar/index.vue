@@ -92,7 +92,6 @@ const fetchNoteTasks = async () => {
 }
 
 function closeModal() {
-  console.log('CLOSED')
   if (_add_element.value === 0) {
     fetchEvents()
     fetchResources()
@@ -220,7 +219,6 @@ async function updateToday() {
 const phoneView = ref('month')
 
 watch(phoneView, (value) => {
-  console.log(value)
   _currentView.value = value
 })
 

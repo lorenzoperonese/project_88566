@@ -314,7 +314,6 @@ const stopAlarm = (value: string) => {
 }
 
 const playMusic = (value: string) => {
-  console.log('playMusic', value)
   if (value === 'lofi-01') {
     playMusic1()
   } else if (value === 'lofi-02') {
@@ -327,7 +326,6 @@ const playMusic = (value: string) => {
 }
 
 const stopMusic = (value: string) => {
-  console.log('stopMusic', value)
   if (value === 'lofi-01') {
     stopMusic1()
   } else if (value === 'lofi-02') {
@@ -340,7 +338,6 @@ const stopMusic = (value: string) => {
 }
 
 const pauseMusic = (value: string) => {
-  console.log('pauseMusic', value)
   if (value === 'lofi-01') {
     pauseMusic1()
   } else if (value === 'lofi-02') {

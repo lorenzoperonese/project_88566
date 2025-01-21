@@ -37,7 +37,6 @@ onMounted(async () => {
   }
 
   function displayProject() {
-    console.log(project)
     document.getElementById('title').textContent = project.title
     document.getElementById('description').textContent = project.description
 

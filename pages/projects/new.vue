@@ -93,8 +93,6 @@ onMounted(async () => {
       for (const g in project.guests.accepted) {
         guests.push(project.guests.accepted[g].username)
       }
-
-      console.log('project: ', project)
     } catch (error) {
       console.error(error)
       $toast.error('Could not load project')
@@ -183,7 +181,6 @@ onMounted(async () => {
 
   async function save() {
     const title = document.getElementById('title').value
-    console.log('title: ', title)
 
     if (title.trim() === '') {
       error = 'ERROR: Title is required'
@@ -192,7 +189,6 @@ onMounted(async () => {
     }
 
     const description = document.getElementById('description').value
-    console.log('description: ', description)
 
     if (description.trim() === '') {
       error = 'ERROR: Description is required'

@@ -9,7 +9,6 @@ const _id = _route.params.id
 const _eventGuest = await $fetch(`/api/events-guest/${_id}`, {
   query: { status: 'accepted' }
 })
-console.log(_eventGuest)
 </script>
 
 <template>

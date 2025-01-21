@@ -8,7 +8,6 @@ interface IRequestBody {
 
 export default defineEventHandler(async (event) => {
   const { username, password } = await readBody<IRequestBody>(event)
-  console.log('Try login: ', { username, password })
 
   if (!username) {
     setResponseStatus(event, 400)

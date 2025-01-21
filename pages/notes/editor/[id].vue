@@ -88,7 +88,7 @@ async function save() {
         })
         navigateTo(`/notes/${_id}`)
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     }
   }

@@ -19,7 +19,6 @@ onMounted(async () => {
   let projects = []
 
   async function fetchProjects() {
-    console.log('Fetching projects')
     try {
       const res = await fetch('/api/projects')
 
@@ -51,7 +50,6 @@ onMounted(async () => {
   }
 
   function listProjects() {
-    console.log('Listing projects')
     const el_plist = document.getElementById('project-list')
     if (projects.length == 0) {
       el_plist.innerHTML = 'No projects'
@@ -161,8 +159,6 @@ onMounted(async () => {
       console.error(error)
       showError('Could not save project')
     }
-
-    console.log('Saving edit', title, description)
   }
 
   document

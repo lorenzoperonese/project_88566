@@ -48,8 +48,6 @@ const fResourcesList = computed(() => {
   const startDate = new Date(_startDate.value + ' ' + _startTime.value)
   const endDate = new Date(_endDate.value + ' ' + _endTime.value)
 
-  console.log('resources: ', resources.value)
-
   return resourceList.value.filter((r) => {
     const tmp =
       isResourceAvailable(resources.value || [], r.name, startDate, endDate) ||

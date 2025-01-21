@@ -51,8 +51,7 @@ export async function setNotificationAsRead(id: string): Promise<JSONResponse> {
 export async function registerPush() {
   const { $registerPushNotifications } = useNuxtApp()
   try {
-    const subscription = await $registerPushNotifications()
-    console.log('Registered:', subscription)
+    await $registerPushNotifications()
   } catch (err) {
     console.error('Failed:', err)
   }

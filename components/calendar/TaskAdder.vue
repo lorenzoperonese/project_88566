@@ -92,7 +92,6 @@ function deleteTask() {
 }
 
 function addGuest() {
-  console.log(_guest.value)
   if (_guest.value.trim() == '') {
     $toast.error('Username is required')
     return

@@ -41,7 +41,6 @@ const showPassword = ref(false)
 
 async function login() {
   const credentials = { username: _username.value, password: _password.value }
-  console.log('Logging in')
   try {
     await signIn(credentials, { callbackUrl: '/' })
     changeTheme()
@@ -51,8 +50,7 @@ async function login() {
 
     if (window.Notification?.permission === 'granted') {
       try {
-        const subscription = await $registerPushNotifications()
-        console.log('Registered:', subscription)
+        await $registerPushNotifications()
       } catch (err) {
         console.error('Failed:', err)
       }

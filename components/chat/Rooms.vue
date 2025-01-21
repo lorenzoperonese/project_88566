@@ -43,8 +43,6 @@ function addRoom() {
 }
 
 const searchRooms = computed(() => {
-  console.log($props.rooms)
-
   return $props.rooms.filter((r) => r.roomName.includes(search.value))
 })
 </script>

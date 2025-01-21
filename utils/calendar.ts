@@ -315,9 +315,6 @@ export function isResourceAvailable(
   return !resources.some((r) => {
     const rStart = new Date(r.start)
     const rEnd = new Date(r.end)
-    console.log(r.title, resourceName)
-    console.log(rStart, rEnd)
-    console.log(start, end)
     return (
       r.title === resourceName &&
       ((rStart <= start && start < rEnd) ||

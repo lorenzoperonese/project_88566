@@ -19,7 +19,6 @@ const messages = ref<ChatMessage[]>([])
 
 watch(current_room_id, async (newRoomId) => {
   if (newRoomId) {
-    console.log('Room changed')
     await fetchMessages(newRoomId)
   }
 })
@@ -36,7 +35,6 @@ const roomFromReceiver = (senderId: string) => {
 }
 
 watch(wsState.chatMessages, (newData) => {
-  console.log('New message received')
   const d = newData[newData.length - 1] as ChatMessage
   if (
     current_room_id.value &&
@@ -56,7 +54,6 @@ onMounted(async () => {
   await fetchRooms()
   if (route.query.id) {
     current_room_id.value = route.query.id as string
-    console.log('Room id:', current_room_id.value)
   }
 })
 
@@ -66,11 +63,8 @@ async function fetchRooms() {
 }
 
 async function fetchMessages(roomId: string) {
-  console.log('Fetching messages')
-
   const data = await $fetch(`/api/chat/rooms/${roomId}`)
   messages.value = data as ChatMessage[]
-  console.log('Messages fetched: ', messages.value)
 }
 
 async function addRoom(name: string) {

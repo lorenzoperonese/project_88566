@@ -52,7 +52,6 @@ async function register(e: Event) {
   }
 
   try {
-    console.log('Registering')
     await $fetch('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({

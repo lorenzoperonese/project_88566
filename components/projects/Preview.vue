@@ -6,7 +6,6 @@ const $props = defineProps(['settings'])
 let projects = []
 
 async function fetchProjects() {
-  console.log('Fetching projects')
   try {
     const res = await fetch('/api/projects')
 
@@ -22,10 +21,7 @@ async function fetchProjects() {
 }
 
 function listProjects() {
-  console.log('Listing projects')
   const el_plist = document.getElementById('preview-projects-list')
-  console.log(projects)
-  console.log(projects.length)
   el_plist.innerHTML = ''
   if (projects.length === 0) {
     const div = document.createElement('div')

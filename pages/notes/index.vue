@@ -77,7 +77,7 @@ async function deleteNote(id: string) {
   try {
     await $fetch(`/api/notes/${id}`, { method: 'delete' })
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 
   fetchNotes()
@@ -87,7 +87,7 @@ async function deleteCategory(id: string) {
   try {
     await $fetch(`/api/notes-categories/${id}`, { method: 'delete' })
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 
   fetchCategories()

@@ -18,7 +18,6 @@ const $emits = defineEmits<{
 }>()
 
 function addGuest() {
-  console.log(guest.value)
   if (guest.value.trim() == '') {
     $toast.error('Username is required')
     return

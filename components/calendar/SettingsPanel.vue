@@ -131,7 +131,7 @@ const parseICSContent = (icsData: string) => {
         category: 'Imported event',
         start: event.startDate.toJSDate().getTime(),
         end: event.endDate.toJSDate().getTime(),
-        repetition: calculateRecurrenceIN(event),
+        repetition: null,
         notify: [],
         guests: { accepted: [], waiting: [] }
       }
@@ -149,12 +149,6 @@ const parseICSContent = (icsData: string) => {
   } catch (err) {
     $toast.error('Error parsing ICS file')
   }
-}
-
-function calculateRecurrenceIN(event: ICAL.Event): Repetition | null {
-  // not supported yet
-  console.log("I'm here to not trigger lint, don't mind at me\n" + event)
-  return null
 }
 </script>
 

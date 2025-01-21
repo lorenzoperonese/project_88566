@@ -15,7 +15,6 @@ const $emits = defineEmits<{
 }>()
 
 const goToBottom = async () => {
-  console.log('Scrolling')
   // Wait for messages to load
   await nextTick()
   const chat = document.getElementById('messages-container')

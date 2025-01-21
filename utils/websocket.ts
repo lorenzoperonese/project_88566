@@ -29,17 +29,14 @@ socket.on('disconnect', () => {
 })
 
 socket.on('notification', (notification) => {
-  console.log('Notification:', notification)
   wsState.notifications.push(notification)
 })
 
 socket.on('chat_message', (message) => {
-  console.log('Chat Message:', message)
   wsState.chatMessages.push(message)
 })
 
 socket.on('room_add', (room) => {
-  console.log('Room:', room)
   wsState.rooms.push(room)
 })
 

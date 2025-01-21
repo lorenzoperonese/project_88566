@@ -38,7 +38,6 @@ const _days = computed(() => {
     i++
   }
 
-  console.log('days', result)
   return result
 })
 
