@@ -12,27 +12,23 @@ definePageMeta({
   layout: 'navbar'
 })
 
-const { data: _events } = await useFetch<EventType[]>('/api/events')
-const { data: _eventsGuest } = await useFetch<EventType[]>(
-  '/api/events-guest',
-  { query: { status: 'accepted' } }
-)
-const { data: _tasks } = await useFetch<Task[]>('/api/tasks')
-const { data: _pomodoro } = await useFetch<PomodoroEvent[]>(
-  '/api/pomodoro-events'
-)
-
-const { data: _resources } = await useFetch<Resource[]>('/api/resources')
-const { data: _projects } = await useFetch<ProjectEvent[]>(
-  '/api/projects-events'
-)
-
-const { data: _notAvailable } =
-  await useFetch<NotAvailable[]>('/api/not-available')
-
-const { data: _noteTasks } = await useFetch<NoteTask[]>('/api/notes-todos')
-
+const tmp = await getToday()
+const _today = ref(tmp)
 const me = await getME()
+
+const { data: _events } = useFetch<EventType[]>('/api/events')
+const { data: _eventsGuest } = useFetch<EventType[]>('/api/events-guest', {
+  query: { status: 'accepted' }
+})
+const { data: _tasks } = useFetch<Task[]>('/api/tasks')
+const { data: _pomodoro } = useFetch<PomodoroEvent[]>('/api/pomodoro-events')
+
+const { data: _resources } = useFetch<Resource[]>('/api/resources')
+const { data: _projects } = useFetch<ProjectEvent[]>('/api/projects-events')
+
+const { data: _notAvailable } = useFetch<NotAvailable[]>('/api/not-available')
+
+const { data: _noteTasks } = useFetch<NoteTask[]>('/api/notes-todos')
 
 const _filterEvents = ref(true)
 const _filterTasks = ref(true)
@@ -145,8 +141,6 @@ function addNotAvailable() {
   _add_element.value = 4
   showModal()
 }
-
-const _today = ref(await getToday())
 
 const _displayDate = ref(new Date(_today.value))
 const _currentView = ref('month')

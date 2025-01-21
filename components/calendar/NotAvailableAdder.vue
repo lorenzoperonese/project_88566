@@ -3,7 +3,7 @@ const end = await getToday()
 
 const me = await getME()
 
-const { data: _users } = await useFetch<User[]>('/api/users')
+const { data: _users } = useFetch<User[]>('/api/users')
 
 const $props = defineProps<{
   notAvailable?: NotAvailable

@@ -3,7 +3,7 @@ const $emits = defineEmits<{
   (e: 'close' | 'update'): void
 }>()
 
-const { data: _today } = await useFetch('/api/tm')
+const { data: _today } = useFetch('/api/tm')
 
 const _date = ref(formatDate(_today.value ? _today.value : Date.now()))
 const _time = ref(formatTime(_today.value ? _today.value : Date.now()))

@@ -6,7 +6,7 @@ const _guestsIDs = ref<string[]>([])
 
 const me = await getME()
 
-const { data: _users } = await useFetch<User[]>('/api/users')
+const { data: _users } = useFetch<User[]>('/api/users')
 
 const $props = defineProps<{
   task?: Task
@@ -17,7 +17,6 @@ const isMyNote = computed(() => {
 
   return me.id === $props.task.user_id
 })
-console.log('IS MY NOTE: ', isMyNote.value)
 
 const $emits = defineEmits<{
   (e: 'close'): void

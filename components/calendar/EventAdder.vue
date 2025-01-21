@@ -14,13 +14,10 @@ const $emits = defineEmits<{
 
 const { $toast } = useNuxtApp()
 
-const { data: _users } = await useFetch<User[]>('/api/users')
-const { data: resourceList } = await useFetch<ResourceList[]>(
-  '/api/resources-list'
-)
-const { data: resources } = await useFetch<Resource[]>('/api/resources')
-const { data: _notAvailable } =
-  await useFetch<NotAvailable[]>('/api/not-available')
+const { data: _users } = useFetch<User[]>('/api/users')
+const { data: resourceList } = useFetch<ResourceList[]>('/api/resources-list')
+const { data: resources } = useFetch<Resource[]>('/api/resources')
+const { data: _notAvailable } = useFetch<NotAvailable[]>('/api/not-available')
 
 const me = await getME()
 
