@@ -72,7 +72,8 @@ The application leverages Nuxt.js as a full-stack powerful Vue.js framework with
 built-in features like file-based routing, auto-imports and module system. MongoDB serves
 as the database, chosen for its flexible document model that aligns well with
 the application's data structure. This stack enables efficient development and
-seamless full-stack JavaScript integration.
+seamless full-stack JavaScript integration. The application is a PWA, providing
+full functioning push notifications for both Apple and other devices.
 
 ## Use of AI
 

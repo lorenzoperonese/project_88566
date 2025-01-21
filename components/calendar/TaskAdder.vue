@@ -210,16 +210,13 @@ function addGuest() {
           />
           <button class="btn btn-neutral" @click="addGuest">Add</button>
         </div>
-        <ul class="flex flex-wrap ml-2 gap-1 mt-2">
-          <li
-            v-if="_guests.length == 0"
-            class="text-center text-success"
-          >
+        <ul class="ml-2 mt-2 flex flex-wrap gap-1">
+          <li v-if="_guests.length == 0" class="text-center text-success">
             No guests
           </li>
           <li
             v-for="g in _guests"
-            class="inline-flex items-left gap-1 rounded-full bg-success/20 px-3 py-1 font-medium text-success"
+            class="items-left inline-flex gap-1 rounded-full bg-success/20 px-3 py-1 font-medium text-success"
           >
             <span>{{ g }}</span>
           </li>
