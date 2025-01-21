@@ -3,7 +3,8 @@ const $props = defineProps({
   notAvailable: { type: Object as PropType<NotAvailable>, required: true },
   today: { type: Date, required: true },
   displayDate: { type: Date, required: false },
-  fullDate: { type: Boolean, default: false }
+  fullDate: { type: Boolean, default: false },
+  isResponsive: { type: Boolean, default: true }
 })
 
 const isInPast = computed(() => {
@@ -24,7 +25,7 @@ const isInPast = computed(() => {
       <div class="overflow-x-clip whitespace-nowrap font-semibold">
         Not available
       </div>
-      <div class="hidden md:block">
+      <div :class="{ 'hidden md:block': $props.isResponsive }">
         <div>
           {{ formatTime($props.notAvailable.start) }} -
           {{ formatTime($props.notAvailable.end) }}
