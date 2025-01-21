@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const userData = await User.findOne({
-      username: username.toLowerCase()
+      username: username
     })
 
     const err_not_found = {
